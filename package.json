@@ -1,0 +1,15 @@
+{
+  "name": "mortgage",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "shared/server.js",
+  "scripts": {
+    "start": "node shared/server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}
