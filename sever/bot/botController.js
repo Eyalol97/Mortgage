@@ -107,10 +107,19 @@ async function chat(req, res) {
   }
 }
 
+async function getChips(req, res) {
+  try {
+    const terms = await GlossaryTerm.find({}, 'term followUps').lean();
+    return res.json({ chips: terms.map((t) => ({ label: t.term, followUps: t.followUps ?? [] })) });
+  } catch (err) {
+    return errorHandler(err, req, res);
+  }
+}
+
 async function clearSession(req, res) {
   const { sessionId } = req.body;
   if (sessionId) sessions.delete(sessionId);
   return res.status(204).end();
 }
 
-export { chat, clearSession };
+export { chat, getChips, clearSession };
