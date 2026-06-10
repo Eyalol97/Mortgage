@@ -1,0 +1,35 @@
+[
+  {
+    "id": "prime-linked",
+    "name": "Prime-Linked (פריים)",
+    "interestType": "variable",
+    "cpiLinked": false,
+    "primeLinked": true,
+    "description": "Rate tracks the Bank of Israel prime rate. Changes with every central bank decision.",
+    "maxPortfolioRatio": 0.667,
+    "repaymentMethods": ["shpitzer", "keren-shava"],
+    "notes": "Bank of Israel limits prime-linked component to no more than 2/3 of total mortgage."
+  },
+  {
+    "id": "fixed",
+    "name": "Fixed Unlinked (קל\"צ — קבועה לא צמודה)",
+    "interestType": "fixed",
+    "cpiLinked": false,
+    "primeLinked": false,
+    "description": "Fixed rate and fixed principal — not linked to CPI. Monthly payment stays constant throughout the loan.",
+    "maxPortfolioRatio": 1.0,
+    "repaymentMethods": ["shpitzer", "keren-shava", "bullet"],
+    "notes": "No regulatory cap on the fixed-unlinked component. Considered the most predictable track."
+  },
+  {
+    "id": "cpi-linked",
+    "name": "CPI-Linked Fixed (קצ\"מ — קבועה צמודה מדד)",
+    "interestType": "fixed",
+    "cpiLinked": true,
+    "primeLinked": false,
+    "description": "Fixed interest rate, but the outstanding principal is adjusted monthly according to the Consumer Price Index (CPI). Monthly payment rises with inflation.",
+    "maxPortfolioRatio": 0.667,
+    "repaymentMethods": ["shpitzer", "keren-shava"],
+    "notes": "Bank of Israel limits CPI-linked component to no more than 2/3 of total mortgage."
+  }
+]
