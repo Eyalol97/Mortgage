@@ -198,4 +198,4 @@ function calculate({ repaymentMethod, annualRate, propertyPrice, equity, duratio
   };
 }
 
-module.exports = { calculate };
+export { calculate };

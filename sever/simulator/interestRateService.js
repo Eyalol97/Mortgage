@@ -1,12 +1,8 @@
-'use strict';
+import https        from 'https';
+import cron         from 'node-cron';
+import InterestRate from '../../shared/models/InterestRate.js';
+import env          from '../../shared/env.js';
 
-const https        = require('https');
-const cron         = require('node-cron');
-const InterestRate = require('../../shared/models/InterestRate');
-const env          = require('../../shared/env');
-
-// Hardcoded fallback rates (percent) used when the DB has no record for a track
-// and the Bank of Israel API is unreachable.
 const FALLBACK_RATES = {
   'prime-linked': 5.5,
   'fixed':        4.5,
@@ -19,8 +15,8 @@ const VALID_TRACKS = Object.keys(FALLBACK_RATES);
 
 function fetchBoIRates() {
   return new Promise((resolve, reject) => {
-    const url = env.BOI_API_URL;
-    if (!url) return reject(new Error('BOI_API_URL not configured'));
+    const url = env.BOI_API_ENDPOINT;
+    if (!url) return reject(new Error('BOI_API_ENDPOINT not configured'));
 
     https.get(url, res => {
       let data = '';
@@ -36,7 +32,6 @@ function fetchBoIRates() {
   });
 }
 
-// Maps the raw BoI API response to our track keys.
 // Adjust field names here when the actual BoI API schema is known.
 function parseBoIResponse(raw) {
   return {
@@ -74,29 +69,15 @@ cron.schedule('0 3 1 * *', syncRates);
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
-/**
- * Returns the current market-average rate for a given track.
- * Falls back to hardcoded defaults if the DB has no record.
- *
- * @param {'prime-linked'|'fixed'|'cpi-linked'} track
- * @returns {Promise<number>} annual rate in percent
- */
-async function getRate(track) {
+export async function getRate(track) {
   if (!VALID_TRACKS.includes(track)) {
     throw new Error(`Unknown interest track: ${track}`);
   }
-
   const record = await InterestRate.findOne({ track });
   return record ? record.rate : FALLBACK_RATES[track];
 }
 
-/**
- * Returns all current market-average rates, one per track.
- * Falls back to hardcoded defaults for any track missing from the DB.
- *
- * @returns {Promise<Array<{track, rate, updatedAt, source}>>}
- */
-async function getAllRates() {
+export async function getAllRates() {
   const records = await InterestRate.find();
   const inDB = new Map(records.map(r => [r.track, r]));
 
@@ -108,4 +89,4 @@ async function getAllRates() {
   });
 }
 
-module.exports = { getRate, getAllRates, syncRates };
+export { syncRates };

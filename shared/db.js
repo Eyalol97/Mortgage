@@ -1,7 +1,5 @@
-'use strict';
-
-const mongoose = require('mongoose');
-const env      = require('./env');
+import mongoose from 'mongoose';
+import env from './env.js';
 
 mongoose.connect(env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
@@ -10,4 +8,4 @@ mongoose.connect(env.MONGODB_URI)
     process.exit(1);
   });
 
-module.exports = mongoose;
+export default mongoose;

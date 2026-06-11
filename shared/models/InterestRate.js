@@ -1,6 +1,4 @@
-'use strict';
-
-const mongoose = require('../db');
+import mongoose from '../db.js';
 
 const interestRateSchema = new mongoose.Schema({
   track: {
@@ -24,4 +22,4 @@ const interestRateSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('InterestRate', interestRateSchema);
+export default mongoose.model('InterestRate', interestRateSchema);

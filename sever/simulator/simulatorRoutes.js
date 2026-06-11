@@ -1,21 +1,20 @@
-'use strict';
+import express                    from 'express';
+import { authMiddleware }         from '../../shared/auth.js';
+import { runSimulation, getRates } from './simulatorController.js';
+import { generatePdf }            from './pdfManager.js';
 
-const express    = require('express');
-const router     = express.Router();
-const auth       = require('../../shared/auth');
-const controller = require('./simulatorController');
-const pdfManager = require('./pdfManager');
+const router = express.Router();
 
 // All simulator routes require authentication
-router.use(auth);
+router.use(authMiddleware);
 
 // POST /api/simulator — run a simulation and solve the missing field
-router.post('/', controller.runSimulation);
+router.post('/', runSimulation);
 
 // GET /api/simulator/rates — return current market-average rates per track
-router.get('/rates', controller.getRates);
+router.get('/rates', getRates);
 
 // GET /api/simulator/pdf — generate and download PDF summary
-router.get('/pdf', pdfManager.generatePdf);
+router.get('/pdf', generatePdf);
 
-module.exports = router;
+export default router;

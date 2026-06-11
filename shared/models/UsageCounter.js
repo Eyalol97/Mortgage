@@ -1,6 +1,4 @@
-'use strict';
-
-const mongoose = require('../db');
+import mongoose from '../db.js';
 
 const usageCounterSchema = new mongoose.Schema({
   feature: {
@@ -29,4 +27,4 @@ usageCounterSchema.statics.increment = function (feature) {
   );
 };
 
-module.exports = mongoose.model('UsageCounter', usageCounterSchema);
+export default mongoose.model('UsageCounter', usageCounterSchema);
