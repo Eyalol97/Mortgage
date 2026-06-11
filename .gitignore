@@ -1,0 +1,15 @@
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+
+# Generated PDFs
+*.pdf
+
+# OS files
+.DS_Store
+
+# Build output
+dist/
+build/
