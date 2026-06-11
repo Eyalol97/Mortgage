@@ -1,0 +1,102 @@
+[
+  {
+    "term": "Prime Interest Rate",
+    "definition": "The base lending rate set by the Bank of Israel, currently tied to the central bank's benchmark rate plus a fixed spread (typically 1.5%). Variable-rate mortgage tracks that are 'prime-linked' move up or down with every Bank of Israel rate decision.",
+    "related_terms": ["Prime-Linked Track", "Fixed Interest Rate", "Bank of Israel"]
+  },
+  {
+    "term": "Fixed Interest Rate",
+    "definition": "An interest rate that is locked for the entire loan term and never changes, regardless of market conditions. Provides full payment certainty but is usually priced higher than variable alternatives at the time of signing.",
+    "related_terms": ["Prime Interest Rate", "CPI-Linked Track", "Loan Term"]
+  },
+  {
+    "term": "Prime-Linked Track",
+    "definition": "A mortgage track whose interest rate is calculated as the Bank of Israel prime rate plus or minus a fixed margin agreed at signing. Monthly payments fluctuate with every rate change. Under Bank of Israel regulations, this track may not exceed one-third of the total loan.",
+    "related_terms": ["Prime Interest Rate", "CPI-Linked Track", "Fixed Track", "Track Mix"]
+  },
+  {
+    "term": "CPI-Linked Track",
+    "definition": "A mortgage track whose outstanding balance and monthly payment are adjusted monthly according to Israel's Consumer Price Index (CPI / מדד). When inflation rises, the outstanding principal grows, increasing future payments. Offers a lower nominal rate than fully fixed tracks.",
+    "related_terms": ["CPI", "Fixed Track", "Prime-Linked Track", "Track Mix"]
+  },
+  {
+    "term": "Fixed Track (Unlinked)",
+    "definition": "A mortgage track with a rate that is both fixed and not linked to the CPI. The monthly payment remains identical throughout the loan. This track offers the highest certainty but typically carries the highest initial interest rate.",
+    "related_terms": ["Fixed Interest Rate", "CPI-Linked Track", "Track Mix"]
+  },
+  {
+    "term": "LTV (Loan-to-Value)",
+    "definition": "The ratio of the loan amount to the appraised value of the property, expressed as a percentage. For example, a ₪750,000 loan on a ₪1,000,000 property equals 75% LTV. The Bank of Israel caps LTV at 75% for a primary residence and 50% for investment properties.",
+    "related_terms": ["Down Payment", "Bank of Israel", "Property Value"]
+  },
+  {
+    "term": "Down Payment (Equity)",
+    "definition": "The portion of the property purchase price paid by the buyer from personal funds, not financed through the mortgage. A higher down payment lowers the LTV ratio and typically results in better loan terms.",
+    "related_terms": ["LTV", "Property Value", "Mortgage Amount"]
+  },
+  {
+    "term": "Amortisation",
+    "definition": "The gradual repayment of a loan through regular scheduled payments that cover both principal and interest. Early payments are weighted heavily toward interest; later payments shift toward principal repayment. The full amortisation schedule shows every payment over the loan's life.",
+    "related_terms": ["Monthly Payment", "Principal", "Loan Term"]
+  },
+  {
+    "term": "Principal",
+    "definition": "The original loan amount borrowed, excluding interest. Each monthly payment reduces the outstanding principal by a portion that grows over time as the interest component shrinks.",
+    "related_terms": ["Amortisation", "Monthly Payment", "Outstanding Balance"]
+  },
+  {
+    "term": "Monthly Payment (EMI)",
+    "definition": "The fixed or variable amount paid each month to the lender. It consists of a principal repayment portion and an interest portion. On CPI-linked tracks the payment adjusts with the index; on prime-linked tracks it adjusts with rate changes.",
+    "related_terms": ["Amortisation", "Principal", "Interest"]
+  },
+  {
+    "term": "Loan Term",
+    "definition": "The number of years over which the mortgage is repaid. The Bank of Israel caps the maximum mortgage term at 30 years. A longer term lowers monthly payments but increases total interest paid over the life of the loan.",
+    "related_terms": ["Monthly Payment", "Amortisation", "Total Interest Cost"]
+  },
+  {
+    "term": "Track Mix",
+    "definition": "The allocation of a mortgage across multiple interest-rate tracks — for example, 33% prime-linked, 33% CPI-linked, and 34% fixed. Bank of Israel regulations require that no single variable track (prime-linked) exceed one-third of the total loan.",
+    "related_terms": ["Prime-Linked Track", "CPI-Linked Track", "Fixed Track (Unlinked)", "Bank of Israel"]
+  },
+  {
+    "term": "CPI (Consumer Price Index)",
+    "definition": "Israel's official measure of inflation published monthly by the Central Bureau of Statistics. CPI-linked mortgage tracks adjust the outstanding balance each month by the published index change, so periods of high inflation increase the real cost of a CPI-linked loan.",
+    "related_terms": ["CPI-Linked Track", "Inflation", "Outstanding Balance"]
+  },
+  {
+    "term": "Bank of Israel",
+    "definition": "Israel's central bank and primary financial regulator. It sets the benchmark (prime) interest rate and publishes binding mortgage regulations, including LTV caps, maximum loan-term limits, and track-mix restrictions.",
+    "related_terms": ["Prime Interest Rate", "LTV", "Track Mix"]
+  },
+  {
+    "term": "Early Repayment (Prepayment)",
+    "definition": "Paying off part or all of the outstanding mortgage balance before the scheduled end of the loan term. On fixed and CPI-linked tracks this may incur a prepayment penalty based on the difference between the contracted rate and the current market rate. Prime-linked tracks are generally penalty-free.",
+    "related_terms": ["Outstanding Balance", "Prepayment Penalty", "Prime-Linked Track"]
+  },
+  {
+    "term": "Prepayment Penalty",
+    "definition": "A fee charged by the lender when a borrower repays a fixed or CPI-linked track early. Calculated as the present-value difference between the contracted interest rate and the equivalent current market rate over the remaining term. No penalty applies to prime-linked tracks.",
+    "related_terms": ["Early Repayment", "Fixed Track (Unlinked)", "CPI-Linked Track"]
+  },
+  {
+    "term": "Outstanding Balance",
+    "definition": "The remaining principal owed to the lender at any point during the loan. On CPI-linked tracks the balance is adjusted upward by inflation each month, so the balance can temporarily exceed the original loan amount during high-inflation periods.",
+    "related_terms": ["Principal", "Amortisation", "CPI-Linked Track"]
+  },
+  {
+    "term": "Total Interest Cost",
+    "definition": "The cumulative sum of all interest payments made over the entire loan term, in addition to the principal repaid. A useful metric for comparing mortgage offers: a lower monthly payment spread over a longer term often results in a significantly higher total interest cost.",
+    "related_terms": ["Loan Term", "Monthly Payment", "Amortisation"]
+  },
+  {
+    "term": "Property Appraisal",
+    "definition": "A formal valuation of the property conducted by a bank-approved appraiser. The appraisal determines the property value used to calculate LTV. The bank lends against whichever is lower — the appraised value or the purchase price.",
+    "related_terms": ["LTV", "Property Value", "Down Payment"]
+  },
+  {
+    "term": "Mortgage Insurance (Bituch Mashkanta)",
+    "definition": "Life and property insurance required by Israeli banks as a condition of granting a mortgage. Life insurance covers the outstanding balance in the event of the borrower's death; property insurance covers structural damage. Premiums are paid separately from the monthly mortgage payment.",
+    "related_terms": ["Monthly Payment", "Outstanding Balance"]
+  }
+]

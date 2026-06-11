@@ -1,5 +1,5 @@
 {
-  "advisoryKeywords": [
+  "advisory_keywords": [
     "should i",
     "should we",
     "what should i",
@@ -29,7 +29,7 @@
     "suit me",
     "suits me"
   ],
-  "domainBlocklist": [
+  "domain_blocklist": [
     "weather",
     "forecast",
     "recipe",
