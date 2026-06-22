@@ -1,23 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { CLASSIFIER_LLM_API_KEY } from '../../../shared/env.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GEMINI_API_KEY } from '../../../shared/env.js';
 
-const CLASSIFIER_MODEL = 'claude-haiku-4-5-20251001';
-
-const client = new Anthropic({ apiKey: CLASSIFIER_LLM_API_KEY });
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const VALID_CATEGORIES = new Set(['EDUCATION', 'ADVISORY', 'OUT_OF_DOMAIN', 'AMBIGUOUS']);
-
-const CLASSIFICATION_SCHEMA = {
-  type: 'object',
-  properties: {
-    category: {
-      type: 'string',
-      enum: ['EDUCATION', 'ADVISORY', 'OUT_OF_DOMAIN', 'AMBIGUOUS'],
-    },
-  },
-  required: ['category'],
-  additionalProperties: false,
-};
 
 const SYSTEM_PROMPT = `You classify user messages sent to a mortgage-education chatbot.
 Return exactly one category:
@@ -27,25 +13,18 @@ ADVISORY      — User is asking for a personal recommendation or decision guida
 OUT_OF_DOMAIN — Question has nothing to do with mortgages or home loans (e.g. "What is the weather?", "Write me a poem")
 AMBIGUOUS     — Intent is unclear or the message could belong to multiple categories
 
-Respond only with the JSON object. No explanation.`;
+Respond only with JSON: {"category": "EDUCATION"|"ADVISORY"|"OUT_OF_DOMAIN"|"AMBIGUOUS"}`;
 
 async function classify(query) {
   try {
-    const response = await client.messages.create({
-      model: CLASSIFIER_MODEL,
-      max_tokens: 64,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: query }],
-      output_config: {
-        format: {
-          type: 'json_schema',
-          schema: CLASSIFICATION_SCHEMA,
-        },
-      },
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash-8b',
+      systemInstruction: SYSTEM_PROMPT,
+      generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 64 },
     });
 
-    const raw = response.content.find((b) => b.type === 'text')?.text ?? '{}';
-    const parsed = JSON.parse(raw);
+    const result   = await model.generateContent(query);
+    const parsed   = JSON.parse(result.response.text());
     const category = typeof parsed.category === 'string'
       ? parsed.category.trim().toUpperCase()
       : '';

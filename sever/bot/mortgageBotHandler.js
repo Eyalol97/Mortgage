@@ -1,36 +1,13 @@
-import Anthropic        from '@anthropic-ai/sdk';
-import mortgageBotPrompt  from './mortgageBotPrompt.js';
-import regulationService  from '../../shared/regulationService.js';
-import { MAIN_LLM_API_KEY, LLM_MODEL } from '../../shared/env.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import mortgageBotPrompt     from './mortgageBotPrompt.js';
+import regulationService     from '../../shared/regulationService.js';
+import { GEMINI_API_KEY, LLM_MODEL } from '../../shared/env.js';
 
-const client = new Anthropic({ apiKey: MAIN_LLM_API_KEY });
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Rough token budget for conversation history (excludes system prompt + RAG).
-// At ~4 chars/token, 6 000 tokens ≈ 24 000 chars — comfortable below model limits.
 const MAX_HISTORY_TOKENS = 6_000;
-const CHARS_PER_TOKEN   = 4;
+const CHARS_PER_TOKEN    = 4;
 
-// JSON schema Claude must follow when generating its reply
-const RESPONSE_SCHEMA = {
-  type: 'object',
-  properties: {
-    reply: {
-      type: 'string',
-      description: 'Conversational answer to the user\'s mortgage question',
-    },
-    followUps: {
-      type: 'array',
-      items: { type: 'string' },
-      description: 'Up to 3 natural follow-up questions the user might ask next',
-    },
-  },
-  required: ['reply', 'followUps'],
-  additionalProperties: false,
-};
-
-// ── history trimmer ────────────────────────────────────────────────────────────
-// Walks backwards through the history array, keeping the most recent turns that
-// fit within maxTokens. Always starts with a user turn (API requirement).
 function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
   const maxChars = maxTokens * CHARS_PER_TOKEN;
   let total = 0;
@@ -43,55 +20,40 @@ function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
     kept.unshift(history[i]);
   }
 
-  // Ensure we begin with a user message; drop any leading assistant turns
   while (kept.length > 0 && kept[0].role !== 'user') kept.shift();
-
   return kept;
 }
 
-// ── main exported function ─────────────────────────────────────────────────────
-// respond(query, history, { advisory })
-//   → { reply: string, followUps: string[] }
 async function respond(query, history, { advisory = false } = {}) {
-  // Fetch system prompt and RAG chunks in parallel
   const [systemPrompt, ragChunks] = await Promise.all([
     Promise.resolve(mortgageBotPrompt.getPrompt({ advisory })),
     regulationService.retrieve(query),
   ]);
 
-  // Append regulatory context to the system prompt so Claude can cite it
   let fullSystem = systemPrompt;
   if (ragChunks.length > 0) {
-    fullSystem +=
-      '\n\n## Relevant Regulatory Context\n\n' + ragChunks.join('\n\n---\n\n');
+    fullSystem += '\n\n## Relevant Regulatory Context\n\n' + ragChunks.join('\n\n---\n\n');
   }
+  fullSystem += '\n\nAlways respond with valid JSON: {"reply": "<string>", "followUps": ["<string>", ...]}';
 
-  const messages = [
-    ..._trimHistory(history),
-    { role: 'user', content: query },
-  ];
-
-  const response = await client.messages.create({
+  const model = genAI.getGenerativeModel({
     model: LLM_MODEL,
-    max_tokens: 1_024,
-    system: fullSystem,
-    messages,
-    output_config: {
-      format: {
-        type:   'json_schema',
-        schema: RESPONSE_SCHEMA,
-      },
-    },
+    systemInstruction: fullSystem,
+    generationConfig: { responseMimeType: 'application/json' },
   });
 
-  const raw = response.content.find((b) => b.type === 'text')?.text ?? '{}';
-  const parsed = JSON.parse(raw);   // structured output → always valid JSON
+  const geminiHistory = _trimHistory(history).map(msg => ({
+    role:  msg.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: msg.content }],
+  }));
+
+  const chat   = model.startChat({ history: geminiHistory });
+  const result = await chat.sendMessage(query);
+  const parsed = JSON.parse(result.response.text());
 
   return {
-    reply:     parsed.reply    ?? '',
-    followUps: Array.isArray(parsed.followUps)
-      ? parsed.followUps.slice(0, 3)
-      : [],
+    reply:     parsed.reply     ?? '',
+    followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 3) : [],
   };
 }
 
