@@ -1,9 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { ANTHROPIC_API_KEY } from '../../../shared/env.js';
+import { CLASSIFIER_LLM_API_KEY } from '../../../shared/env.js';
 
-const CLASSIFIER_MODEL = 'claude-haiku-4-5';
+const CLASSIFIER_MODEL = 'claude-haiku-4-5-20251001';
 
-const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+const client = new Anthropic({ apiKey: CLASSIFIER_LLM_API_KEY });
 
 const VALID_CATEGORIES = new Set(['EDUCATION', 'ADVISORY', 'OUT_OF_DOMAIN', 'AMBIGUOUS']);
 
