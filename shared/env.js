@@ -5,8 +5,6 @@ const REQUIRED = [
   'AUTH_SECRET',
   'AUTH_EXPIRY',
   'GEMINI_API_KEY',
-  'BOI_API_KEY',
-  'BOI_API_ENDPOINT',
   'PDF_SIZE_LIMIT',
 ];
 
