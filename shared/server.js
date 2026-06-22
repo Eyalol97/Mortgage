@@ -1,4 +1,6 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import './db.js';                                     // side-effect: opens MongoDB connection
 import env            from './env.js';
 import errorHandler   from './errorHandler.js';
@@ -21,6 +23,11 @@ app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
+
+// ── Static frontend ──────────────────────────────────────────────────────────
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.join(__dirname, '../client')));
 
 // ── Feature routes ────────────────────────────────────────────────────────────
 
