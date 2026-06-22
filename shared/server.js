@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, '../client')));
+app.use('/shared', express.static(__dirname));
 
 // ── Feature routes ────────────────────────────────────────────────────────────
 
