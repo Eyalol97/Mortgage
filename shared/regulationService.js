@@ -58,4 +58,9 @@ function validateMortgage({ propertyPrice, equity, loanDuration, selectedTracks 
   };
 }
 
-export { validateMortgage, RULES };
+function retrieve(_query) {
+  return Promise.resolve([]);
+}
+
+export { validateMortgage, RULES, retrieve };
+export default { validateMortgage, RULES, retrieve };

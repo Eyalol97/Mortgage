@@ -1,9 +1,9 @@
 import Anthropic        from '@anthropic-ai/sdk';
 import mortgageBotPrompt  from './mortgageBotPrompt.js';
 import regulationService  from '../../shared/regulationService.js';
-import { ANTHROPIC_API_KEY, LLM_MODEL } from '../../shared/env.js';
+import { MAIN_LLM_API_KEY, LLM_MODEL } from '../../shared/env.js';
 
-const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+const client = new Anthropic({ apiKey: MAIN_LLM_API_KEY });
 
 // Rough token budget for conversation history (excludes system prompt + RAG).
 // At ~4 chars/token, 6 000 tokens ≈ 24 000 chars — comfortable below model limits.

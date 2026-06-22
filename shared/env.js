@@ -31,6 +31,7 @@ export const CLASSIFIER_LLM_ENDPOINT = process.env.CLASSIFIER_LLM_ENDPOINT;
 export const BOI_API_KEY           = process.env.BOI_API_KEY;
 export const BOI_API_ENDPOINT      = process.env.BOI_API_ENDPOINT;
 export const PDF_SIZE_LIMIT        = Number(process.env.PDF_SIZE_LIMIT);
+export const LLM_MODEL             = process.env.LLM_MODEL || 'claude-sonnet-4-6';
 
 export default {
   PORT,
@@ -44,4 +45,5 @@ export default {
   BOI_API_KEY,
   BOI_API_ENDPOINT,
   PDF_SIZE_LIMIT,
+  LLM_MODEL,
 };

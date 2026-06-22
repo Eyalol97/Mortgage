@@ -1,6 +1,6 @@
 import { calculate }       from './mortgageCalculator.js';
 import * as interestRateService from './interestRateService.js';
-import regulationService   from '../../shared/regulationService.js';
+import { validateMortgage } from '../../shared/regulationService.js';
 import UsageCounter        from '../../shared/models/UsageCounter.js';
 
 // POST /api/simulator
@@ -16,15 +16,14 @@ export async function runSimulation(req, res, next) {
       monthlyPayment,
     } = req.body;
 
-    const validation = regulationService.validate({
+    const validation = validateMortgage({
       propertyPrice,
       equity,
-      duration,
-      monthlyPayment,
+      loanDuration: duration,
     });
 
-    if (!validation.valid) {
-      return res.status(400).json({ errors: validation.errors });
+    if (!validation.is_valid) {
+      return res.status(400).json({ errors: validation.violations });
     }
 
     const resolvedRate = (annualRate !== null && annualRate !== undefined)
