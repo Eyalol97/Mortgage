@@ -1,5 +1,5 @@
 import { Router }                                    from 'express';
-import auth                                          from '../../shared/auth.js';
+import { authMiddleware as auth }                    from '../../shared/auth.js';
 import { getProfile, createProfile, updateProfile } from './profileController.js';
 import errorHandler                                 from '../../shared/errorHandler.js';
 
