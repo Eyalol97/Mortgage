@@ -8,6 +8,7 @@ import profileRoutes  from '../sever/profile/profileRoutes.js';
 import simulatorRoutes from '../sever/simulator/simulatorRoutes.js';
 import botRoutes      from '../sever/bot/botRoutes.js';
 import authRoutes     from '../sever/auth/authRoutes.js';
+import { seedGlossary } from './models/seed/seedGlossary.js';
 
 const app = express();
 
@@ -48,4 +49,6 @@ const PORT = env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  // Seed glossary after server is up; Mongoose queues the writes until connected
+  seedGlossary();
 });

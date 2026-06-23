@@ -1,102 +1,262 @@
 [
   {
+    "term": "What is amortization?",
+    "definition": "Amortization is the process of repaying a mortgage through regular scheduled payments, each covering both principal and interest. In the early years of a mortgage, most of each payment goes toward interest, with only a small portion reducing the actual loan balance. Over time this ratio flips — later payments are weighted heavily toward principal. The full amortization schedule maps out every payment from the first month to the last, showing exactly how much goes to interest, how much reduces the balance, and what the outstanding balance is after each payment.",
+    "related_terms": ["Principal", "Monthly Payment (EMI)", "Loan Term"],
+    "followUps": [
+      "How does the interest-to-principal split change over time?",
+      "What is the difference between Shpitzer and Keren Shava repayment?",
+      "How does a longer loan term affect total interest paid?"
+    ]
+  },
+  {
+    "term": "What are the mortgage track types?",
+    "definition": "Israeli mortgages are divided into three main interest-rate tracks, and most loans combine them: (1) Prime-linked — the rate floats with the Bank of Israel benchmark rate plus a fixed margin; payments change whenever the central bank raises or lowers rates. (2) CPI-linked — the outstanding balance and payment are adjusted monthly by the Consumer Price Index (inflation); the nominal rate is lower but the real cost rises with inflation. (3) Fixed unlinked — the rate and payment are locked for the entire term; the highest certainty but typically the highest initial rate. Bank of Israel regulations require that no single variable track exceed one-third of the total loan.",
+    "related_terms": ["Prime-Linked Track", "CPI-Linked Track", "Fixed Track (Unlinked)", "Track Mix"],
+    "followUps": [
+      "What is the Bank of Israel track mix rule?",
+      "Which track is best for a rising interest-rate environment?",
+      "How does the prime-linked track payment change with rate decisions?"
+    ]
+  },
+  {
+    "term": "How does the Bank of Israel prime rate work?",
+    "definition": "The Bank of Israel sets a benchmark interest rate (the monetary policy rate) roughly every six weeks. Commercial banks add a fixed spread — typically 1.5 percentage points — on top of that rate to produce the 'prime rate'. Any prime-linked mortgage track moves up or down in lockstep with every Bank of Israel decision. For example, if the benchmark rises by 0.25%, your prime-linked monthly payment increases by the amount that 0.25% applied to your remaining balance. The prime rate affects variable-rate borrowers immediately and is the main transmission mechanism for Israeli monetary policy into household budgets.",
+    "related_terms": ["Prime Interest Rate", "Prime-Linked Track", "Bank of Israel"],
+    "followUps": [
+      "How often does the Bank of Israel change its benchmark rate?",
+      "How does a rate change translate into my monthly payment?",
+      "What is the prime-linked track regulation regarding track mix?"
+    ]
+  },
+  {
+    "term": "What is LTV (Loan to Value)?",
+    "definition": "LTV (Loan-to-Value) is the ratio of the mortgage loan amount to the appraised value of the property, expressed as a percentage. For example, borrowing ₪750,000 to buy a ₪1,000,000 property gives an LTV of 75%. The Bank of Israel caps LTV at 75% for a primary (first) residence — meaning you must contribute at least 25% as a down payment. For investment properties or a second home the cap is 50%. The bank lends against whichever is lower — the appraised value or the purchase price — so a below-asking-price appraisal directly limits how much you can borrow.",
+    "related_terms": ["Down Payment (Equity)", "Bank of Israel", "Property Appraisal"],
+    "followUps": [
+      "What is the maximum LTV for a first home in Israel?",
+      "How does a low appraisal affect the maximum loan I can get?",
+      "How can I reduce my LTV ratio?"
+    ]
+  },
+  {
+    "term": "Fixed vs variable interest rate",
+    "definition": "A fixed interest rate is locked for the entire loan term — your payment never changes regardless of what happens in financial markets, giving complete certainty. A variable rate (prime-linked or CPI-linked) starts lower but fluctuates: prime-linked changes with Bank of Israel rate decisions, CPI-linked changes with inflation. Fixed rates carry a premium because the bank absorbs the interest-rate risk. In a rising-rate environment, a fixed rate protects the borrower; in a falling-rate environment, you may pay more than a variable alternative. Most Israeli mortgage advisors recommend splitting the loan across both types to balance certainty with cost.",
+    "related_terms": ["Fixed Track (Unlinked)", "Prime-Linked Track", "CPI-Linked Track", "Track Mix"],
+    "followUps": [
+      "Can I lock in a fixed rate for only part of my loan?",
+      "What happens to my fixed-rate track if I want to repay early?",
+      "What is the Bank of Israel track mix rule?"
+    ]
+  },
+  {
+    "term": "How is monthly payment calculated?",
+    "definition": "The monthly payment depends on the repayment method chosen. (1) Shpitzer (annuity): the most common method — a fixed payment throughout the term, calculated so that total interest plus principal equals the loan. The formula is P × [r(1+r)^n] / [(1+r)^n − 1], where P is the loan amount, r is the monthly interest rate, and n is the number of months. Early payments are mostly interest; later ones mostly principal. (2) Keren Shava (equal principal): the principal portion is fixed each month, but interest shrinks as the balance falls — so payments start higher and decrease over time. (3) Bullet: interest-only payments throughout, with the full principal due at the end.",
+    "related_terms": ["Amortisation", "Principal", "Monthly Payment (EMI)", "Loan Term"],
+    "followUps": [
+      "Which repayment method results in the lowest total interest paid?",
+      "How does the Shpitzer formula change for CPI-linked tracks?",
+      "How does a shorter loan term affect the monthly payment?"
+    ]
+  },
+  {
     "term": "Prime Interest Rate",
     "definition": "The base lending rate set by the Bank of Israel, currently tied to the central bank's benchmark rate plus a fixed spread (typically 1.5%). Variable-rate mortgage tracks that are 'prime-linked' move up or down with every Bank of Israel rate decision.",
-    "related_terms": ["Prime-Linked Track", "Fixed Interest Rate", "Bank of Israel"]
+    "related_terms": ["Prime-Linked Track", "Fixed Interest Rate", "Bank of Israel"],
+    "followUps": [
+      "How does the prime rate affect my monthly payment?",
+      "What is the Bank of Israel's role in setting the prime rate?",
+      "How does a prime-linked track compare to a fixed track?"
+    ]
   },
   {
     "term": "Fixed Interest Rate",
     "definition": "An interest rate that is locked for the entire loan term and never changes, regardless of market conditions. Provides full payment certainty but is usually priced higher than variable alternatives at the time of signing.",
-    "related_terms": ["Prime Interest Rate", "CPI-Linked Track", "Loan Term"]
+    "related_terms": ["Prime Interest Rate", "CPI-Linked Track", "Loan Term"],
+    "followUps": [
+      "What happens if I repay a fixed-rate track early?",
+      "Is a fixed rate always more expensive than a variable rate?",
+      "Can I combine a fixed track with a variable track in one mortgage?"
+    ]
   },
   {
     "term": "Prime-Linked Track",
     "definition": "A mortgage track whose interest rate is calculated as the Bank of Israel prime rate plus or minus a fixed margin agreed at signing. Monthly payments fluctuate with every rate change. Under Bank of Israel regulations, this track may not exceed one-third of the total loan.",
-    "related_terms": ["Prime Interest Rate", "CPI-Linked Track", "Fixed Track", "Track Mix"]
+    "related_terms": ["Prime Interest Rate", "CPI-Linked Track", "Fixed Track (Unlinked)", "Track Mix"],
+    "followUps": [
+      "What is the one-third cap on prime-linked track in Israel?",
+      "Is there a prepayment penalty on a prime-linked track?",
+      "How does a prime-linked track perform during a rate-cutting cycle?"
+    ]
   },
   {
     "term": "CPI-Linked Track",
     "definition": "A mortgage track whose outstanding balance and monthly payment are adjusted monthly according to Israel's Consumer Price Index (CPI / מדד). When inflation rises, the outstanding principal grows, increasing future payments. Offers a lower nominal rate than fully fixed tracks.",
-    "related_terms": ["CPI", "Fixed Track", "Prime-Linked Track", "Track Mix"]
+    "related_terms": ["CPI", "Fixed Track (Unlinked)", "Prime-Linked Track", "Track Mix"],
+    "followUps": [
+      "Can my outstanding balance grow above the original loan amount?",
+      "How does high inflation affect a CPI-linked mortgage?",
+      "What is the prepayment penalty on a CPI-linked track?"
+    ]
   },
   {
     "term": "Fixed Track (Unlinked)",
     "definition": "A mortgage track with a rate that is both fixed and not linked to the CPI. The monthly payment remains identical throughout the loan. This track offers the highest certainty but typically carries the highest initial interest rate.",
-    "related_terms": ["Fixed Interest Rate", "CPI-Linked Track", "Track Mix"]
+    "related_terms": ["Fixed Interest Rate", "CPI-Linked Track", "Track Mix"],
+    "followUps": [
+      "Why does the fixed unlinked track carry a higher initial rate?",
+      "When is the fixed unlinked track the best choice?",
+      "What is the early repayment penalty on a fixed unlinked track?"
+    ]
   },
   {
     "term": "LTV (Loan-to-Value)",
     "definition": "The ratio of the loan amount to the appraised value of the property, expressed as a percentage. For example, a ₪750,000 loan on a ₪1,000,000 property equals 75% LTV. The Bank of Israel caps LTV at 75% for a primary residence and 50% for investment properties.",
-    "related_terms": ["Down Payment", "Bank of Israel", "Property Value"]
+    "related_terms": ["Down Payment (Equity)", "Bank of Israel", "Property Appraisal"],
+    "followUps": [
+      "What is the LTV cap for a second property in Israel?",
+      "How does the bank appraise my property for LTV purposes?",
+      "Can I reduce my LTV by increasing the down payment?"
+    ]
   },
   {
     "term": "Down Payment (Equity)",
     "definition": "The portion of the property purchase price paid by the buyer from personal funds, not financed through the mortgage. A higher down payment lowers the LTV ratio and typically results in better loan terms.",
-    "related_terms": ["LTV", "Property Value", "Mortgage Amount"]
+    "related_terms": ["LTV (Loan-to-Value)", "Property Appraisal", "Mortgage Amount"],
+    "followUps": [
+      "What is the minimum down payment required in Israel?",
+      "Can gifted money from family be used as a down payment?",
+      "How does a larger down payment affect my interest rate?"
+    ]
   },
   {
     "term": "Amortisation",
     "definition": "The gradual repayment of a loan through regular scheduled payments that cover both principal and interest. Early payments are weighted heavily toward interest; later payments shift toward principal repayment. The full amortisation schedule shows every payment over the loan's life.",
-    "related_terms": ["Monthly Payment", "Principal", "Loan Term"]
+    "related_terms": ["Monthly Payment (EMI)", "Principal", "Loan Term"],
+    "followUps": [
+      "How do I read an amortization schedule?",
+      "What happens to my amortization if I make an extra payment?",
+      "How does a CPI-linked track change the amortization schedule?"
+    ]
   },
   {
     "term": "Principal",
     "definition": "The original loan amount borrowed, excluding interest. Each monthly payment reduces the outstanding principal by a portion that grows over time as the interest component shrinks.",
-    "related_terms": ["Amortisation", "Monthly Payment", "Outstanding Balance"]
+    "related_terms": ["Amortisation", "Monthly Payment (EMI)", "Outstanding Balance"],
+    "followUps": [
+      "Why does so little of my early payment go toward principal?",
+      "What happens to my principal on a CPI-linked track?",
+      "How does making extra principal payments affect my loan?"
+    ]
   },
   {
     "term": "Monthly Payment (EMI)",
     "definition": "The fixed or variable amount paid each month to the lender. It consists of a principal repayment portion and an interest portion. On CPI-linked tracks the payment adjusts with the index; on prime-linked tracks it adjusts with rate changes.",
-    "related_terms": ["Amortisation", "Principal", "Interest"]
+    "related_terms": ["Amortisation", "Principal", "Interest"],
+    "followUps": [
+      "What percentage of income should my mortgage payment be?",
+      "How does my monthly payment change with a rate hike?",
+      "Can I reduce my monthly payment by extending the loan term?"
+    ]
   },
   {
     "term": "Loan Term",
     "definition": "The number of years over which the mortgage is repaid. The Bank of Israel caps the maximum mortgage term at 30 years. A longer term lowers monthly payments but increases total interest paid over the life of the loan.",
-    "related_terms": ["Monthly Payment", "Amortisation", "Total Interest Cost"]
+    "related_terms": ["Monthly Payment (EMI)", "Amortisation", "Total Interest Cost"],
+    "followUps": [
+      "What is the maximum mortgage term allowed in Israel?",
+      "How much extra interest do I pay on a 30-year vs 20-year loan?",
+      "Can I shorten my loan term by making extra payments?"
+    ]
   },
   {
     "term": "Track Mix",
     "definition": "The allocation of a mortgage across multiple interest-rate tracks — for example, 33% prime-linked, 33% CPI-linked, and 34% fixed. Bank of Israel regulations require that no single variable track (prime-linked) exceed one-third of the total loan.",
-    "related_terms": ["Prime-Linked Track", "CPI-Linked Track", "Fixed Track (Unlinked)", "Bank of Israel"]
+    "related_terms": ["Prime-Linked Track", "CPI-Linked Track", "Fixed Track (Unlinked)", "Bank of Israel"],
+    "followUps": [
+      "What is the regulatory limit on the prime-linked portion?",
+      "Why do advisors recommend splitting a mortgage across tracks?",
+      "Can I change my track mix after the mortgage is issued?"
+    ]
   },
   {
     "term": "CPI (Consumer Price Index)",
     "definition": "Israel's official measure of inflation published monthly by the Central Bureau of Statistics. CPI-linked mortgage tracks adjust the outstanding balance each month by the published index change, so periods of high inflation increase the real cost of a CPI-linked loan.",
-    "related_terms": ["CPI-Linked Track", "Inflation", "Outstanding Balance"]
+    "related_terms": ["CPI-Linked Track", "Inflation", "Outstanding Balance"],
+    "followUps": [
+      "How is the Israeli CPI published and updated?",
+      "What was the typical Israeli CPI in recent years?",
+      "How does high CPI affect my loan balance on a CPI-linked track?"
+    ]
   },
   {
     "term": "Bank of Israel",
     "definition": "Israel's central bank and primary financial regulator. It sets the benchmark (prime) interest rate and publishes binding mortgage regulations, including LTV caps, maximum loan-term limits, and track-mix restrictions.",
-    "related_terms": ["Prime Interest Rate", "LTV", "Track Mix"]
+    "related_terms": ["Prime Interest Rate", "LTV (Loan-to-Value)", "Track Mix"],
+    "followUps": [
+      "What LTV limits does the Bank of Israel set?",
+      "How often does the Bank of Israel meet to decide on interest rates?",
+      "Where can I find the latest Bank of Israel mortgage regulations?"
+    ]
   },
   {
     "term": "Early Repayment (Prepayment)",
     "definition": "Paying off part or all of the outstanding mortgage balance before the scheduled end of the loan term. On fixed and CPI-linked tracks this may incur a prepayment penalty based on the difference between the contracted rate and the current market rate. Prime-linked tracks are generally penalty-free.",
-    "related_terms": ["Outstanding Balance", "Prepayment Penalty", "Prime-Linked Track"]
+    "related_terms": ["Outstanding Balance", "Prepayment Penalty", "Prime-Linked Track"],
+    "followUps": [
+      "How is a prepayment penalty calculated in Israel?",
+      "Which tracks can I repay early without penalty?",
+      "Is it worth paying the prepayment penalty to refinance?"
+    ]
   },
   {
     "term": "Prepayment Penalty",
     "definition": "A fee charged by the lender when a borrower repays a fixed or CPI-linked track early. Calculated as the present-value difference between the contracted interest rate and the equivalent current market rate over the remaining term. No penalty applies to prime-linked tracks.",
-    "related_terms": ["Early Repayment", "Fixed Track (Unlinked)", "CPI-Linked Track"]
+    "related_terms": ["Early Repayment (Prepayment)", "Fixed Track (Unlinked)", "CPI-Linked Track"],
+    "followUps": [
+      "How do I estimate my prepayment penalty before refinancing?",
+      "When is the prepayment penalty zero even on a fixed track?",
+      "Does refinancing to a lower rate outweigh the prepayment penalty?"
+    ]
   },
   {
     "term": "Outstanding Balance",
     "definition": "The remaining principal owed to the lender at any point during the loan. On CPI-linked tracks the balance is adjusted upward by inflation each month, so the balance can temporarily exceed the original loan amount during high-inflation periods.",
-    "related_terms": ["Principal", "Amortisation", "CPI-Linked Track"]
+    "related_terms": ["Principal", "Amortisation", "CPI-Linked Track"],
+    "followUps": [
+      "Can my balance grow above the original loan on a CPI-linked track?",
+      "How do I find my current outstanding balance?",
+      "How does making a lump-sum payment reduce my outstanding balance?"
+    ]
   },
   {
     "term": "Total Interest Cost",
     "definition": "The cumulative sum of all interest payments made over the entire loan term, in addition to the principal repaid. A useful metric for comparing mortgage offers: a lower monthly payment spread over a longer term often results in a significantly higher total interest cost.",
-    "related_terms": ["Loan Term", "Monthly Payment", "Amortisation"]
+    "related_terms": ["Loan Term", "Monthly Payment (EMI)", "Amortisation"],
+    "followUps": [
+      "How do I compare total interest cost across different offers?",
+      "How much more interest do I pay on a 30-year vs 20-year term?",
+      "Does a slightly lower interest rate make a big difference in total cost?"
+    ]
   },
   {
     "term": "Property Appraisal",
     "definition": "A formal valuation of the property conducted by a bank-approved appraiser. The appraisal determines the property value used to calculate LTV. The bank lends against whichever is lower — the appraised value or the purchase price.",
-    "related_terms": ["LTV", "Property Value", "Down Payment"]
+    "related_terms": ["LTV (Loan-to-Value)", "Down Payment (Equity)"],
+    "followUps": [
+      "What happens if the appraisal comes in below the purchase price?",
+      "Who pays for the property appraisal in Israel?",
+      "How long does an appraisal take and does it expire?"
+    ]
   },
   {
     "term": "Mortgage Insurance (Bituch Mashkanta)",
     "definition": "Life and property insurance required by Israeli banks as a condition of granting a mortgage. Life insurance covers the outstanding balance in the event of the borrower's death; property insurance covers structural damage. Premiums are paid separately from the monthly mortgage payment.",
-    "related_terms": ["Monthly Payment", "Outstanding Balance"]
+    "related_terms": ["Monthly Payment (EMI)", "Outstanding Balance"],
+    "followUps": [
+      "Is mortgage insurance mandatory for all Israeli home loans?",
+      "Can I shop around for mortgage insurance or must I use the bank's provider?",
+      "How is the life insurance premium calculated?"
+    ]
   }
 ]
