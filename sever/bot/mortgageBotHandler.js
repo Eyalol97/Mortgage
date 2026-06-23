@@ -50,8 +50,11 @@ async function respond(query, history, { advisory = false } = {}) {
   }));
 
   try {
-    const chat   = model.startChat({ history: geminiHistory, generationConfig: JSON_CONFIG });
-    const result = await chat.sendMessage(query);
+    const contents = [
+      ...geminiHistory,
+      { role: 'user', parts: [{ text: query }] },
+    ];
+    const result = await model.generateContent({ contents });
     const raw    = result.response.text();
 
     let parsed;

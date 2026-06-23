@@ -9,18 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/shared/style.css" />
   <style>
-    /* Full viewport split: hero above, bot below */
+    /* Page scrolls naturally — no viewport lock */
     .home-wrapper {
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 56px); /* 56px = navbar */
     }
 
     /* ── Hero ──────────────────────────────────────────────────────────────── */
     .home-hero {
-      flex-shrink: 0;
       text-align: center;
-      padding: var(--space-6) var(--space-4) var(--space-4);
+      padding: var(--space-4) var(--space-4) var(--space-3);
       border-bottom: 1px solid var(--outline-variant);
       background: linear-gradient(to bottom, #f0f7f7, #ffffff);
     }
@@ -35,18 +33,18 @@
     }
 
     .home-hero__title {
-      font-size: var(--text-2xl);
+      font-size: var(--text-xl);
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-1);
     }
 
     .home-hero__subtitle {
       font-size: var(--text-sm);
       color: var(--on-surface-variant);
-      line-height: 1.6;
+      line-height: 1.5;
       max-width: 520px;
-      margin: 0 auto var(--space-3);
+      margin: 0 auto var(--space-2);
     }
 
     .home-hero__cta {
@@ -68,29 +66,28 @@
 
     /* ── Bot section ───────────────────────────────────────────────────────── */
     .bot-page {
-      flex: 1;
-      min-height: 0; /* allow flex child to shrink below content size */
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     .bot-main {
-      flex: 1;
-      min-height: 0;
       display: flex;
       flex-direction: column;
       max-width: 720px;
       width: 100%;
       margin: 0 auto;
       padding: var(--space-4);
-      overflow: hidden;
     }
 
     #chat-window {
-      flex: 1;
+      height: 380px;
+      min-height: 200px;
       overflow-y: auto;
-      padding: var(--space-4) 0;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-lg);
+      padding: var(--space-3);
+      margin-bottom: var(--space-2);
+      background: #fafafa;
     }
 
     .typing-indicator {
@@ -270,8 +267,9 @@
 
     @media (max-width: 768px) {
       .bot-main { padding: var(--space-2); }
-      .home-hero { padding: var(--space-4) var(--space-3) var(--space-3); }
-      .home-hero__title { font-size: var(--text-xl); }
+      .home-hero { padding: var(--space-3) var(--space-3) var(--space-2); }
+      .home-hero__title { font-size: var(--text-lg); }
+      #chat-window { height: 300px; }
     }
   </style>
 </head>
