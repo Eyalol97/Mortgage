@@ -27,12 +27,13 @@ function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
 async function respond(query, history, { advisory = false } = {}) {
   const systemPrompt = mortgageBotPrompt.getPrompt({ advisory });
 
-  // Build one flat string prompt — same pattern as the working ping call.
-  // System instruction is embedded as plain text so no SDK-level systemInstruction
-  // or generationConfig features are needed (they were causing 404s on this key).
   let prompt = systemPrompt;
-  prompt += '\n\nRespond ONLY with a JSON object — no markdown, no explanation, no code fences.'
-           + ' Use this exact shape: {"reply":"<your answer>","followUps":["<q1>","<q2>","<q3>"]}';
+  prompt += '\n\nOUTPUT RULES (follow exactly):'
+          + '\n- Reply in 2-3 short sentences — be concise and direct.'
+          + '\n- Respond ONLY with a JSON object. No markdown, no code fences, no preamble.'
+          + '\n- Do NOT put literal newline characters inside the JSON string values.'
+          + '\n- Use \\n (two characters: backslash + n) if you need a line break inside the reply.'
+          + '\n- Exact shape: {"reply":"<concise answer>","followUps":["<q1>","<q2>","<q3>"]}';
 
   const trimmed = _trimHistory(history);
   if (trimmed.length > 0) {
@@ -50,17 +51,7 @@ async function respond(query, history, { advisory = false } = {}) {
     const result = await model.generateContent(prompt);
     const raw    = result.response.text().trim();
 
-    // Extract the first {...} block to tolerate any surrounding text
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    let parsed = {};
-    if (jsonMatch) {
-      try { parsed = JSON.parse(jsonMatch[0]); } catch { /* fall through */ }
-    }
-
-    return {
-      reply:     typeof parsed.reply === 'string' ? parsed.reply : raw,
-      followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 3) : [],
-    };
+    return _parseResponse(raw);
   } catch (err) {
     console.error('[mortgageBotHandler] Gemini call failed:', {
       model:   LLM_MODEL,
@@ -72,6 +63,47 @@ async function respond(query, history, { advisory = false } = {}) {
       followUps: [],
     };
   }
+}
+
+function _parseResponse(raw) {
+  // Attempt 1 — standard JSON.parse (works when model obeys the format)
+  try {
+    const p = JSON.parse(raw);
+    if (typeof p.reply === 'string') {
+      return {
+        reply:     p.reply,
+        followUps: Array.isArray(p.followUps) ? p.followUps.slice(0, 3) : [],
+      };
+    }
+  } catch { /* fall through */ }
+
+  // Attempt 2 — regex extraction.
+  // Handles the common failure where the model puts literal newlines inside
+  // the JSON string value, making JSON.parse reject the whole response.
+  // [^"\\] matches any char except quote/backslash (including literal \n).
+  // \\. matches any JSON escape sequence (\n, \", \\, etc.).
+  const replyMatch = raw.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+  if (replyMatch) {
+    const reply = replyMatch[1]
+      .replace(/\\n/g, '\n')
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, '\\');
+
+    const followUps = [];
+    const fupIdx = raw.indexOf('"followUps"');
+    if (fupIdx !== -1) {
+      for (const m of raw.slice(fupIdx).matchAll(/"((?:[^"\\]|\\.)*)"/g)) {
+        if (m[1] === 'followUps') continue;
+        followUps.push(m[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'));
+        if (followUps.length >= 3) break;
+      }
+    }
+
+    return { reply, followUps };
+  }
+
+  // Attempt 3 — give up parsing, return raw text as-is
+  return { reply: raw, followUps: [] };
 }
 
 export default { respond };
