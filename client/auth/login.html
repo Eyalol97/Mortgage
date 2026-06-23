@@ -205,8 +205,12 @@
             class="auth-form__input"
             type="password"
             autocomplete="new-password"
-            placeholder="At least 6 characters"
+            placeholder="At least 8 characters"
+            minlength="8"
           />
+          <p style="font-size:var(--text-xs);color:var(--on-surface-variant);margin-top:0.25rem;">
+            Use a unique password you don't use elsewhere.
+          </p>
         </div>
         <button id="signup-btn" class="btn btn-primary auth-form__submit">Create Account</button>
         <div id="signup-error"   class="auth-error"></div>
@@ -301,8 +305,8 @@
           showError('signup-error', 'Please enter your email and password.');
           return;
         }
-        if (password.length < 6) {
-          showError('signup-error', 'Password must be at least 6 characters.');
+        if (password.length < 8) {
+          showError('signup-error', 'Password must be at least 8 characters.');
           return;
         }
 

@@ -71,6 +71,10 @@ async function signup(req, res, next) {
       return res.status(400).json({ message: 'Email and password are required.' });
     }
 
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters.' });
+    }
+
     const exists = await User.findOne({ email: email.toLowerCase().trim() });
     if (exists) {
       return res.status(409).json({ message: 'An account with that email already exists.' });

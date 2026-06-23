@@ -150,13 +150,6 @@
   </main>
 
   <script src="/shared/authClient.js"></script>
-  <script>
-    // Guard before simulator modules load — guests go to the login page
-    if (window.Auth && !window.Auth.isLoggedIn()) {
-      window.location.href = '/auth/login.html?redirect=/simulator/simulator.html';
-    }
-  </script>
-
   <script src="/shared/navbar.js"></script>
   <script src="/shared/formatCurrency.js"></script>
   <script src="/shared/formatDecimal.js"></script>

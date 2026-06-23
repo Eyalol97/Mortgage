@@ -82,8 +82,7 @@
     const loggedIn = _isLoggedIn();
 
     const links = [
-      { id: 'bot',       label: 'Mortgage Bot', href: '/'                          },
-      { id: 'simulator', label: 'Simulator',    href: '/simulator/simulator.html'  },
+      { id: 'simulator', label: 'Simulator', href: '/simulator/simulator.html' },
       {
         id:    'profile',
         label: loggedIn ? 'Profile' : 'Sign In',
