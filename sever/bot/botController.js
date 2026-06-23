@@ -30,8 +30,9 @@ function _recordTurn(sessionId, query, reply) {
 // ── chip path ──────────────────────────────────────────────────────────────────
 
 async function _handleChip(query, sessionId, res) {
+  const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const term = await GlossaryTerm.findOne({
-    term: { $regex: new RegExp(`^${query.trim()}$`, 'i') },
+    term: { $regex: new RegExp(`^${escaped}$`, 'i') },
   });
 
   UsageCounter.increment('chip').catch(() => {});   // fire-and-forget; never blocks response
