@@ -143,29 +143,33 @@ async function pingGemini(req, res) {
     geminiModels = [`[list error] ${listErr.message}`];
   }
 
-  // Step 2 — test the configured LLM_MODEL with the exact same call pattern
-  //           that mortgageBotHandler uses (plain string, no extra config)
-  try {
-    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: LLM_MODEL });
-    const result = await model.generateContent('Reply with the single word: OK');
-    return res.json({
-      success:         true,
-      testedModel:     LLM_MODEL,
-      keyPrefix:       keySnippet,
-      response:        result.response.text(),
-      availableModels: geminiModels,
-    });
-  } catch (err) {
-    return res.json({
-      success:         false,
-      testedModel:     LLM_MODEL,
-      keyPrefix:       keySnippet,
-      status:          err.status,
-      message:         err.message,
-      availableModels: geminiModels,
-    });
+  // Step 2 — two tests: (a) simple string, (b) matches the actual chat handler prompt
+  const genAI2 = new GoogleGenerativeAI(GEMINI_API_KEY);
+
+  async function tryModel(modelName, prompt) {
+    try {
+      const m = genAI2.getGenerativeModel({ model: modelName });
+      const r = await m.generateContent(prompt);
+      return { success: true, response: r.response.text().slice(0, 120) };
+    } catch (e) {
+      return { success: false, status: e.status, message: (e.message || '').slice(0, 120) };
+    }
   }
+
+  const chatPrompt = 'You are a mortgage assistant. Respond ONLY with JSON: {"reply":"<answer>","followUps":[]}\n\nUser: What is LTV?\nAssistant:';
+
+  const [simpleTest, chatTest] = await Promise.all([
+    tryModel(LLM_MODEL, 'Reply with the single word: OK'),
+    tryModel(LLM_MODEL, chatPrompt),
+  ]);
+
+  return res.json({
+    configuredModel: LLM_MODEL,
+    keyPrefix:       keySnippet,
+    simpleTest,
+    chatPromptTest:  chatTest,
+    availableModels: geminiModels,
+  });
 }
 
 export { chat, getChips, clearSession, pingGemini };
