@@ -76,9 +76,8 @@ async function respond(query, history, { advisory = false } = {}) {
       message: err.message,
       details: err.errorDetails,
     });
-    const hint = err.status ? ` (${err.status}: ${(err.message || '').slice(0, 60)})` : '';
     return {
-      reply:     `[Debug] Gemini error${hint} — model: ${LLM_MODEL}. Check /api/bot/ping-gemini for details.`,
+      reply:     "I'm having trouble reaching my knowledge base right now. Please try again in a moment.",
       followUps: [],
     };
   }
