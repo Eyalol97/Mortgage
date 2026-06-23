@@ -24,49 +24,41 @@ function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
   return kept;
 }
 
-const JSON_CONFIG = { responseMimeType: 'application/json' };
-
 async function respond(query, history, { advisory = false } = {}) {
-  const [systemPrompt, ragChunks] = await Promise.all([
-    Promise.resolve(mortgageBotPrompt.getPrompt({ advisory })),
-    regulationService.retrieve(query),
-  ]);
+  const systemPrompt = mortgageBotPrompt.getPrompt({ advisory });
 
-  let fullSystem = systemPrompt;
-  if (ragChunks.length > 0) {
-    fullSystem += '\n\n## Relevant Regulatory Context\n\n' + ragChunks.join('\n\n---\n\n');
+  // Build one flat string prompt — same pattern as the working ping call.
+  // System instruction is embedded as plain text so no SDK-level systemInstruction
+  // or generationConfig features are needed (they were causing 404s on this key).
+  let prompt = systemPrompt;
+  prompt += '\n\nRespond ONLY with a JSON object — no markdown, no explanation, no code fences.'
+           + ' Use this exact shape: {"reply":"<your answer>","followUps":["<q1>","<q2>","<q3>"]}';
+
+  const trimmed = _trimHistory(history);
+  if (trimmed.length > 0) {
+    prompt += '\n\nConversation so far:';
+    for (const msg of trimmed) {
+      prompt += `\n${msg.role === 'assistant' ? 'Assistant' : 'User'}: ${msg.content}`;
+    }
   }
-  fullSystem += '\n\nAlways respond with valid JSON: {"reply": "<string>", "followUps": ["<string>", ...]}';
 
-  const model = genAI.getGenerativeModel({
-    model: LLM_MODEL,
-    systemInstruction: fullSystem,
-    generationConfig: JSON_CONFIG,
-  });
+  prompt += `\n\nUser: ${query}\nAssistant:`;
 
-  const geminiHistory = _trimHistory(history).map(msg => ({
-    role:  msg.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: msg.content }],
-  }));
+  const model = genAI.getGenerativeModel({ model: LLM_MODEL });
 
   try {
-    const contents = [
-      ...geminiHistory,
-      { role: 'user', parts: [{ text: query }] },
-    ];
-    const result = await model.generateContent({ contents });
-    const raw    = result.response.text();
+    const result = await model.generateContent(prompt);
+    const raw    = result.response.text().trim();
 
-    let parsed;
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      console.error('[mortgageBotHandler] JSON parse failed. Model:', LLM_MODEL, 'Raw (first 500):', raw.slice(0, 500));
-      return { reply: raw, followUps: [] };
+    // Extract the first {...} block to tolerate any surrounding text
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    let parsed = {};
+    if (jsonMatch) {
+      try { parsed = JSON.parse(jsonMatch[0]); } catch { /* fall through */ }
     }
 
     return {
-      reply:     parsed.reply     ?? '',
+      reply:     typeof parsed.reply === 'string' ? parsed.reply : raw,
       followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 3) : [],
     };
   } catch (err) {
@@ -74,7 +66,6 @@ async function respond(query, history, { advisory = false } = {}) {
       model:   LLM_MODEL,
       status:  err.status,
       message: err.message,
-      details: err.errorDetails,
     });
     return {
       reply:     "I'm having trouble reaching my knowledge base right now. Please try again in a moment.",

@@ -143,25 +143,23 @@ async function pingGemini(req, res) {
     geminiModels = [`[list error] ${listErr.message}`];
   }
 
-  // Step 2 — try the current LLM_MODEL with the simplest possible call
-  const firstAvailable = geminiModels[0] ?? LLM_MODEL;
+  // Step 2 — test the configured LLM_MODEL with the exact same call pattern
+  //           that mortgageBotHandler uses (plain string, no extra config)
   try {
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: firstAvailable });
+    const model = genAI.getGenerativeModel({ model: LLM_MODEL });
     const result = await model.generateContent('Reply with the single word: OK');
     return res.json({
-      success:       true,
-      testedModel:   firstAvailable,
-      configuredModel: LLM_MODEL,
-      keyPrefix:     keySnippet,
-      response:      result.response.text(),
+      success:         true,
+      testedModel:     LLM_MODEL,
+      keyPrefix:       keySnippet,
+      response:        result.response.text(),
       availableModels: geminiModels,
     });
   } catch (err) {
     return res.json({
       success:         false,
-      testedModel:     firstAvailable,
-      configuredModel: LLM_MODEL,
+      testedModel:     LLM_MODEL,
       keyPrefix:       keySnippet,
       status:          err.status,
       message:         err.message,
