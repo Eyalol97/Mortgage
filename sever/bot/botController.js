@@ -1,3 +1,4 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import intentClassifier   from './bot-guard/intentClassifier.js';
 import ruleFilter         from './bot-guard/ruleFilter.js';
 import mortgageBotHandler from './mortgageBotHandler.js';
@@ -5,6 +6,7 @@ import GlossaryTerm       from '../../shared/models/GlossaryTerm.js';
 import GuardrailLog       from '../../shared/models/GuardrailLog.js';
 import UsageCounter       from '../../shared/models/UsageCounter.js';
 import errorHandler       from '../../shared/errorHandler.js';
+import { GEMINI_API_KEY, LLM_MODEL } from '../../shared/env.js';
 
 // In-memory session store — keyed by sessionId, wiped on /session/clear.
 // Never written to disk; clearing the Map is the only persistence boundary.
@@ -123,4 +125,25 @@ async function clearSession(req, res) {
   return res.status(204).end();
 }
 
-export { chat, getChips, clearSession };
+// ── diagnostic: tests the Gemini connection with the minimal possible call ────
+async function pingGemini(req, res) {
+  const keySnippet = GEMINI_API_KEY ? GEMINI_API_KEY.slice(0, 8) + '...' : 'NOT SET';
+  try {
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: LLM_MODEL });
+    const result = await model.generateContent('Reply with the single word: OK');
+    const text = result.response.text();
+    return res.json({ success: true, model: LLM_MODEL, keyPrefix: keySnippet, response: text });
+  } catch (err) {
+    return res.json({
+      success:    false,
+      model:      LLM_MODEL,
+      keyPrefix:  keySnippet,
+      status:     err.status,
+      message:    err.message,
+      details:    err.errorDetails,
+    });
+  }
+}
+
+export { chat, getChips, clearSession, pingGemini };

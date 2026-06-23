@@ -1,5 +1,5 @@
 import { Router }                   from 'express';
-import { chat, getChips, clearSession } from './botController.js';
+import { chat, getChips, clearSession, pingGemini } from './botController.js';
 import errorHandler                from '../../shared/errorHandler.js';
 
 const router = Router();
@@ -20,6 +20,9 @@ function requireFields(...fields) {
 }
 
 // ── routes ────────────────────────────────────────────────────────────────────
+
+// GET  /api/bot/ping-gemini — diagnostic: verify Gemini API key + model access
+router.get('/ping-gemini', pingGemini);
 
 // POST /api/bot/chat  — free-text query or chip selection
 router.post('/chat', requireFields('query', 'sessionId'), chat);
