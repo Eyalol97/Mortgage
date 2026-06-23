@@ -125,23 +125,47 @@ async function clearSession(req, res) {
   return res.status(204).end();
 }
 
-// ── diagnostic: tests the Gemini connection with the minimal possible call ────
+// ── diagnostic: lists available models + tests a simple generate call ─────────
 async function pingGemini(req, res) {
   const keySnippet = GEMINI_API_KEY ? GEMINI_API_KEY.slice(0, 8) + '...' : 'NOT SET';
+
+  // Step 1 — call ListModels to find what this key can actually use
+  let geminiModels = [];
+  try {
+    const listRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}&pageSize=50`
+    );
+    const listData = await listRes.json();
+    geminiModels = (listData.models ?? [])
+      .filter(m => m.supportedGenerationMethods?.includes('generateContent'))
+      .map(m => m.name.replace('models/', ''));
+  } catch (listErr) {
+    geminiModels = [`[list error] ${listErr.message}`];
+  }
+
+  // Step 2 — try the current LLM_MODEL with the simplest possible call
+  const firstAvailable = geminiModels[0] ?? LLM_MODEL;
   try {
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: LLM_MODEL });
+    const model = genAI.getGenerativeModel({ model: firstAvailable });
     const result = await model.generateContent('Reply with the single word: OK');
-    const text = result.response.text();
-    return res.json({ success: true, model: LLM_MODEL, keyPrefix: keySnippet, response: text });
+    return res.json({
+      success:       true,
+      testedModel:   firstAvailable,
+      configuredModel: LLM_MODEL,
+      keyPrefix:     keySnippet,
+      response:      result.response.text(),
+      availableModels: geminiModels,
+    });
   } catch (err) {
     return res.json({
-      success:    false,
-      model:      LLM_MODEL,
-      keyPrefix:  keySnippet,
-      status:     err.status,
-      message:    err.message,
-      details:    err.errorDetails,
+      success:         false,
+      testedModel:     firstAvailable,
+      configuredModel: LLM_MODEL,
+      keyPrefix:       keySnippet,
+      status:          err.status,
+      message:         err.message,
+      availableModels: geminiModels,
     });
   }
 }
