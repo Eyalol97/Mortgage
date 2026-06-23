@@ -1,21 +1,14 @@
 (function () {
-  // ── Root URL derivation ────────────────────────────────────────────────────
-  // Find this script tag to compute an absolute root — works regardless of
-  // which page loads the navbar (client/*/ or shared/).
-  const _script = document.querySelector('script[src*="navbar"]');
-  const _root   = _script ? _script.src.replace(/shared\/navbar\.js$/, '') : '';
-
   // ── Page detection ─────────────────────────────────────────────────────────
   const _path = window.location.pathname;
 
   function _activePage() {
     if (_path.includes('/simulator/')) return 'simulator';
     if (_path.includes('/profile/'))   return 'profile';
-    return 'bot'; // home.html + index.html + anything else defaults to bot
+    return 'bot'; // / and /bot/home.html both map to bot
   }
 
   // ── Auth state ─────────────────────────────────────────────────────────────
-  // auth.js exposes window.Auth; fall back to guest if not yet loaded.
   function _isLoggedIn() {
     return typeof window.Auth !== 'undefined' && typeof window.Auth.isLoggedIn === 'function'
       ? window.Auth.isLoggedIn()
@@ -52,6 +45,8 @@
       align-items: center;
       gap: 0.25rem;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
     .navbar__link {
       font-family: 'Nunito Sans', sans-serif;
@@ -71,14 +66,6 @@
       background-color: #cfe9e7;
       color: #4d7c7a;
     }
-    .navbar__link--locked {
-      color: #707978;
-      cursor: pointer;
-    }
-    .navbar__link--locked::after {
-      content: ' 🔒';
-      font-size: 0.75rem;
-    }
     @media (max-width: 480px) {
       .navbar__brand { font-size: 1rem; }
       .navbar__link  { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
@@ -91,30 +78,21 @@
 
   // ── Render ─────────────────────────────────────────────────────────────────
   function _render() {
-    const active    = _activePage();
-    const loggedIn  = _isLoggedIn();
+    const active   = _activePage();
+    const loggedIn = _isLoggedIn();
 
     const links = [
-      { id: 'bot',       label: 'Mortgage Bot', href: `${_root}client/bot/home.html`             },
-      { id: 'simulator', label: 'Simulator',    href: `${_root}client/simulator/simulator.html`  },
-      { id: 'profile',   label: 'Profile',      href: `${_root}client/profile/profile.html`      },
+      { id: 'bot',       label: 'Mortgage Bot', href: '/'                          },
+      { id: 'simulator', label: 'Simulator',    href: '/simulator/simulator.html'  },
+      {
+        id:    'profile',
+        label: loggedIn ? 'Profile' : 'Sign In',
+        href:  loggedIn ? '/profile/profile.html' : '/auth/login.html',
+      },
     ];
 
     const items = links.map(({ id, label, href }) => {
       const isActive = id === active;
-      const isProfile = id === 'profile';
-
-      if (isProfile && !loggedIn) {
-        // Guest — render as a button-like link that alerts rather than navigating
-        return `<li>
-          <a class="navbar__link navbar__link--locked"
-             href="#"
-             onclick="event.preventDefault(); alert('Please log in to access your profile.');"
-             aria-label="${label} — login required"
-          >${label}</a>
-        </li>`;
-      }
-
       return `<li>
         <a class="navbar__link${isActive ? ' navbar__link--active' : ''}"
            href="${href}"
@@ -126,7 +104,7 @@
     return `
       <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__inner">
-          <a class="navbar__brand" href="${_root}client/bot/home.html">Guided Clarity</a>
+          <a class="navbar__brand" href="/">Guided Clarity</a>
           <ul class="navbar__links">
             ${items.join('\n')}
           </ul>
@@ -142,14 +120,12 @@
     root.innerHTML = _render();
   }
 
-  // Mount immediately if DOM is ready; otherwise wait for it
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', _mount);
   } else {
     _mount();
   }
 
-  // ── Public API ─────────────────────────────────────────────────────────────
-  // Exposed so auth.js can trigger a re-render after login/logout
+  // Exposed so authClient.js can trigger a re-render after login/logout
   window.Navbar = { refresh: _mount };
 })();

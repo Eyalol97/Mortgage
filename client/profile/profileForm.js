@@ -26,7 +26,8 @@ const ProfileForm = (function () {
   const _state = {};
   FIELDS.forEach(f => { _state[f.id] = { value: null, valid: null }; });
 
-  let _onStateChange = null;
+  let _onStateChange   = null;
+  let _hasExistingData = false;
   const _msgs = {};  // ValidationMessage instances keyed by field id
 
   // ── Completion ────────────────────────────────────────────────────────────
@@ -128,7 +129,9 @@ const ProfileForm = (function () {
 
   async function _loadProfile() {
     try {
-      const res = await fetch('/api/profile', { credentials: 'include' });
+      const res = await fetch('/api/profile', {
+        headers: window.Auth ? window.Auth.getAuthHeaders() : {},
+      });
       if (!res.ok) return null;
       const data = await res.json();
       return data && typeof data === 'object' ? data : null;
@@ -155,9 +158,9 @@ const ProfileForm = (function () {
     _emitState();
 
     const existing = await _loadProfile();
-    if (existing) _prefill(existing);
+    if (existing) { _prefill(existing); _hasExistingData = true; }
 
-    return { hasExistingData: existing !== null };
+    return { hasExistingData: _hasExistingData };
   }
 
   /**
@@ -185,12 +188,13 @@ const ProfileForm = (function () {
     const payload = {};
     FIELDS.forEach(f => { payload[f.id] = _state[f.id].value; });
 
+    const authHeaders = window.Auth ? window.Auth.getAuthHeaders() : {};
     const res = await fetch('/api/profile', {
-      method:      'POST',
-      headers:     { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body:        JSON.stringify(payload),
+      method:  _hasExistingData ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
+      body:    JSON.stringify(payload),
     });
+    if (res.ok) _hasExistingData = true;
 
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));

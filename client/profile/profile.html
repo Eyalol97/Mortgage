@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../shared/style.css" />
+  <link rel="stylesheet" href="/shared/style.css" />
   <style>
     .profile-page {
       min-height: calc(100vh - 56px);
@@ -382,8 +382,8 @@
             will now tailor results to your profile.
           </p>
           <div class="profile-confirmation__links">
-            <a href="../bot/home.html" class="btn btn-primary">Go to Mortgage Bot</a>
-            <a href="../simulator/simulator.html" class="btn btn-secondary">Open Simulator</a>
+            <a href="/" class="btn btn-primary">Go to Mortgage Bot</a>
+            <a href="/simulator/simulator.html" class="btn btn-secondary">Open Simulator</a>
           </div>
         </div>
       </section>
@@ -391,14 +391,21 @@
     </main>
   </div>
 
-  <!-- Shared components — load order: style utilities → UI components → page modules -->
-  <script src="../../shared/navbar.js"></script>
-  <script src="../../shared/inputField.js"></script>
-  <script src="../../shared/validationMessage.js"></script>
+  <script src="/shared/authClient.js"></script>
+  <script>
+    // Guard before any profile modules load — guests go to the login page
+    if (window.Auth && !window.Auth.isLoggedIn()) {
+      window.location.href = '/auth/login.html?redirect=/profile/profile.html';
+    }
+  </script>
 
-  <!-- Profile modules -->
-  <script src="./profileForm.js"></script>
-  <script src="./profile-ui.js"></script>
+  <script src="/shared/navbar.js"></script>
+  <script src="/shared/inputField.js"></script>
+  <script src="/shared/validationMessage.js"></script>
+  <script src="/shared/validationService.js"></script>
+
+  <script src="/profile/profileForm.js"></script>
+  <script src="/profile/profile-ui.js"></script>
 
 </body>
 </html>

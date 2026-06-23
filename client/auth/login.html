@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | Guided Clarity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/shared/style.css" />
+  <style>
+    .auth-page {
+      min-height: calc(100vh - 56px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8) var(--space-8);
+      box-shadow: var(--shadow-1);
+    }
+
+    .auth-card__logo {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .auth-card__logo-text {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Tab toggle */
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--outline-variant);
+      margin-bottom: var(--space-6);
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: var(--space-3) 0;
+      background: none;
+      border: none;
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .auth-tab--active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Forms */
+    .auth-form { display: none; }
+    .auth-form--active { display: block; }
+
+    .auth-form__group {
+      margin-bottom: var(--space-4);
+    }
+
+    .auth-form__label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: var(--space-1);
+    }
+
+    .auth-form__input {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      color: var(--on-surface);
+      background: #ffffff;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .auth-form__input:focus {
+      border-color: var(--primary);
+      border-width: 2px;
+    }
+
+    .auth-form__submit {
+      width: 100%;
+      margin-top: var(--space-2);
+    }
+
+    .auth-error {
+      display: none;
+      font-size: var(--text-sm);
+      color: #b3261e;
+      background-color: #fce8e6;
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      margin-top: var(--space-3);
+    }
+
+    .auth-error--visible { display: block; }
+
+    .auth-success {
+      display: none;
+      font-size: var(--text-sm);
+      color: #146c3c;
+      background-color: #d9f3e5;
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      margin-top: var(--space-3);
+    }
+
+    .auth-success--visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-root"></div>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-card__logo">
+        <span class="auth-card__logo-text">Guided Clarity</span>
+      </div>
+
+      <!-- Tab buttons -->
+      <div class="auth-tabs" role="tablist">
+        <button
+          id="tab-login"
+          class="auth-tab auth-tab--active"
+          role="tab"
+          aria-selected="true"
+          aria-controls="form-login"
+        >Sign In</button>
+        <button
+          id="tab-signup"
+          class="auth-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="form-signup"
+        >Sign Up</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="form-login" class="auth-form auth-form--active" role="tabpanel" aria-labelledby="tab-login">
+        <div class="auth-form__group">
+          <label class="auth-form__label" for="login-email">Email</label>
+          <input
+            id="login-email"
+            class="auth-form__input"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+          />
+        </div>
+        <div class="auth-form__group">
+          <label class="auth-form__label" for="login-password">Password</label>
+          <input
+            id="login-password"
+            class="auth-form__input"
+            type="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+          />
+        </div>
+        <button id="login-btn" class="btn btn-primary auth-form__submit">Sign In</button>
+        <div id="login-error"   class="auth-error"></div>
+        <div id="login-success" class="auth-success"></div>
+      </div>
+
+      <!-- Sign-up form -->
+      <div id="form-signup" class="auth-form" role="tabpanel" aria-labelledby="tab-signup">
+        <div class="auth-form__group">
+          <label class="auth-form__label" for="signup-email">Email</label>
+          <input
+            id="signup-email"
+            class="auth-form__input"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+          />
+        </div>
+        <div class="auth-form__group">
+          <label class="auth-form__label" for="signup-password">Password</label>
+          <input
+            id="signup-password"
+            class="auth-form__input"
+            type="password"
+            autocomplete="new-password"
+            placeholder="At least 6 characters"
+          />
+        </div>
+        <button id="signup-btn" class="btn btn-primary auth-form__submit">Create Account</button>
+        <div id="signup-error"   class="auth-error"></div>
+        <div id="signup-success" class="auth-success"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/shared/authClient.js"></script>
+  <script src="/shared/navbar.js"></script>
+
+  <script>
+    (function () {
+      // Redirect already-logged-in users
+      if (window.Auth && window.Auth.isLoggedIn()) {
+        window.location.href = '/profile/profile.html';
+        return;
+      }
+
+      const tabLogin  = document.getElementById('tab-login');
+      const tabSignup = document.getElementById('tab-signup');
+      const formLogin  = document.getElementById('form-login');
+      const formSignup = document.getElementById('form-signup');
+
+      function switchTab(active, inactive, activeForm, inactiveForm) {
+        active.classList.add('auth-tab--active');
+        active.setAttribute('aria-selected', 'true');
+        inactive.classList.remove('auth-tab--active');
+        inactive.setAttribute('aria-selected', 'false');
+        activeForm.classList.add('auth-form--active');
+        inactiveForm.classList.remove('auth-form--active');
+      }
+
+      tabLogin.addEventListener('click',  () => switchTab(tabLogin,  tabSignup, formLogin,  formSignup));
+      tabSignup.addEventListener('click', () => switchTab(tabSignup, tabLogin,  formSignup, formLogin));
+
+      function showError(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.classList.add('auth-error--visible');
+      }
+
+      function clearMessages(...ids) {
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          el.textContent = '';
+          el.classList.remove('auth-error--visible', 'auth-success--visible');
+        });
+      }
+
+      // Redirect target (e.g. ?redirect=/profile/profile.html)
+      function _redirectAfterLogin() {
+        const params = new URLSearchParams(window.location.search);
+        const next   = params.get('redirect');
+        window.location.href = (next && next.startsWith('/')) ? next : '/profile/profile.html';
+      }
+
+      // ── Login ──────────────────────────────────────────────────────────────
+      document.getElementById('login-btn').addEventListener('click', async () => {
+        clearMessages('login-error', 'login-success');
+        const email    = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        if (!email || !password) {
+          showError('login-error', 'Please enter your email and password.');
+          return;
+        }
+
+        try {
+          const res  = await fetch('/api/auth/login', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) { showError('login-error', data.message || 'Sign in failed.'); return; }
+          window.Auth.saveToken(data.token);
+          _redirectAfterLogin();
+        } catch {
+          showError('login-error', 'Network error — please try again.');
+        }
+      });
+
+      // ── Sign-up ────────────────────────────────────────────────────────────
+      document.getElementById('signup-btn').addEventListener('click', async () => {
+        clearMessages('signup-error', 'signup-success');
+        const email    = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value;
+
+        if (!email || !password) {
+          showError('signup-error', 'Please enter your email and password.');
+          return;
+        }
+        if (password.length < 6) {
+          showError('signup-error', 'Password must be at least 6 characters.');
+          return;
+        }
+
+        try {
+          const res  = await fetch('/api/auth/signup', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) { showError('signup-error', data.message || 'Sign up failed.'); return; }
+          window.Auth.saveToken(data.token);
+          _redirectAfterLogin();
+        } catch {
+          showError('signup-error', 'Network error — please try again.');
+        }
+      });
+
+      // Allow Enter key to submit the active form
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        if (formLogin.classList.contains('auth-form--active')) {
+          document.getElementById('login-btn').click();
+        } else {
+          document.getElementById('signup-btn').click();
+        }
+      });
+    }());
+  </script>
+
+</body>
+</html>

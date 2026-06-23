@@ -3,193 +3,231 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guided Clarity — Mortgage Assistant</title>
-
+  <title>Mortgage Bot | Guided Clarity</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/shared/style.css" />
-
   <style>
-    .home-page {
-      min-height: calc(100vh - 56px);
+    .bot-page {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: var(--space-12) var(--space-4);
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .home-hero {
-      text-align: center;
-      max-width: 560px;
-      margin-bottom: var(--space-12);
-    }
-
-    .home-hero__eyebrow {
-      font-size: var(--text-sm);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--secondary);
-      margin-bottom: var(--space-3);
-    }
-
-    .home-hero__title {
-      font-size: var(--text-4xl);
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: var(--space-4);
-      line-height: 1.2;
-    }
-
-    .home-hero__subtitle {
-      font-size: var(--text-lg);
-      color: var(--on-surface-variant);
-      line-height: 1.6;
-    }
-
-    .home-features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: var(--space-6);
+    .bot-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 720px;
       width: 100%;
-      max-width: 880px;
+      margin: 0 auto;
+      padding: var(--space-4);
+      overflow: hidden;
     }
 
-    .feature-card {
+    .bot-header {
+      padding: var(--space-4) 0 var(--space-2);
+      text-align: center;
+    }
+
+    .bot-header h1 {
+      font-size: var(--text-xl);
+      margin-bottom: var(--space-1);
+    }
+
+    .bot-header p {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+    }
+
+    #chat-window {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-4) 0;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--surface-variant);
+      border-radius: var(--radius-lg);
+      border-bottom-left-radius: 4px;
+    }
+
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: var(--on-surface-variant);
+      border-radius: 50%;
+      margin: 0 2px;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%            { transform: translateY(-6px); }
+    }
+
+    #chips-container {
       display: flex;
-      flex-direction: column;
-      background-color: #ffffff;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+    }
+
+    #follow-up-buttons {
+      display: none;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      align-items: flex-end;
+    }
+
+    #chat-input {
+      flex: 1;
+      resize: none;
+      padding: 0.75rem 1rem;
       border: 1px solid var(--outline-variant);
       border-radius: var(--radius-lg);
-      padding: var(--space-8) var(--space-6);
-      text-decoration: none;
-      box-shadow: var(--shadow-1);
-      transition: box-shadow 0.2s, transform 0.2s;
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      background: white;
+      outline: none;
+      line-height: 1.5;
+      max-height: 120px;
+      overflow-y: auto;
+      transition: border-color 0.2s;
     }
 
-    .feature-card:hover {
-      box-shadow: var(--shadow-2);
-      transform: translateY(-2px);
+    #chat-input:focus {
+      border-color: var(--primary);
+      border-width: 2px;
     }
 
-    .feature-card--locked {
-      opacity: 0.55;
-      pointer-events: none;
-      cursor: default;
-    }
-
-    .feature-card__icon {
-      font-size: 2rem;
-      margin-bottom: var(--space-4);
-    }
-
-    .feature-card__title {
-      font-size: var(--text-xl);
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: var(--space-2);
-    }
-
-    .feature-card__desc {
-      font-size: var(--text-sm);
-      color: var(--on-surface-variant);
-      line-height: 1.6;
-      flex: 1;
-    }
-
-    .feature-card__cta {
-      display: inline-flex;
+    #send-btn {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
       align-items: center;
-      gap: var(--space-1);
-      margin-top: var(--space-6);
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--primary);
+      justify-content: center;
+      transition: filter 0.2s, box-shadow 0.2s;
     }
 
-    .feature-card__badge {
-      display: inline-block;
-      margin-top: var(--space-6);
-      font-size: var(--text-xs);
-      font-weight: 600;
-      color: var(--on-surface-variant);
-      background-color: var(--surface-variant);
-      border-radius: 9999px;
-      padding: 2px var(--space-3);
+    #send-btn:hover {
+      filter: brightness(1.1);
+      box-shadow: var(--shadow-1);
+    }
+
+    #send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: none;
+    }
+
+    #send-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    #disclaimer-box {
+      display: none;
+      margin: var(--space-2) 0;
+    }
+
+    @media (max-width: 768px) {
+      .bot-main {
+        padding: var(--space-2);
+      }
     }
   </style>
 </head>
 <body>
 
-  <div id="navbar"></div>
+  <div id="navbar-root"></div>
 
-  <main class="home-page">
+  <div class="bot-page">
+    <main class="bot-main">
 
-    <section class="home-hero" aria-label="App introduction">
-      <p class="home-hero__eyebrow">Mortgage Assistant</p>
-      <h1 class="home-hero__title">Guided Clarity</h1>
-      <p class="home-hero__subtitle">
-        Ask questions in plain language, simulate loan scenarios, and manage
-        your personal mortgage profile — all in one place.
-      </p>
-    </section>
+      <div class="bot-header">
+        <h1>Mortgage Bot</h1>
+        <p>Ask anything about mortgages — rates, terms, regulations, and more.</p>
+      </div>
 
-    <nav class="home-features" aria-label="Feature navigation">
+      <div id="chat-window">
+        <div class="chat-container">
 
-      <a id="route-bot" class="feature-card" href="/bot/home.html">
-        <span class="feature-card__icon" aria-hidden="true">💬</span>
-        <span class="feature-card__title">Mortgage Bot</span>
-        <p class="feature-card__desc">
-          Ask anything about mortgages in plain Hebrew or English.
-          Get clear, regulation-aware answers instantly.
-        </p>
-        <span class="feature-card__cta">Start chatting →</span>
-      </a>
+          <div class="bubble bubble-bot">
+            Hi! I'm your Mortgage Assistant. I can help you understand mortgage concepts, interest rate tracks, Bank of Israel regulations, and more. What would you like to know?
+          </div>
 
-      <a id="route-simulator" class="feature-card" href="/simulator/simulator.html">
-        <span class="feature-card__icon" aria-hidden="true">🧮</span>
-        <span class="feature-card__title">Mortgage Simulator</span>
-        <p class="feature-card__desc">
-          Compare tracks, solve for any missing variable, and see full
-          amortisation schedules side by side.
-        </p>
-        <span class="feature-card__cta">Open simulator →</span>
-      </a>
+          <div class="typing-indicator" id="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
 
-      <a id="route-profile" class="feature-card" href="/profile/profile.html">
-        <span class="feature-card__icon" aria-hidden="true">👤</span>
-        <span class="feature-card__title">My Profile</span>
-        <p class="feature-card__desc">
-          Save your financial details so the bot and simulator always start
-          from your real numbers.
-        </p>
-        <span id="route-profile-cta" class="feature-card__cta">View profile →</span>
-      </a>
+        </div>
+      </div>
 
-    </nav>
+      <div id="chips-container">
+        <button class="chip" data-query="What is amortization?">What is amortization?</button>
+        <button class="chip" data-query="What are the mortgage track types?">Mortgage track types</button>
+        <button class="chip" data-query="How does the Bank of Israel prime rate work?">Prime rate explained</button>
+        <button class="chip" data-query="What is LTV (Loan to Value)?">What is LTV?</button>
+        <button class="chip" data-query="Fixed vs variable interest rate">Fixed vs variable rate</button>
+        <button class="chip" data-query="How is monthly payment calculated?">Monthly payment</button>
+      </div>
 
-  </main>
+      <div id="follow-up-buttons"></div>
 
-  <script src="/shared/auth.js"></script>
+      <div id="disclaimer-box" class="disclaimer">
+        This response is for educational purposes only and does not constitute financial advice. Please consult a licensed mortgage advisor before making any decisions.
+      </div>
+
+      <div class="chat-input-row">
+        <textarea
+          id="chat-input"
+          placeholder="Ask a mortgage question…"
+          rows="1"
+          aria-label="Chat input"
+        ></textarea>
+        <button id="send-btn" aria-label="Send message" disabled>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/shared/authClient.js"></script>
   <script src="/shared/navbar.js"></script>
+  <script src="/shared/inputField.js"></script>
+  <script src="/shared/disclaimerBox.js"></script>
 
-  <script>
-    (function () {
-      const profileCard = document.getElementById('route-profile');
-      const profileCta  = document.getElementById('route-profile-cta');
-      const isLoggedIn  = typeof window.Auth !== 'undefined' && typeof window.Auth.isLoggedIn === 'function'
-        ? window.Auth.isLoggedIn()
-        : false;
-
-      if (!isLoggedIn) {
-        profileCard.classList.add('feature-card--locked');
-        profileCard.removeAttribute('href');
-        profileCta.textContent = '🔒 Sign in to access';
-      }
-    }());
-  </script>
+  <script src="/bot/chatWindow.js"></script>
+  <script src="/bot/chatInput.js"></script>
+  <script src="/bot/bot-ui.js"></script>
 
 </body>
 </html>

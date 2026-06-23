@@ -193,9 +193,10 @@
 
     setLoading(true);
     try {
+      const authHeaders = window.Auth ? window.Auth.getAuthHeaders() : {};
       const res = await fetch('/api/simulator', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body:    JSON.stringify(requestData),
       });
 

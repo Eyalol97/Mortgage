@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="he" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mortgage Simulator</title>
+  <title>Mortgage Simulator | Guided Clarity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/shared/style.css" />
 </head>
 <body>
 
-  <!-- Shared navigation (Eyal) -->
-  <div id="navbar"></div>
+  <div id="navbar-root"></div>
 
   <main class="simulator-page">
 
-    <!-- ── Disclaimer banner (Eyal) ──────────────────────────────────────── -->
     <div id="disclaimer"></div>
 
     <h1 class="simulator-page__title">Mortgage Simulator</h1>
@@ -148,28 +149,29 @@
 
   </main>
 
-  <!-- ── Scripts ───────────────────────────────────────────────────────────
-       Load order matters: shared utilities first, then simulator modules.  -->
+  <script src="/shared/authClient.js"></script>
+  <script>
+    // Guard before simulator modules load — guests go to the login page
+    if (window.Auth && !window.Auth.isLoggedIn()) {
+      window.location.href = '/auth/login.html?redirect=/simulator/simulator.html';
+    }
+  </script>
 
-  <!-- Shared utilities (Simha) -->
+  <script src="/shared/navbar.js"></script>
   <script src="/shared/formatCurrency.js"></script>
   <script src="/shared/formatDecimal.js"></script>
-
-  <!-- Shared UI components (Eyal) -->
   <script src="/shared/validationService.js"></script>
   <script src="/shared/validationMessage.js"></script>
-  <script src="/shared/navbar.js"></script>
   <script src="/shared/disclaimerBox.js"></script>
 
-  <!-- Simulator modules (Simha) -->
-  <script src="/client/simulator/simulatorForm.js"></script>
-  <script src="/client/simulator/comparisonTable.js"></script>
-  <script src="/client/simulator/simulator-ui.js"></script>
+  <script src="/simulator/simulatorForm.js"></script>
+  <script src="/simulator/comparisonTable.js"></script>
+  <script src="/simulator/simulator-ui.js"></script>
 
-  <!-- Init shared components -->
   <script>
-    if (window.Navbar)       window.Navbar.render(document.getElementById('navbar'));
-    if (window.DisclaimerBox) window.DisclaimerBox.render(document.getElementById('disclaimer'));
+    if (window.DisclaimerBox) {
+      window.DisclaimerBox.render(document.getElementById('disclaimer'));
+    }
   </script>
 
 </body>
