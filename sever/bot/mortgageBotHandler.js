@@ -47,22 +47,35 @@ async function respond(query, history, { advisory = false } = {}) {
 
   const model = genAI.getGenerativeModel({ model: LLM_MODEL });
 
+  let result;
   try {
-    const result = await model.generateContent(prompt);
-    const raw    = result.response.text().trim();
-
-    return _parseResponse(raw);
-  } catch (err) {
-    console.error('[mortgageBotHandler] Gemini call failed:', {
-      model:   LLM_MODEL,
-      status:  err.status,
-      message: err.message,
+    result = await model.generateContent(prompt);
+  } catch (apiErr) {
+    console.error('[mortgageBotHandler] generateContent failed:', {
+      model: LLM_MODEL, status: apiErr.status, message: apiErr.message,
     });
     return {
-      reply:     "I'm having trouble reaching my knowledge base right now. Please try again in a moment.",
+      reply:     `[Debug-API] ${apiErr.status || 'err'}: ${(apiErr.message || '').slice(0, 100)}`,
       followUps: [],
     };
   }
+
+  let raw;
+  try {
+    raw = result.response.text().trim();
+  } catch (textErr) {
+    const candidate = result.response.candidates?.[0];
+    console.error('[mortgageBotHandler] response.text() threw:', {
+      finishReason: candidate?.finishReason,
+      textErr: textErr.message,
+    });
+    return {
+      reply:     `[Debug-Text] finishReason=${candidate?.finishReason || '?'} ${textErr.message?.slice(0, 80)}`,
+      followUps: [],
+    };
+  }
+
+  return _parseResponse(raw);
 }
 
 function _parseResponse(raw) {
