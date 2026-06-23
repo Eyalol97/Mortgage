@@ -12,8 +12,7 @@ const ChatWindow = (() => {
   function _makeBubble(text, side) {
     const div = document.createElement('div');
     div.className = `bubble bubble-${side}`;
-    // Newlines in bot replies become visual line breaks without XSS risk
-    div.innerHTML = _escapeHtml(text).replace(/\n/g, '<br>');
+    div.innerHTML = side === 'bot' ? _renderMarkdown(text) : _escapeHtml(text);
     return div;
   }
 
@@ -23,6 +22,30 @@ const ChatWindow = (() => {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function _renderMarkdown(raw) {
+    // 1. Escape HTML first to prevent XSS
+    let s = _escapeHtml(raw);
+
+    // 2. Bold: **text**
+    s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+
+    // 3. Bullet lists: group consecutive lines starting with "- " or "• "
+    s = s.replace(/((?:(?:^|\n)[-•] [^\n]+)+)/g, (block) => {
+      const items = block.trim().split('\n')
+        .map(l => `<li>${l.replace(/^[-•] /, '')}</li>`)
+        .join('');
+      return `<ul>${items}</ul>`;
+    });
+
+    // 4. Remaining newlines → <br>
+    s = s.replace(/\n/g, '<br>');
+
+    // 5. Remove <br> immediately adjacent to list tags for clean spacing
+    s = s.replace(/<br>(<\/?ul>)/g, '$1').replace(/(<\/?ul>)<br>/g, '$1');
+
+    return s;
   }
 
   function _insert(el) {

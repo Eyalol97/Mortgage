@@ -4,6 +4,7 @@
 
   const chipsContainer    = document.getElementById('chips-container');
   const followUpContainer = document.getElementById('follow-up-buttons');
+  const followUpsLabel    = document.getElementById('follow-ups-label');
 
   const OUT_OF_DOMAIN_MSG =
     "I can only help with mortgage-related questions — concepts, interest rate tracks, " +
@@ -98,10 +99,12 @@
       followUpContainer.appendChild(btn);
     });
     followUpContainer.style.display = 'flex';
+    if (followUpsLabel) followUpsLabel.style.display = 'block';
   }
 
   function clearFollowUps() {
-    followUpContainer.innerHTML    = '';
+    followUpContainer.innerHTML     = '';
     followUpContainer.style.display = 'none';
+    if (followUpsLabel) followUpsLabel.style.display = 'none';
   }
 })();

@@ -24,6 +24,8 @@ function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
   return kept;
 }
 
+const JSON_CONFIG = { responseMimeType: 'application/json' };
+
 async function respond(query, history, { advisory = false } = {}) {
   const [systemPrompt, ragChunks] = await Promise.all([
     Promise.resolve(mortgageBotPrompt.getPrompt({ advisory })),
@@ -39,7 +41,7 @@ async function respond(query, history, { advisory = false } = {}) {
   const model = genAI.getGenerativeModel({
     model: LLM_MODEL,
     systemInstruction: fullSystem,
-    generationConfig: { responseMimeType: 'application/json' },
+    generationConfig: JSON_CONFIG,
   });
 
   const geminiHistory = _trimHistory(history).map(msg => ({
@@ -47,14 +49,35 @@ async function respond(query, history, { advisory = false } = {}) {
     parts: [{ text: msg.content }],
   }));
 
-  const chat   = model.startChat({ history: geminiHistory });
-  const result = await chat.sendMessage(query);
-  const parsed = JSON.parse(result.response.text());
+  try {
+    const chat   = model.startChat({ history: geminiHistory, generationConfig: JSON_CONFIG });
+    const result = await chat.sendMessage(query);
+    const raw    = result.response.text();
 
-  return {
-    reply:     parsed.reply     ?? '',
-    followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 3) : [],
-  };
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      console.error('[mortgageBotHandler] JSON parse failed. Model:', LLM_MODEL, 'Raw (first 500):', raw.slice(0, 500));
+      return { reply: raw, followUps: [] };
+    }
+
+    return {
+      reply:     parsed.reply     ?? '',
+      followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 3) : [],
+    };
+  } catch (err) {
+    console.error('[mortgageBotHandler] Gemini call failed:', {
+      model:   LLM_MODEL,
+      status:  err.status,
+      message: err.message,
+      details: err.errorDetails,
+    });
+    return {
+      reply:     "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
+      followUps: [],
+    };
+  }
 }
 
 export default { respond };
