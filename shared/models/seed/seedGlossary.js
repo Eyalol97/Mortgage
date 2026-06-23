@@ -1,23 +1,17 @@
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import path              from 'path';
+import { createRequire } from 'module';
 import GlossaryTerm      from '../GlossaryTerm.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_PATH = path.join(__dirname, 'glossary.json');
+const require = createRequire(import.meta.url);
 
 export async function seedGlossary() {
   try {
-    const terms = JSON.parse(readFileSync(DATA_PATH, 'utf8'));
+    const terms = require('./glossary.json');
 
-    // Drop all existing terms so renamed or removed entries don't linger
     await GlossaryTerm.deleteMany({});
-
     await GlossaryTerm.insertMany(terms, { ordered: false });
 
     console.log(`[seed] Glossary seeded — ${terms.length} terms loaded.`);
   } catch (err) {
-    // Non-fatal: log and continue — the server still starts
     console.error('[seed] Glossary seeding failed:', err.message);
   }
 }

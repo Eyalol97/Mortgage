@@ -8,7 +8,6 @@ import profileRoutes  from '../sever/profile/profileRoutes.js';
 import simulatorRoutes from '../sever/simulator/simulatorRoutes.js';
 import botRoutes      from '../sever/bot/botRoutes.js';
 import authRoutes     from '../sever/auth/authRoutes.js';
-import { seedGlossary } from './models/seed/seedGlossary.js';
 
 const app = express();
 
@@ -49,6 +48,9 @@ const PORT = env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  // Seed glossary after server is up; Mongoose queues the writes until connected
-  seedGlossary();
+  // Dynamic import keeps the seed outside the static module graph so a
+  // seeding failure can never prevent the server from starting.
+  import('./models/seed/seedGlossary.js')
+    .then(m => m.seedGlossary())
+    .catch(err => console.error('[seed] Failed to load seed module:', err.message));
 });

@@ -28,4 +28,5 @@ const glossaryTermSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model('GlossaryTerm', glossaryTermSchema);
+export default mongoose.models.GlossaryTerm
+  || mongoose.model('GlossaryTerm', glossaryTermSchema);
