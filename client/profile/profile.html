@@ -188,6 +188,19 @@
       flex-wrap: wrap;
     }
 
+    /* Select inputs — keep label always floated */
+    select.input-field {
+      padding-top: 1.5rem;
+      padding-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    select.input-field + .input-label {
+      top: 0.25rem;
+      font-size: var(--text-xs);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
     @media (max-width: 768px) {
       .profile-page {
         padding: var(--space-4) var(--space-3);
@@ -253,20 +266,93 @@
           </div>
         </div>
 
-        <!-- Profile fields -->
+        <!-- Profile fields — dry details first, money questions second -->
         <form id="profile-form" novalidate>
+
+          <!-- Name -->
+          <div class="field-row">
+            <div class="form-group" id="field-name">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="input-field"
+                placeholder=" "
+                aria-label="Your full name"
+              />
+              <label for="name" class="input-label" data-i18n="profile.name">Name</label>
+            </div>
+          </div>
+
+          <!-- Gender -->
+          <div class="field-row">
+            <div class="form-group" id="field-gender">
+              <select id="gender" name="gender" class="input-field" aria-label="Gender">
+                <option value=""></option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="non-binary">Non-binary</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+              </select>
+              <label for="gender" class="input-label" data-i18n="profile.gender">Gender</label>
+            </div>
+          </div>
+
+          <!-- Age -->
+          <div class="field-row">
+            <div class="form-group" id="field-age">
+              <input
+                type="number"
+                id="age"
+                name="age"
+                class="input-field"
+                placeholder=" "
+                min="18"
+                max="120"
+                step="1"
+                aria-label="Your age"
+              />
+              <label for="age" class="input-label" data-i18n="profile.age">Age</label>
+            </div>
+          </div>
+
+          <!-- Household size -->
+          <div class="field-row">
+            <div class="form-group" id="field-householdSize">
+              <input
+                type="number"
+                id="householdSize"
+                name="householdSize"
+                class="input-field"
+                placeholder=" "
+                min="1"
+                max="20"
+                step="1"
+                aria-label="Number of people in household"
+              />
+              <label for="householdSize" class="input-label" data-i18n="profile.householdSize">Household Size (people)</label>
+            </div>
+            <button
+              type="button"
+              class="field-row__tooltip-btn"
+              aria-label="Why do we need your household size?"
+              data-tooltip="tooltip-householdSize"
+            >?</button>
+            <div id="tooltip-householdSize" class="field-row__tooltip-text" role="tooltip" data-i18n="profile.householdTooltip">
+              Affects affordability estimates and eligibility for certain mortgage grants.
+            </div>
+          </div>
 
           <!-- Monthly net income -->
           <div class="field-row">
             <div class="form-group" id="field-income">
               <input
-                type="number"
+                type="text"
                 id="income"
                 name="income"
                 class="input-field"
                 placeholder=" "
-                min="0"
-                step="500"
+                inputmode="numeric"
                 aria-label="Monthly net income in shekels"
               />
               <label for="income" class="input-label" data-i18n="profile.income">Monthly Net Income (₪)</label>
@@ -286,13 +372,12 @@
           <div class="field-row">
             <div class="form-group" id="field-equity">
               <input
-                type="number"
+                type="text"
                 id="equity"
                 name="equity"
                 class="input-field"
                 placeholder=" "
-                min="0"
-                step="10000"
+                inputmode="numeric"
                 aria-label="Available equity or down payment in shekels"
               />
               <label for="equity" class="input-label" data-i18n="profile.equity">Equity / Down Payment (₪)</label>
@@ -312,13 +397,12 @@
           <div class="field-row">
             <div class="form-group" id="field-savings">
               <input
-                type="number"
+                type="text"
                 id="savings"
                 name="savings"
                 class="input-field"
                 placeholder=" "
-                min="0"
-                step="10000"
+                inputmode="numeric"
                 aria-label="Total savings in shekels"
               />
               <label for="savings" class="input-label" data-i18n="profile.savings">Total Savings (₪)</label>
@@ -334,33 +418,7 @@
             </div>
           </div>
 
-          <!-- Household size -->
-          <div class="field-row">
-            <div class="form-group" id="field-householdSize">
-              <input
-                type="number"
-                id="householdSize"
-                name="householdSize"
-                class="input-field"
-                placeholder=" "
-                min="1"
-                step="1"
-                aria-label="Number of people in household"
-              />
-              <label for="householdSize" class="input-label" data-i18n="profile.householdSize">Household Size (people)</label>
-            </div>
-            <button
-              type="button"
-              class="field-row__tooltip-btn"
-              aria-label="Why do we need your household size?"
-              data-tooltip="tooltip-householdSize"
-            >?</button>
-            <div id="tooltip-householdSize" class="field-row__tooltip-text" role="tooltip" data-i18n="profile.householdTooltip">
-              Affects affordability estimates and eligibility for certain mortgage grants.
-            </div>
-          </div>
-
-          <!-- Actions — save button; ValidationMessage anchors here on error -->
+          <!-- Actions -->
           <div class="profile-form__actions">
             <button id="save-btn" type="button" class="btn btn-primary" data-i18n="profile.saveBtn">
               Save Profile

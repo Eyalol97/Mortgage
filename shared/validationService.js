@@ -44,6 +44,15 @@
       if (i <= 0)             return _fail(field, 'Must be a positive whole number');
       return _ok(field);
     },
+
+    // Whole number, 18–120
+    age(field, raw) {
+      if (!/^\d+$/.test(raw)) return _fail(field, 'Must be a whole number');
+      const n = parseInt(raw, 10);
+      if (n < 18)  return _fail(field, 'Must be at least 18');
+      if (n > 120) return _fail(field, 'Must be 120 or less');
+      return _ok(field);
+    },
   };
 
   // ── Public API ─────────────────────────────────────────────────────────────

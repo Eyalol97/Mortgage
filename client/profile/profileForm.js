@@ -1,6 +1,6 @@
 'use strict';
 
-// ProfileForm — manages field state, real-time validation, tooltip display,
+// ProfileForm — manages field state, comma formatting, validation, tooltips,
 // and profile data loading / saving for the profile page.
 //
 // Assumes these globals are loaded before this script:
@@ -12,25 +12,43 @@
 const ProfileForm = (function () {
 
   // ── Field definitions ─────────────────────────────────────────────────────
+  // Order: dry details first, money questions second.
+  // currency:true → strip/format commas in the UI; value stored as raw number string.
+  // max → soft cap; blocks save with a friendly message if exceeded.
 
   const FIELDS = [
-    { id: 'income',        label: 'Monthly Net Income',    type: 'numeric' },
-    { id: 'equity',        label: 'Equity / Down Payment', type: 'numeric' },
-    { id: 'savings',       label: 'Total Savings',         type: 'numeric' },
-    { id: 'householdSize', label: 'Household Size',        type: 'integer' },
+    { id: 'name',          label: 'Name',                   type: 'name'                              },
+    { id: 'gender',        label: 'Gender',                  type: 'select'                            },
+    { id: 'age',           label: 'Age',                     type: 'age',     max: 120                 },
+    { id: 'householdSize', label: 'Household Size',          type: 'integer', max: 20                  },
+    { id: 'income',        label: 'Monthly Net Income',      type: 'numeric', currency: true, max: 10_000_000 },
+    { id: 'equity',        label: 'Equity / Down Payment',   type: 'numeric', currency: true, max: 50_000_000 },
+    { id: 'savings',       label: 'Total Savings',           type: 'numeric', currency: true, max: 50_000_000 },
   ];
 
   // ── Internal state ────────────────────────────────────────────────────────
 
-  // valid: null = untouched, true = valid, false = invalid
+  // valid: null = empty/optional, true = valid, false = invalid
   const _state = {};
   FIELDS.forEach(f => { _state[f.id] = { value: null, valid: null }; });
 
   let _onStateChange   = null;
   let _hasExistingData = false;
-  const _msgs = {};  // ValidationMessage instances keyed by field id
+  const _msgs = {};
 
-  // ── Completion ────────────────────────────────────────────────────────────
+  // ── Comma formatting ──────────────────────────────────────────────────────
+
+  function _formatComma(val) {
+    const n = parseFloat(String(val).replace(/,/g, ''));
+    if (isNaN(n)) return String(val);
+    return n.toLocaleString('en-US');
+  }
+
+  function _stripComma(str) {
+    return str.replace(/,/g, '');
+  }
+
+  // ── Completion (drives strength bar) ─────────────────────────────────────
 
   function _emitState() {
     if (typeof _onStateChange !== 'function') return;
@@ -41,14 +59,35 @@ const ProfileForm = (function () {
   // ── Validation ────────────────────────────────────────────────────────────
 
   function _validate(field, rawValue) {
-    const raw = (rawValue == null ? '' : String(rawValue)).trim();
+    let raw = (rawValue == null ? '' : String(rawValue)).trim();
+    if (field.currency) raw = _stripComma(raw);
 
+    // Empty = optional — not an error
     if (raw === '') {
-      _state[field.id] = { value: null, valid: false };
-      return { is_valid: false, reason: `${field.label} is required` };
+      _state[field.id] = { value: null, valid: null };
+      return { is_valid: null };
     }
 
-    const result = window.ValidationService.validate(field.type, field.label, raw);
+    let result;
+    if (field.type === 'select') {
+      result = { is_valid: true };
+    } else {
+      result = window.ValidationService.validate(field.type, field.label, raw);
+    }
+
+    // Soft upper-bound cap
+    if (result.is_valid && field.max != null) {
+      const n = (field.type === 'integer' || field.type === 'age')
+        ? parseInt(raw, 10)
+        : parseFloat(raw);
+      if (n > field.max) {
+        result = {
+          is_valid: false,
+          reason: `${field.label} seems too high (max: ${field.max.toLocaleString()})`
+        };
+      }
+    }
+
     _state[field.id] = { value: raw, valid: result.is_valid };
     return result;
   }
@@ -56,7 +95,8 @@ const ProfileForm = (function () {
   function _applyFeedback(fieldId, result, touched) {
     const msg = _msgs[fieldId];
     if (!msg) return;
-    if (!touched) { msg.clear(); return; }
+    // null = empty optional field → clear, no feedback
+    if (!touched || result.is_valid === null) { msg.clear(); return; }
     result.is_valid ? msg.showValid() : msg.showInvalid(result.reason);
   }
 
@@ -66,22 +106,46 @@ const ProfileForm = (function () {
     const el = document.getElementById(field.id);
     if (!el) return;
 
-    // Anchor ValidationMessage to the field's .form-group wrapper
     const formGroup = document.getElementById(`field-${field.id}`);
     if (formGroup && window.ValidationMessage) {
       _msgs[field.id] = window.ValidationMessage.create(formGroup);
     }
 
+    if (el.tagName === 'SELECT') {
+      el.addEventListener('change', () => {
+        const result = _validate(field, el.value);
+        _applyFeedback(field.id, result, el.value !== '');
+        _emitState();
+      });
+      return;
+    }
+
+    if (field.currency) {
+      el.addEventListener('focus', () => {
+        el.value = _stripComma(el.value);
+      });
+      el.addEventListener('input', () => {
+        const result = _validate(field, el.value);
+        _applyFeedback(field.id, result, el.value.trim() !== '');
+        _emitState();
+      });
+      el.addEventListener('blur', () => {
+        const result = _validate(field, el.value);
+        if (result.is_valid === true) el.value = _formatComma(el.value);
+        _applyFeedback(field.id, result, el.value.trim() !== '');
+        _emitState();
+      });
+      return;
+    }
+
     el.addEventListener('input', () => {
       const result = _validate(field, el.value);
-      // Only show feedback while typing when there is actually a value
       _applyFeedback(field.id, result, el.value.trim() !== '');
       _emitState();
     });
-
     el.addEventListener('blur', () => {
       const result = _validate(field, el.value);
-      _applyFeedback(field.id, result, true);
+      _applyFeedback(field.id, result, el.value.trim() !== '');
       _emitState();
     });
   }
@@ -92,7 +156,6 @@ const ProfileForm = (function () {
     document.querySelectorAll('[data-tooltip]').forEach(btn => {
       const tooltip = document.getElementById(btn.dataset.tooltip);
       if (!tooltip) return;
-
       btn.addEventListener('click', e => {
         e.stopPropagation();
         const alreadyOpen = tooltip.classList.contains('is-visible');
@@ -100,8 +163,6 @@ const ProfileForm = (function () {
         if (!alreadyOpen) tooltip.classList.add('is-visible');
       });
     });
-
-    // Tap / click anywhere outside closes all tooltips
     document.addEventListener('click', _closeAllTooltips);
   }
 
@@ -118,7 +179,7 @@ const ProfileForm = (function () {
       const value = data[field.id];
       if (value == null) return;
       const el = document.getElementById(field.id);
-      if (el) el.value = value;
+      if (el) el.value = field.currency ? _formatComma(value) : value;
       const result = _validate(field, String(value));
       _applyFeedback(field.id, result, true);
     });
@@ -142,17 +203,8 @@ const ProfileForm = (function () {
 
   // ── Public API ────────────────────────────────────────────────────────────
 
-  /**
-   * Initialises field listeners and tooltips, then loads any existing profile
-   * data from the server and pre-fills the form.
-   *
-   * @param  {function} onStateChange  Called with { completedCount, totalCount }
-   *                                   on every field change.
-   * @returns {Promise<{ hasExistingData: boolean }>}
-   */
   async function init(onStateChange) {
     _onStateChange = onStateChange;
-
     FIELDS.forEach(_bindField);
     _initTooltips();
     _emitState();
@@ -163,30 +215,26 @@ const ProfileForm = (function () {
     return { hasExistingData: _hasExistingData };
   }
 
-  /**
-   * Validates all fields, then POSTs the assembled profile object to
-   * /api/profile. Rejects with an Error on validation failure or a bad
-   * HTTP response.
-   *
-   * @returns {Promise<void>}
-   */
   async function submit() {
-    let allValid = true;
+    let anyInvalid = false;
 
     FIELDS.forEach(field => {
       const el = document.getElementById(field.id);
       const result = _validate(field, el ? el.value : '');
-      _applyFeedback(field.id, result, true);
-      if (!result.is_valid) allValid = false;
+      if (result.is_valid === false) {
+        _applyFeedback(field.id, result, true);
+        anyInvalid = true;
+      }
     });
     _emitState();
 
-    if (!allValid) {
-      throw new Error('Please fill all required fields correctly.');
+    if (anyInvalid) {
+      throw new Error('Please correct the highlighted fields.');
     }
 
+    // Only include fields the user actually filled in
     const payload = {};
-    FIELDS.forEach(f => { payload[f.id] = _state[f.id].value; });
+    FIELDS.forEach(f => { if (_state[f.id].value != null) payload[f.id] = _state[f.id].value; });
 
     const authHeaders = window.Auth ? window.Auth.getAuthHeaders() : {};
     const res = await fetch('/api/profile', {
