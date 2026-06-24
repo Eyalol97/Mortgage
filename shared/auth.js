@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import https  from 'https';
 import env    from './env.js';
 import User   from './models/User.js';
 
@@ -130,4 +131,63 @@ function authMiddleware(req, res, next) {
   next();
 }
 
-export { signup, login, authMiddleware };
+// ── Google Sign-In ────────────────────────────────────────────────────────────
+
+function _verifyGoogleToken(idToken) {
+  return new Promise((resolve, reject) => {
+    https.get(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`,
+      res => {
+        let body = '';
+        res.on('data', chunk => { body += chunk; });
+        res.on('end', () => {
+          try {
+            const data = JSON.parse(body);
+            if (data.error) reject(new Error(data.error_description || 'Invalid Google token'));
+            else resolve(data);
+          } catch { reject(new Error('Invalid response from Google')); }
+        });
+      }
+    ).on('error', reject);
+  });
+}
+
+async function googleAuth(req, res, next) {
+  if (!env.GOOGLE_CLIENT_ID) {
+    return res.status(501).json({ message: 'Google sign-in is not configured on this server.' });
+  }
+  try {
+    const { credential } = req.body;
+    if (!credential) return res.status(400).json({ message: 'Google credential required.' });
+
+    const payload = await _verifyGoogleToken(credential);
+
+    if (payload.aud !== env.GOOGLE_CLIENT_ID) {
+      return res.status(401).json({ message: 'Token was not issued for this application.' });
+    }
+    if (payload.email_verified !== 'true' && payload.email_verified !== true) {
+      return res.status(401).json({ message: 'Google account email is not verified.' });
+    }
+
+    const googleId = payload.sub;
+    const email    = payload.email.toLowerCase();
+
+    // Find by googleId first; fall back to email (links an existing email account)
+    let user = await User.findOne({ googleId });
+    if (!user) {
+      user = await User.findOne({ email });
+      if (user) {
+        user.googleId = googleId;
+        await user.save();
+      } else {
+        user = await User.create({ email, googleId });
+      }
+    }
+
+    return res.json({ token: _issueToken(user._id) });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { signup, login, googleAuth, authMiddleware };

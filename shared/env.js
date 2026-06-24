@@ -23,7 +23,8 @@ export const GEMINI_API_KEY  = process.env.GEMINI_API_KEY;
 export const BOI_API_KEY     = process.env.BOI_API_KEY;
 export const BOI_API_ENDPOINT = process.env.BOI_API_ENDPOINT;
 export const PDF_SIZE_LIMIT  = Number(process.env.PDF_SIZE_LIMIT);
-export const LLM_MODEL       = process.env.LLM_MODEL || 'gemini-2.5-flash';
+export const LLM_MODEL        = process.env.LLM_MODEL || 'gemini-2.5-flash';
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 export default {
   PORT,
@@ -35,4 +36,5 @@ export default {
   BOI_API_ENDPOINT,
   PDF_SIZE_LIMIT,
   LLM_MODEL,
+  GOOGLE_CLIENT_ID,
 };

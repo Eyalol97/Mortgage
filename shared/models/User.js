@@ -11,7 +11,12 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type:     String,
-      required: true,
+      required: false, // not set for Google sign-in users
+    },
+    googleId: {
+      type:   String,
+      unique: true,
+      sparse: true,   // allows multiple docs with no googleId
     },
   },
   {

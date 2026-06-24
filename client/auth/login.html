@@ -128,6 +128,27 @@
     }
 
     .auth-success--visible { display: block; }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin: var(--space-5) 0;
+      color: var(--on-surface-variant);
+      font-size: var(--text-sm);
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--outline-variant);
+    }
+    .auth-google {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--space-2);
+    }
   </style>
 </head>
 <body>
@@ -159,6 +180,12 @@
           aria-controls="form-signup"
           data-i18n="auth.signUp"
         >Sign Up</button>
+      </div>
+
+      <!-- Google Sign-In (works for both login and sign-up) -->
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-google">
+        <div id="google-signin-btn"></div>
       </div>
 
       <!-- Login form -->
@@ -226,6 +253,7 @@
   <script src="/shared/i18n.js"></script>
   <script src="/shared/authClient.js"></script>
   <script src="/shared/navbar.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async onload="initGoogleSignIn()"></script>
 
   <script>
     (function () {
@@ -339,6 +367,45 @@
         }
       });
     }());
+
+    // ── Google Sign-In ──────────────────────────────────────────────────────
+    function initGoogleSignIn() {
+      if (!window.google) return;
+      google.accounts.id.initialize({
+        client_id: '929923220466-0sgci9rmh88e37q5d6sl433t7cjvt2n8.apps.googleusercontent.com',
+        callback:  handleGoogleCredential,
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('google-signin-btn'),
+        { theme: 'outline', size: 'large', width: 336, text: 'continue_with' }
+      );
+    }
+
+    async function handleGoogleCredential(response) {
+      const errorEl = document.getElementById('login-error');
+      errorEl.textContent = '';
+      errorEl.classList.remove('auth-error--visible');
+      try {
+        const res  = await fetch('/api/auth/google', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ credential: response.credential }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errorEl.textContent = data.message || 'Google sign-in failed.';
+          errorEl.classList.add('auth-error--visible');
+          return;
+        }
+        window.Auth.saveToken(data.token);
+        const params = new URLSearchParams(window.location.search);
+        const next   = params.get('redirect');
+        window.location.href = (next && next.startsWith('/')) ? next : '/profile/profile.html';
+      } catch {
+        errorEl.textContent = 'Network error — please try again.';
+        errorEl.classList.add('auth-error--visible');
+      }
+    }
   </script>
 
 </body>
