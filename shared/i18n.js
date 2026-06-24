@@ -95,6 +95,18 @@
       'sim.fieldLabel.duration':       'Duration (years)',
       'sim.fieldLabel.monthlyPayment': 'Monthly Payment',
 
+      // Simulator — comparison table
+      'sim.cmp.annualRate':      'Annual Rate',
+      'sim.cmp.years':           'yrs',
+      'sim.cmp.lowestInterest':  'has the lowest total interest',
+      'sim.fieldLabel.loanAmount': 'Loan Amount',
+
+      // Simulator — PDF hints
+      'sim.pdf.noMixes':    'Solve and save at least 2 investment routes as Mix first to download the comparison PDF.',
+      'sim.pdf.oneMix':     'You have 1 route saved — solve and save one more as Mix to unlock the comparison PDF.',
+      'sim.pdf.generating': 'Generating PDF…',
+      'sim.pdf.error':      'Could not generate PDF. Please try again.',
+
       // Simulator — errors
       'sim.error.noMixes':    'No mixes saved yet.',
       'sim.error.calcFailed': 'Calculation failed.',
@@ -240,6 +252,18 @@
       'sim.fieldLabel.equity':         'הון עצמי',
       'sim.fieldLabel.duration':       'משך (שנים)',
       'sim.fieldLabel.monthlyPayment': 'תשלום חודשי',
+
+      // Simulator — comparison table
+      'sim.cmp.annualRate':      'ריבית שנתית',
+      'sim.cmp.years':           'שנ\'',
+      'sim.cmp.lowestInterest':  'בעל הריבית הכוללת הנמוכה ביותר',
+      'sim.fieldLabel.loanAmount': 'סכום הלוואה',
+
+      // Simulator — PDF hints
+      'sim.pdf.noMixes':    'פתור ושמור לפחות 2 מסלולי השקעה כמיקס לפני הורדת ה-PDF.',
+      'sim.pdf.oneMix':     'יש לך מיקס אחד — פתור ושמור עוד אחד לפתיחת ה-PDF.',
+      'sim.pdf.generating': 'מייצר PDF…',
+      'sim.pdf.error':      'לא ניתן ליצור PDF. אנא נסה שוב.',
 
       // Simulator — errors
       'sim.error.noMixes':    'לא נשמרו מיקסים עדיין.',

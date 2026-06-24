@@ -1,49 +1,49 @@
 'use strict';
 
-// ComparisonTable — renders the side-by-side mix comparison table.
-// Exposes itself on window.ComparisonTable so simulator-ui.js can call it.
-//
-// Assumes the following globals are loaded before this script:
-//   window.formatCurrency — shared/formatCurrency.js (Simha)
-//   window.formatDecimal  — shared/formatDecimal.js  (Simha)
-
 const ComparisonTable = (function () {
 
-  const METHOD_LABELS = {
-    'shpitzer':    'Shpitzer',
-    'keren-shava': 'Equal Principal',
-    'bullet':      'Bullet',
-  };
+  function _t(key, fallback) {
+    return (window.I18n ? window.I18n.t(key) : null) || fallback;
+  }
 
-  const TRACK_LABELS = {
-    'prime-linked': 'Prime-Linked',
-    'fixed':        'Fixed',
-    'cpi-linked':   'CPI-Linked',
-  };
+  function methodLabel(code) {
+    const map = {
+      'shpitzer':    'sim.shpitzer',
+      'keren-shava': 'sim.kerenShava',
+      'bullet':      'sim.bullet',
+    };
+    return map[code] ? _t(map[code], code) : code;
+  }
 
-  // Rows: [label, accessor function]
-  const ROWS = [
-    ['Repayment Method', m => METHOD_LABELS[m.repaymentMethod] || m.repaymentMethod],
-    ['Interest Method',  m => TRACK_LABELS[m.interestMethod]   || m.interestMethod],
-    ['Annual Rate',      m => window.formatDecimal(m.annualRate) + '%'],
-    ['Property Price',   m => window.formatCurrency(m.propertyPrice)],
-    ['Equity',           m => window.formatCurrency(m.equity)],
-    ['Loan Amount',      m => window.formatCurrency(m.loan)],
-    ['Duration',         m => m.duration + ' years'],
-    ['Monthly Payment',  m => window.formatCurrency(m.firstMonthlyPayment)],
-    ['Total Interest',   m => window.formatCurrency(m.totalInterest)],
-    ['Total Payment',    m => window.formatCurrency(m.totalPayment)],
-  ];
+  function trackLabel(code) {
+    const map = {
+      'prime-linked': 'sim.primeLinked',
+      'fixed':        'sim.fixed',
+      'cpi-linked':   'sim.cpiLinked',
+    };
+    return map[code] ? _t(map[code], code) : code;
+  }
+
+  function getRows() {
+    return [
+      [_t('sim.repaymentMethod',    'Repayment Method'), m => methodLabel(m.repaymentMethod)],
+      [_t('sim.interestMethod',     'Interest Method'),  m => trackLabel(m.interestMethod)],
+      [_t('sim.cmp.annualRate',     'Annual Rate'),      m => window.formatDecimal(m.annualRate) + '%'],
+      [_t('sim.fieldLabel.propertyPrice',  'Property Price'),  m => window.formatCurrency(m.propertyPrice)],
+      [_t('sim.fieldLabel.equity',         'Equity'),          m => window.formatCurrency(m.equity)],
+      [_t('sim.fieldLabel.loanAmount',     'Loan Amount'),     m => window.formatCurrency(m.loan)],
+      [_t('sim.fieldLabel.duration',       'Duration'),        m => m.duration + ' ' + _t('sim.cmp.years', 'yrs')],
+      [_t('sim.fieldLabel.monthlyPayment', 'Monthly Payment'), m => window.formatCurrency(m.firstMonthlyPayment)],
+      [_t('sim.col.totalInterest',  'Total Interest'),   m => window.formatCurrency(m.totalInterest)],
+      [_t('sim.col.totalPayment',   'Total Payment'),    m => window.formatCurrency(m.totalPayment)],
+    ];
+  }
 
   const MAX_MIXES = 3;
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-
   function bestMixIndex(mixes) {
     let best = 0;
-    mixes.forEach((m, i) => {
-      if (m && m.totalInterest < mixes[best].totalInterest) best = i;
-    });
+    mixes.forEach((m, i) => { if (m && m.totalInterest < mixes[best].totalInterest) best = i; });
     return best;
   }
 
@@ -54,29 +54,18 @@ const ComparisonTable = (function () {
     return node;
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
-
-  /**
-   * Renders the comparison table into the given container element.
-   *
-   * @param {HTMLElement}  container   Target DOM element (cleared before render).
-   * @param {Array}        mixes       Array of 1–3 mix result objects. Null slots = empty column.
-   * @param {function}     onMixClick  Called with the mix index when a column header is clicked.
-   */
   function render(container, mixes, onMixClick) {
     container.innerHTML = '';
 
-    // Pad to MAX_MIXES slots
     const slots = Array.from({ length: MAX_MIXES }, (_, i) => mixes[i] || null);
     const filledMixes = slots.filter(Boolean);
 
     if (filledMixes.length === 0) {
-      container.textContent = 'No mixes saved yet.';
+      container.textContent = _t('sim.error.noMixes', 'No mixes saved yet.');
       return;
     }
 
     const best = bestMixIndex(filledMixes);
-    // Map best index back into the slots array
     let filledCount = 0;
     const bestSlotIndex = slots.findIndex(s => {
       if (s === null) return false;
@@ -92,24 +81,19 @@ const ComparisonTable = (function () {
     const headerRow = el('tr');
     headerRow.appendChild(el('th', 'comparison-table__label-col', ''));
 
+    const mixWord = _t('sim.mixTab', 'Mix');
     slots.forEach((mix, i) => {
       const th = el('th', 'comparison-table__mix-col');
-
+      th.textContent = mixWord + ' ' + (i + 1);
       if (mix) {
-        th.textContent = `Mix ${i + 1}`;
         th.classList.add('comparison-table__mix-col--filled');
         if (i === bestSlotIndex) th.classList.add('comparison-table__mix-col--best');
-
-        th.addEventListener('click', () => {
-          if (typeof onMixClick === 'function') onMixClick(i);
-        });
-        th.title = 'Click to view amortization schedule';
+        th.addEventListener('click', () => { if (typeof onMixClick === 'function') onMixClick(i); });
+        th.title = _t('sim.cmp.clickToView', 'Click to view amortization schedule');
         th.style.cursor = 'pointer';
       } else {
-        th.textContent = `Mix ${i + 1}`;
         th.classList.add('comparison-table__mix-col--empty');
       }
-
       headerRow.appendChild(th);
     });
 
@@ -118,11 +102,11 @@ const ComparisonTable = (function () {
 
     // ── Data rows ───────────────────────────────────────────────────────────
     const tbody = el('tbody');
+    const ROWS = getRows();
 
     ROWS.forEach(([label, accessor]) => {
       const tr = el('tr');
       tr.appendChild(el('td', 'comparison-table__label', label));
-
       slots.forEach((mix, i) => {
         const td = el('td', 'comparison-table__cell');
         if (mix) {
@@ -134,7 +118,6 @@ const ComparisonTable = (function () {
         }
         tr.appendChild(td);
       });
-
       tbody.appendChild(tr);
     });
 
@@ -142,7 +125,7 @@ const ComparisonTable = (function () {
 
     // ── Best-mix note ───────────────────────────────────────────────────────
     const note = el('p', 'comparison-table__note',
-      `★ Mix ${bestSlotIndex + 1} has the lowest total interest.`);
+      '★ ' + mixWord + ' ' + (bestSlotIndex + 1) + ' ' + _t('sim.cmp.lowestInterest', 'has the lowest total interest') + '.');
 
     container.appendChild(table);
     container.appendChild(note);

@@ -10,7 +10,7 @@ router.post('/', runSimulation);
 // GET /api/simulator/rates — return current market-average rates per track
 router.get('/rates', getRates);
 
-// GET /api/simulator/pdf — generate and download PDF summary
-router.get('/pdf', generatePdf);
+// POST /api/simulator/pdf — generate and download comparison PDF
+router.post('/pdf', generatePdf);
 
 export default router;

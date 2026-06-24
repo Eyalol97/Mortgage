@@ -349,16 +349,54 @@
 
   // ── PDF ────────────────────────────────────────────────────────────────────
 
-  function triggerPdf() {
+  async function triggerPdf() {
     const mixes = getMixes();
-    if (mixes.length === 0) { showMessage('error', _t('sim.error.noMixes', 'No mixes saved yet.')); return; }
-    const encoded = encodeURIComponent(JSON.stringify(mixes));
-    const a       = document.createElement('a');
-    a.href         = '/api/simulator/pdf?mixes=' + encoded;
-    a.download     = 'mortgage-simulation.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+
+    if (mixes.length === 0) {
+      showMessage('info', _t('sim.pdf.noMixes',
+        'Solve and save at least 2 investment routes as Mix first to download the comparison PDF.'));
+      return;
+    }
+    if (mixes.length < 2) {
+      showMessage('info', _t('sim.pdf.oneMix',
+        'You have 1 route saved — solve and save one more as Mix to unlock the comparison PDF.'));
+      return;
+    }
+
+    if (pdfBtn) { pdfBtn.disabled = true; pdfBtn.textContent = _t('sim.pdf.generating', 'Generating PDF…'); }
+
+    try {
+      // Strip schedule (large array not needed for comparison-only PDF)
+      const lean = mixes.map(({ schedule, ...rest }) => rest);
+
+      const res = await fetch('/api/simulator/pdf', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ mixes: lean }),
+      });
+
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        showMessage('error', d.error || _t('sim.pdf.error', 'Could not generate PDF. Please try again.'));
+        return;
+      }
+
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'mortgage-comparison.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      hideMessage();
+
+    } catch {
+      showMessage('error', _t('sim.pdf.error', 'Could not generate PDF. Please check your connection.'));
+    } finally {
+      if (pdfBtn) { pdfBtn.disabled = false; pdfBtn.textContent = _t('sim.downloadPdf', 'Download PDF Summary'); }
+    }
   }
 
   // ── Save as Mix ────────────────────────────────────────────────────────────
