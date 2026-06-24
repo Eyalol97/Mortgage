@@ -258,7 +258,7 @@
       'profile.gender.male':         'זכר',
       'profile.gender.female':       'נקבה',
       'profile.gender.nonBinary':    'לא בינארי',
-      'profile.gender.preferNotToSay': 'מעדיף לא לציין',
+      'profile.gender.preferNotToSay': 'אחר',
       'profile.age':           'גיל',
       'profile.income':        'הכנסה חודשית נטו (₪)',
       'profile.incomeTooltip': 'משמש להערכת מסלולי משכנתא המתאימים לכושר ההחזר שלך.',
