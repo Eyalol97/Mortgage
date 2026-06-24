@@ -5,6 +5,7 @@
   function _activePage() {
     if (_path.includes('/simulator/')) return 'simulator';
     if (_path.includes('/profile/'))   return 'profile';
+    if (_path.includes('/admin/'))     return 'admin';
     return 'bot'; // / and /bot/home.html both map to bot
   }
 
@@ -152,6 +153,22 @@
       langBtn.addEventListener('click', () => {
         if (window.I18n) window.I18n.toggle();
       });
+    }
+
+    // Async: inject Admin link only for the admin user
+    if (_isLoggedIn() && window.Auth) {
+      fetch('/api/auth/me', { headers: window.Auth.getAuthHeaders() })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (!data || !data.isAdmin) return;
+          const ul = root.querySelector('.navbar__links');
+          if (!ul) return;
+          const active = _activePage();
+          const li = document.createElement('li');
+          li.innerHTML = `<a class="navbar__link${active === 'admin' ? ' navbar__link--active' : ''}" href="/admin/admin.html" aria-current="${active === 'admin' ? 'page' : 'false'}">Admin</a>`;
+          ul.appendChild(li);
+        })
+        .catch(() => {});
     }
   }
 
