@@ -36,7 +36,6 @@
   const amortTitle        = document.getElementById('amortization-title');
   const amortTbody        = document.getElementById('amort-tbody');
   const amortToggleWrap   = document.getElementById('amort-toggle-wrap');
-  const amortShowAllBtn   = document.getElementById('amort-show-all-btn');
   const mixTabsContainer  = document.getElementById('mix-tabs');
   const comparisonSection = document.getElementById('comparison-section');
   const comparisonContainer = document.getElementById('comparison-table-container');
@@ -189,16 +188,13 @@
     firstBatch.forEach(row => amortTbody.appendChild(makeAmortRow(row)));
 
     const remaining = schedule.slice(AMORT_DEFAULT_ROWS);
-    if (remaining.length > 0) {
-      if (amortShowAllBtn) {
-        amortShowAllBtn.textContent = _t('sim.showAll', 'Show all') + ' ' + schedule.length + ' ' + _t('sim.months', 'months');
-        const fresh = amortShowAllBtn.cloneNode(true);
-        amortShowAllBtn.parentNode.replaceChild(fresh, amortShowAllBtn);
-        fresh.addEventListener('click', () => {
-          remaining.forEach(row => amortTbody.appendChild(makeAmortRow(row)));
-          hide(amortToggleWrap);
-        });
-      }
+    if (remaining.length > 0 && amortToggleWrap) {
+      const btnLabel = _t('sim.showAll', 'Show all') + ' ' + schedule.length + ' ' + _t('sim.months', 'months');
+      amortToggleWrap.innerHTML = '<button class="btn btn--secondary">' + btnLabel + '</button>';
+      amortToggleWrap.querySelector('button').addEventListener('click', () => {
+        remaining.forEach(row => amortTbody.appendChild(makeAmortRow(row)));
+        hide(amortToggleWrap);
+      });
       show(amortToggleWrap);
     }
 
