@@ -6,6 +6,7 @@
       'nav.signIn':    'Sign In',
       'nav.profile':   'Profile',
       'nav.langBtn':   'עברית',
+      'nav.logout':    'Log out',
 
       // Home — hero
       'home.eyebrow':   'Israeli Mortgage Assistant',
@@ -164,6 +165,7 @@
       'nav.signIn':    'כניסה',
       'nav.profile':   'פרופיל',
       'nav.langBtn':   'English',
+      'nav.logout':    'התנתק',
 
       // Home — hero
       'home.eyebrow':  'עוזר משכנתאות ישראלי',

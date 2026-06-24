@@ -90,10 +90,30 @@
       background-color: #4d7c7a;
       color: #ffffff;
     }
+    .navbar__logout-btn {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #6b7280;
+      background: none;
+      border: 1.5px solid #d1d5db;
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      cursor: pointer;
+      margin-inline-start: 0.25rem;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .navbar__logout-btn:hover {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border-color: #fca5a5;
+    }
     @media (max-width: 480px) {
       .navbar__brand { font-size: 1rem; }
       .navbar__link  { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
       .navbar__lang-btn { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
+      .navbar__logout-btn { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
     }
   `;
 
@@ -125,7 +145,11 @@
       </li>`;
     });
 
-    const langLabel = _t('nav.langBtn', 'עברית');
+    const langLabel    = _t('nav.langBtn', 'עברית');
+    const logoutLabel  = _t('nav.logout', 'Log out');
+    const logoutBtn    = loggedIn
+      ? `<button class="navbar__logout-btn" id="logout-btn" aria-label="Log out">${logoutLabel}</button>`
+      : '';
 
     return `
       <nav class="navbar" aria-label="Main navigation">
@@ -136,6 +160,7 @@
               ${items.join('\n')}
             </ul>
             <button class="navbar__lang-btn" id="lang-toggle-btn" aria-label="Toggle language">${langLabel}</button>
+            ${logoutBtn}
           </div>
         </div>
       </nav>
@@ -153,6 +178,11 @@
       langBtn.addEventListener('click', () => {
         if (window.I18n) window.I18n.toggle();
       });
+    }
+
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => window.Auth.logout());
     }
 
     // Async: inject Admin link only for the admin user
