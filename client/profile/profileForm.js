@@ -48,6 +48,28 @@ const ProfileForm = (function () {
     return str.replace(/,/g, '');
   }
 
+  // Reformat el.value with commas in real-time, preserving cursor position.
+  function _applyCommaFormatting(el) {
+    const cursorPos = el.selectionStart;
+    const oldVal    = el.value;
+    const digitsBeforeCursor = oldVal.slice(0, cursorPos).replace(/\D/g, '').length;
+
+    const digits = oldVal.replace(/\D/g, '');
+    if (!digits) { el.value = ''; return; }
+
+    const formatted = Number(digits).toLocaleString('en-US');
+    el.value = formatted;
+
+    let count  = 0;
+    let newPos = formatted.length;
+    for (let i = 0; i < formatted.length; i++) {
+      if (/\d/.test(formatted[i])) count++;
+      if (count === digitsBeforeCursor) { newPos = i + 1; break; }
+    }
+    if (digitsBeforeCursor === 0) newPos = 0;
+    el.setSelectionRange(newPos, newPos);
+  }
+
   // ── Completion (drives strength bar) ─────────────────────────────────────
 
   function _emitState() {
@@ -120,18 +142,20 @@ const ProfileForm = (function () {
       return;
     }
 
+    // Enter key blurs the field (value stays)
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    });
+
     if (field.currency) {
-      el.addEventListener('focus', () => {
-        el.value = _stripComma(el.value);
-      });
       el.addEventListener('input', () => {
+        _applyCommaFormatting(el);
         const result = _validate(field, el.value);
         _applyFeedback(field.id, result, el.value.trim() !== '');
         _emitState();
       });
       el.addEventListener('blur', () => {
         const result = _validate(field, el.value);
-        if (result.is_valid === true) el.value = _formatComma(el.value);
         _applyFeedback(field.id, result, el.value.trim() !== '');
         _emitState();
       });
