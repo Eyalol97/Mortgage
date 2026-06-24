@@ -190,13 +190,27 @@ async function googleAuth(req, res, next) {
   }
 }
 
+// Returns the set of authorised admin emails from the ADMIN_EMAIL env var.
+// Supports a comma-separated list: "a@x.com,b@x.com"
+function _adminEmails() {
+  if (!env.ADMIN_EMAIL) return new Set();
+  return new Set(
+    env.ADMIN_EMAIL.split(',').map(e => e.toLowerCase().trim()).filter(Boolean)
+  );
+}
+
+export function isAdminEmail(email) {
+  return _adminEmails().has(email);
+}
+
 async function adminMiddleware(req, res, next) {
-  if (!env.ADMIN_EMAIL) {
+  const admins = _adminEmails();
+  if (admins.size === 0) {
     return res.status(503).json({ message: 'Admin access is not configured on this server.' });
   }
   try {
     const user = await User.findById(req.userId).select('email');
-    if (!user || user.email !== env.ADMIN_EMAIL.toLowerCase().trim()) {
+    if (!user || !admins.has(user.email)) {
       return res.status(403).json({ message: 'Admin access required.' });
     }
     next();
