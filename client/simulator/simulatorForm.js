@@ -1,164 +1,138 @@
 'use strict';
 
-// SimulatorForm — manages field state, real-time validation, and request assembly.
-// Exposes itself on window.SimulatorForm so simulator-ui.js can call it.
-//
-// Assumes the following globals are loaded before this script:
-//   window.validationService  — shared/validationService.js  (Eyal)
-//   window.validationMessage  — shared/validationMessage.js  (Eyal)
+// SimulatorForm — tracks field state, emits change events for real-time calculation.
+// Exposed on window.SimulatorForm so simulator-ui.js can call it.
 
 const SimulatorForm = (function () {
 
-  // ── Internal state ────────────────────────────────────────────────────────
+  // ── State ──────────────────────────────────────────────────────────────────
 
   const state = {
     repaymentMethod: null,
     interestMethod:  null,
-    annualRate:      null,  // null = user left empty → backend uses market default
+    annualRate:      null,
     propertyPrice:   null,
     equity:          null,
     duration:        null,
     monthlyPayment:  null,
   };
 
-  const MANDATORY_SELECTS   = ['repaymentMethod', 'interestMethod'];
-  const FINANCIAL_FIELDS    = ['propertyPrice', 'equity', 'duration', 'monthlyPayment'];
-  const ALL_NUMBER_FIELDS   = ['annualRate', ...FINANCIAL_FIELDS];
+  const MANDATORY = ['repaymentMethod', 'interestMethod'];
+  const FINANCIAL = ['propertyPrice', 'equity', 'duration', 'monthlyPayment'];
 
-  let _onStateChange = null;
+  let _onChange = null;
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-
-  function filledFinancialCount() {
-    return FINANCIAL_FIELDS.filter(f => state[f] !== null).length;
-  }
+  // ── Helpers ────────────────────────────────────────────────────────────────
 
   function mandatoryComplete() {
-    return MANDATORY_SELECTS.every(f => state[f] !== null);
+    return MANDATORY.every(f => state[f] !== null);
   }
 
-  function emitState() {
-    if (typeof _onStateChange === 'function') {
-      _onStateChange({
-        filledFinancialCount: filledFinancialCount(),
-        mandatoryComplete:    mandatoryComplete(),
-        canSolve:             mandatoryComplete() && filledFinancialCount() === 3,
-      });
-    }
+  function userFilledCount() {
+    return FINANCIAL.filter(f => state[f] !== null).length;
   }
 
-  function showValidation(el, valid, message) {
-    if (window.validationMessage && typeof window.validationMessage.show === 'function') {
-      window.validationMessage.show(el, valid ? 'success' : 'error', message);
-    }
+  function solvedField() {
+    if (userFilledCount() !== 3) return null;
+    return FINANCIAL.find(f => state[f] === null) || null;
   }
 
-  function runValidation(name, value) {
-    if (window.validationService && typeof window.validationService.validate === 'function') {
-      return window.validationService.validate(name, value);
-    }
-    // Basic fallback
-    if (value === null || value === undefined) return { valid: false, message: 'Required' };
-    if (value <= 0) return { valid: false, message: 'Must be a positive number' };
-    return { valid: true, message: '' };
+  function emit() {
+    if (typeof _onChange !== 'function') return;
+    _onChange({
+      mandatoryComplete: mandatoryComplete(),
+      canSolve:    mandatoryComplete() && userFilledCount() === 3,
+      solvedField: solvedField(),
+      state:       { ...state },
+    });
   }
 
-  // ── Field change handlers ─────────────────────────────────────────────────
+  // ── Handlers ───────────────────────────────────────────────────────────────
 
-  function handleSelectChange(name, el) {
-    const value = el.value || null;
-    state[name] = value;
-    const valid = value !== null;
-    showValidation(el, valid, valid ? '' : 'Please select an option');
-    emitState();
+  function handleSelect(name, el) {
+    state[name] = el.value || null;
+    emit();
   }
 
-  function handleNumberChange(name, el) {
+  function handleNumber(name, el) {
     const raw = el.value.trim();
-
     if (raw === '') {
       state[name] = null;
-      // Empty rate field is intentional — show a soft hint, not an error
-      if (name === 'annualRate') {
-        showValidation(el, true, 'Market default rate will be used');
-      } else {
-        showValidation(el, true, '');
-      }
-      emitState();
-      return;
+    } else {
+      const v = parseFloat(raw);
+      state[name] = (isNaN(v) || v <= 0) ? null : v;
     }
-
-    const parsed = parseFloat(raw);
-
-    if (isNaN(parsed) || parsed <= 0) {
-      state[name] = null;
-      showValidation(el, false, 'Must be a positive number');
-      emitState();
-      return;
-    }
-
-    state[name] = parsed;
-    const result = runValidation(name, parsed);
-    showValidation(el, result.valid, result.message);
-    emitState();
+    emit();
   }
 
-  // ── Public API ────────────────────────────────────────────────────────────
+  // ── Public API ─────────────────────────────────────────────────────────────
 
-  /**
-   * Initialises the form. Must be called once the DOM is ready.
-   * @param {function} onStateChange  Called whenever field state changes.
-   *                                  Receives { filledFinancialCount, mandatoryComplete, canSolve }.
-   */
-  function init(onStateChange) {
-    _onStateChange = onStateChange;
+  function init(onChange) {
+    _onChange = onChange;
 
-    MANDATORY_SELECTS.forEach(name => {
+    MANDATORY.forEach(name => {
       const el = document.getElementById(name);
-      if (!el) return;
-      el.addEventListener('change', () => handleSelectChange(name, el));
+      if (el) el.addEventListener('change', () => handleSelect(name, el));
     });
 
-    ALL_NUMBER_FIELDS.forEach(name => {
+    const rateEl = document.getElementById('annualRate');
+    if (rateEl) {
+      rateEl.addEventListener('input', () => {
+        const v = parseFloat(rateEl.value);
+        state.annualRate = (rateEl.value.trim() === '' || isNaN(v) || v <= 0) ? null : v;
+        emit();
+      });
+    }
+
+    FINANCIAL.forEach(name => {
       const el = document.getElementById(name);
       if (!el) return;
-      el.addEventListener('input', () => handleNumberChange(name, el));
-      el.addEventListener('blur',  () => handleNumberChange(name, el));
+      el.addEventListener('input', () => handleNumber(name, el));
     });
 
-    emitState();
+    emit();
   }
 
-  /**
-   * Returns the assembled request object ready to POST to /api/simulator.
-   * Throws if the form is not in a solvable state.
-   */
+  // Programmatically load a set of values (e.g. when restoring a saved mix).
+  // Pass null for the field that should remain solved/empty.
+  function loadValues(values) {
+    MANDATORY.forEach(name => {
+      const el = document.getElementById(name);
+      if (!el) return;
+      el.value  = values[name] || '';
+      state[name] = el.value || null;
+    });
+
+    const rateEl = document.getElementById('annualRate');
+    if (rateEl) {
+      const rv = values.annualRate;
+      rateEl.value = (rv !== null && rv !== undefined) ? rv : '';
+      const v = parseFloat(rateEl.value);
+      state.annualRate = (rateEl.value.trim() === '' || isNaN(v) || v <= 0) ? null : v;
+    }
+
+    FINANCIAL.forEach(name => {
+      const el = document.getElementById(name);
+      if (!el) return;
+      const v = values[name];
+      el.value    = (v !== null && v !== undefined) ? v : '';
+      const parsed = parseFloat(el.value);
+      state[name] = (el.value.trim() === '' || isNaN(parsed) || parsed <= 0) ? null : parsed;
+    });
+
+    emit();
+  }
+
   function getRequestData() {
-    if (!mandatoryComplete()) {
-      throw new Error('Please select a repayment method and interest method.');
-    }
-    if (filledFinancialCount() !== 3) {
-      throw new Error('Please fill exactly 3 of the 4 financial fields.');
-    }
-
-    return {
-      repaymentMethod: state.repaymentMethod,
-      interestMethod:  state.interestMethod,
-      annualRate:      state.annualRate,      // null → server fetches market default
-      propertyPrice:   state.propertyPrice,
-      equity:          state.equity,
-      duration:        state.duration,
-      monthlyPayment:  state.monthlyPayment,
-    };
+    return { ...state };
   }
 
-  /** Resets all field state (does not clear DOM values — caller handles that). */
   function reset() {
     Object.keys(state).forEach(k => { state[k] = null; });
-    emitState();
+    emit();
   }
 
-  return { init, getRequestData, reset };
+  return { init, loadValues, getRequestData, reset };
 
 })();
 
