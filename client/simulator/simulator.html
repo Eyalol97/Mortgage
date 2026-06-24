@@ -18,7 +18,7 @@
     <div id="disclaimer"></div>
 
     <h1 class="simulator-page__title" data-i18n="sim.title">Mortgage Simulator</h1>
-    <p class="simulator-page__subtitle">
+    <p class="simulator-page__subtitle" data-i18n-html="sim.subtitle">
       Fill in any 3 of the 4 financial fields and press <strong>Solve</strong> to calculate the missing value.
     </p>
 
@@ -62,13 +62,13 @@
         <table class="sim-table">
           <thead>
             <tr>
-              <th>Property Price (₪)</th>
-              <th>Equity (₪)</th>
-              <th>Duration (years)</th>
-              <th>Monthly Payment (₪)</th>
-              <th class="sim-table__th--computed">Loan Amount (₪)</th>
-              <th class="sim-table__th--computed">Total Interest (₪)</th>
-              <th class="sim-table__th--computed">Total Payment (₪)</th>
+              <th data-i18n="sim.col.propertyPrice">Property Price (₪)</th>
+              <th data-i18n="sim.col.equity">Equity (₪)</th>
+              <th data-i18n="sim.col.duration">Duration (yrs)</th>
+              <th data-i18n="sim.col.monthlyPayment">Monthly Payment (₪)</th>
+              <th class="sim-table__th--computed" data-i18n="sim.col.loanAmount">Loan Amount (₪)</th>
+              <th class="sim-table__th--computed" data-i18n="sim.col.totalInterest">Total Interest (₪)</th>
+              <th class="sim-table__th--computed" data-i18n="sim.col.totalPayment">Total Payment (₪)</th>
             </tr>
           </thead>
           <tbody>
@@ -119,11 +119,11 @@
         <table class="sim-amort__table">
           <thead>
             <tr>
-              <th>Month</th>
-              <th>Payment (₪)</th>
-              <th>Principal (₪)</th>
-              <th>Interest (₪)</th>
-              <th>Remaining Balance (₪)</th>
+              <th data-i18n="sim.amortHeader.month">Month</th>
+              <th data-i18n="sim.amortHeader.payment">Payment (₪)</th>
+              <th data-i18n="sim.amortHeader.principal">Principal (₪)</th>
+              <th data-i18n="sim.amortHeader.interest">Interest (₪)</th>
+              <th data-i18n="sim.amortHeader.remainingBalance">Remaining Balance (₪)</th>
             </tr>
           </thead>
           <tbody id="amort-tbody"></tbody>

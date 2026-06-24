@@ -69,12 +69,25 @@
       'sim.downloadPdf':       'Download PDF Summary',
       'sim.mixTab':            'Mix',
 
+      // Simulator — main table column headers
+      'sim.col.propertyPrice':  'Property Price (₪)',
+      'sim.col.equity':         'Equity (₪)',
+      'sim.col.duration':       'Duration (yrs)',
+      'sim.col.monthlyPayment': 'Monthly Payment (₪)',
+      'sim.col.loanAmount':     'Loan Amount (₪)',
+      'sim.col.totalInterest':  'Total Interest (₪)',
+      'sim.col.totalPayment':   'Total Payment (₪)',
+
       // Simulator — amort table headers
-      'sim.amortHeader.month':    'Month',
-      'sim.amortHeader.payment':  'Payment',
-      'sim.amortHeader.principal':'Principal',
-      'sim.amortHeader.interest': 'Interest',
-      'sim.amortHeader.balance':  'Balance',
+      'sim.amortHeader.month':            'Month',
+      'sim.amortHeader.payment':          'Payment (₪)',
+      'sim.amortHeader.principal':        'Principal (₪)',
+      'sim.amortHeader.interest':         'Interest (₪)',
+      'sim.amortHeader.remainingBalance': 'Remaining Balance (₪)',
+
+      // Simulator — show-all button
+      'sim.showAll': 'Show all',
+      'sim.months':  'months',
 
       // Simulator — solved-field labels
       'sim.fieldLabel.propertyPrice':  'Property Price',
@@ -198,12 +211,25 @@
       'sim.downloadPdf':       'הורד סיכום PDF',
       'sim.mixTab':            'מיקס',
 
+      // Simulator — main table column headers
+      'sim.col.propertyPrice':  'מחיר הנכס (₪)',
+      'sim.col.equity':         'הון עצמי (₪)',
+      'sim.col.duration':       'משך (שנים)',
+      'sim.col.monthlyPayment': 'תשלום חודשי (₪)',
+      'sim.col.loanAmount':     'סכום הלוואה (₪)',
+      'sim.col.totalInterest':  'ריבית כוללת (₪)',
+      'sim.col.totalPayment':   'תשלום כולל (₪)',
+
       // Simulator — amort table headers
-      'sim.amortHeader.month':    'חודש',
-      'sim.amortHeader.payment':  'תשלום',
-      'sim.amortHeader.principal':'קרן',
-      'sim.amortHeader.interest': 'ריבית',
-      'sim.amortHeader.balance':  'יתרה',
+      'sim.amortHeader.month':            'חודש',
+      'sim.amortHeader.payment':          'תשלום (₪)',
+      'sim.amortHeader.principal':        'קרן (₪)',
+      'sim.amortHeader.interest':         'ריבית (₪)',
+      'sim.amortHeader.remainingBalance': 'יתרת קרן (₪)',
+
+      // Simulator — show-all button
+      'sim.showAll': 'הצג את כל',
+      'sim.months':  'חודשים',
 
       // Simulator — solved-field labels
       'sim.fieldLabel.propertyPrice':  'מחיר הנכס',
@@ -281,6 +307,8 @@
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       el.placeholder = t(el.dataset.i18nPlaceholder);
     });
+
+    document.dispatchEvent(new CustomEvent('i18n:applied', { detail: { lang: _lang } }));
   }
 
   function toggle() {

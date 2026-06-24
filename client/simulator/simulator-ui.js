@@ -174,7 +174,10 @@
   function renderAmortization(result, mixIdx) {
     if (!amortTbody || !result || !result.schedule) return;
 
-    const label = mixIdx !== null ? 'Amortization Schedule — Mix ' + (mixIdx + 1) : 'Amortization Schedule';
+    const baseLabel = _t('sim.amortSchedule', 'Amortization Schedule');
+    const label = mixIdx !== null
+      ? baseLabel + ' — ' + _t('sim.mixTab', 'Mix') + ' ' + (mixIdx + 1)
+      : baseLabel;
     if (amortTitle) amortTitle.textContent = label;
 
     amortTbody.innerHTML = '';
@@ -187,7 +190,7 @@
     const remaining = schedule.slice(AMORT_DEFAULT_ROWS);
     if (remaining.length > 0) {
       if (amortShowAllBtn) {
-        amortShowAllBtn.textContent = 'Show all ' + schedule.length + ' months';
+        amortShowAllBtn.textContent = _t('sim.showAll', 'Show all') + ' ' + schedule.length + ' ' + _t('sim.months', 'months');
         const fresh = amortShowAllBtn.cloneNode(true);
         amortShowAllBtn.parentNode.replaceChild(fresh, amortShowAllBtn);
         fresh.addEventListener('click', () => {
@@ -359,10 +362,36 @@
     }
   }
 
+  // ── Enter key = Tab ────────────────────────────────────────────────────────
+
+  const TAB_ORDER = ['repaymentMethod', 'interestMethod', 'annualRate',
+                     'propertyPrice', 'equity', 'duration', 'monthlyPayment'];
+
+  function handleEnterAsTab(e) {
+    if (e.key !== 'Enter') return;
+    const idx = TAB_ORDER.indexOf(e.target.id);
+    if (idx === -1) return;
+    e.preventDefault();
+    const next = document.getElementById(TAB_ORDER[idx + 1]);
+    if (next) next.focus();
+  }
+
   // ── Init ───────────────────────────────────────────────────────────────────
 
   function init() {
     window.SimulatorForm.init(onFormChange);
+
+    TAB_ORDER.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('keydown', handleEnterAsTab);
+    });
+
+    document.addEventListener('i18n:applied', () => {
+      if (lastResult) {
+        renderAmortization(lastResult, activeMixIdx);
+        renderMixTabs();
+      }
+    });
 
     FINANCIAL.forEach(id => {
       const el = document.getElementById(id);
