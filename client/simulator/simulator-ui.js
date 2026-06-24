@@ -71,25 +71,38 @@
     FINANCIAL.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
-        if (el.classList.contains('sim-table__input--solved')) el.type = 'number';
         el.classList.remove('sim-table__input--solved');
         el.removeAttribute('readonly');
       }
     });
   }
 
-  function formatField(el) {
-    if (!el || el.id === 'duration' || el.value === '') return;
+  function formatAsYouType(el) {
+    if (!el || el.id === 'duration') return;
     if (el.classList.contains('sim-table__input--solved')) return;
-    const v = parseFloat(String(el.value).replace(/,/g, ''));
-    if (!isNaN(v) && v > 0) {
-      el.type  = 'text';
-      el.value = Math.round(v).toLocaleString('he-IL');
+
+    const cursorPos  = el.selectionStart || 0;
+    const oldVal     = el.value;
+    const digitsOnly = oldVal.replace(/[^0-9]/g, '');
+
+    if (digitsOnly === '') { el.value = ''; return; }
+
+    const formatted = parseInt(digitsOnly, 10).toLocaleString('he-IL');
+    if (formatted === oldVal) return;
+
+    const digitsBeforeCursor = oldVal.slice(0, cursorPos).replace(/[^0-9]/g, '').length;
+    el.value = formatted;
+
+    let newPos = 0, seen = 0;
+    for (let i = 0; i < formatted.length; i++) {
+      if (/[0-9]/.test(formatted[i])) { seen++; if (seen === digitsBeforeCursor) { newPos = i + 1; break; } }
     }
+    if (digitsBeforeCursor === 0) newPos = 0;
+    try { el.setSelectionRange(newPos, newPos); } catch (_) {}
   }
 
   function formatAllInputFields() {
-    FINANCIAL.forEach(id => formatField(document.getElementById(id)));
+    FINANCIAL.forEach(id => formatAsYouType(document.getElementById(id)));
   }
 
   // ── Rate fetching ──────────────────────────────────────────────────────────
@@ -116,13 +129,9 @@
   function renderResults(result, resolvedRate) {
     const solvedEl = document.getElementById(result.solvedField);
     if (solvedEl) {
-      if (result.solvedField === 'duration') {
-        solvedEl.type  = 'number';
-        solvedEl.value = String(result.solvedValue);
-      } else {
-        solvedEl.type  = 'text';
-        solvedEl.value = Math.round(result.solvedValue).toLocaleString('he-IL');
-      }
+      solvedEl.value = result.solvedField === 'duration'
+        ? String(Math.round(result.solvedValue))
+        : Math.round(result.solvedValue).toLocaleString('he-IL');
       solvedEl.classList.add('sim-table__input--solved');
       solvedEl.setAttribute('readonly', true);
     }
@@ -361,20 +370,15 @@
 
       el.addEventListener('focus', () => {
         if (el.classList.contains('sim-table__input--solved')) {
-          el.type  = 'number';
           el.value = '';
           el.classList.remove('sim-table__input--solved');
           el.removeAttribute('readonly');
           el.dispatchEvent(new Event('input'));
-        } else if (el.type === 'text') {
-          const raw = el.value.replace(/,/g, '');
-          el.type  = 'number';
-          el.value = raw;
         }
       });
 
       if (id !== 'duration') {
-        el.addEventListener('blur', () => formatField(el));
+        el.addEventListener('input', () => formatAsYouType(el));
       }
     });
 
