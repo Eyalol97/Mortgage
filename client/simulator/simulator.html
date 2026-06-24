@@ -18,10 +18,8 @@
     <div id="disclaimer"></div>
 
     <h1 class="simulator-page__title" data-i18n="sim.title">Mortgage Simulator</h1>
-    <p class="simulator-page__subtitle" data-i18n="sim.subtitle">
-      Choose a repayment and interest method, then fill in any
-      <strong>3 of the 4</strong> financial fields.
-      The missing value updates automatically.
+    <p class="simulator-page__subtitle">
+      Fill in any 3 of the 4 financial fields and press <strong>Solve</strong> to calculate the missing value.
     </p>
 
     <!-- ── Settings ──────────────────────────────────────────────────────────── -->
@@ -66,9 +64,9 @@
             <tr>
               <th>Property Price (₪)</th>
               <th>Equity (₪)</th>
-              <th class="sim-table__th--computed">Loan Amount (₪)</th>
               <th>Duration (years)</th>
               <th>Monthly Payment (₪)</th>
+              <th class="sim-table__th--computed">Loan Amount (₪)</th>
               <th class="sim-table__th--computed">Total Interest (₪)</th>
               <th class="sim-table__th--computed">Total Payment (₪)</th>
             </tr>
@@ -83,9 +81,6 @@
                 <input type="number" id="equity" class="sim-table__input"
                        min="0" step="1000" placeholder="e.g. 500000" />
               </td>
-              <td class="sim-table__cell--computed">
-                <span id="res-loan">—</span>
-              </td>
               <td>
                 <input type="number" id="duration" class="sim-table__input"
                        min="1" max="30" step="1" placeholder="e.g. 25" />
@@ -93,6 +88,9 @@
               <td>
                 <input type="number" id="monthlyPayment" class="sim-table__input"
                        min="0" step="100" placeholder="e.g. 5500" />
+              </td>
+              <td class="sim-table__cell--computed">
+                <span id="res-loan">—</span>
               </td>
               <td class="sim-table__cell--computed">
                 <span id="res-total-interest">—</span>

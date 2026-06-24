@@ -73,6 +73,7 @@
       if (el) {
         el.classList.remove('sim-table__input--solved');
         el.removeAttribute('readonly');
+        el.type = 'number';
       }
     });
   }
@@ -101,9 +102,13 @@
   function renderResults(result, resolvedRate) {
     const solvedEl = document.getElementById(result.solvedField);
     if (solvedEl) {
-      solvedEl.value = result.solvedField === 'duration'
-        ? String(result.solvedValue)
-        : String(Math.round(result.solvedValue));
+      if (result.solvedField === 'duration') {
+        solvedEl.type  = 'number';
+        solvedEl.value = String(result.solvedValue);
+      } else {
+        solvedEl.type  = 'text';
+        solvedEl.value = Math.round(result.solvedValue).toLocaleString('he-IL');
+      }
       solvedEl.classList.add('sim-table__input--solved');
       solvedEl.setAttribute('readonly', true);
     }
@@ -323,6 +328,7 @@
       if (!el) return;
       el.addEventListener('focus', () => {
         if (el.classList.contains('sim-table__input--solved')) {
+          el.type  = 'number';
           el.value = '';
           el.classList.remove('sim-table__input--solved');
           el.removeAttribute('readonly');
