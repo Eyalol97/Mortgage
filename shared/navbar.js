@@ -15,6 +15,11 @@
       : false;
   }
 
+  // ── i18n helper — safe even if i18n.js not loaded ─────────────────────────
+  function _t(key, fallback) {
+    return (window.I18n ? window.I18n.t(key) : null) || fallback;
+  }
+
   // ── Styles ─────────────────────────────────────────────────────────────────
   const _css = `
     .navbar {
@@ -66,9 +71,28 @@
       background-color: #cfe9e7;
       color: #4d7c7a;
     }
+    .navbar__lang-btn {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #4d7c7a;
+      background: none;
+      border: 1.5px solid #4d7c7a;
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      cursor: pointer;
+      margin-inline-start: 0.5rem;
+      transition: background-color 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .navbar__lang-btn:hover {
+      background-color: #4d7c7a;
+      color: #ffffff;
+    }
     @media (max-width: 480px) {
       .navbar__brand { font-size: 1rem; }
       .navbar__link  { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
+      .navbar__lang-btn { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
     }
   `;
 
@@ -82,10 +106,10 @@
     const loggedIn = _isLoggedIn();
 
     const links = [
-      { id: 'simulator', label: 'Simulator', href: '/simulator/simulator.html' },
+      { id: 'simulator', label: _t('nav.simulator', 'Simulator'), href: '/simulator/simulator.html' },
       {
         id:    'profile',
-        label: loggedIn ? 'Profile' : 'Sign In',
+        label: loggedIn ? _t('nav.profile', 'Profile') : _t('nav.signIn', 'Sign In'),
         href:  loggedIn ? '/profile/profile.html' : '/auth/login.html',
       },
     ];
@@ -100,13 +124,18 @@
       </li>`;
     });
 
+    const langLabel = _t('nav.langBtn', 'עברית');
+
     return `
       <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__inner">
           <a class="navbar__brand" href="/">Guided Clarity</a>
-          <ul class="navbar__links">
-            ${items.join('\n')}
-          </ul>
+          <div style="display:flex;align-items:center;gap:0.25rem;">
+            <ul class="navbar__links">
+              ${items.join('\n')}
+            </ul>
+            <button class="navbar__lang-btn" id="lang-toggle-btn" aria-label="Toggle language">${langLabel}</button>
+          </div>
         </div>
       </nav>
     `;
@@ -117,6 +146,13 @@
     const root = document.getElementById('navbar-root');
     if (!root) return;
     root.innerHTML = _render();
+
+    const langBtn = document.getElementById('lang-toggle-btn');
+    if (langBtn) {
+      langBtn.addEventListener('click', () => {
+        if (window.I18n) window.I18n.toggle();
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

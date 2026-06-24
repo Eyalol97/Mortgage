@@ -281,13 +281,13 @@
 
     <!-- ── Welcome hero ───────────────────────────────────────────────────── -->
     <header class="home-hero" aria-label="Introduction">
-      <p class="home-hero__eyebrow">Israeli Mortgage Assistant</p>
-      <h1 class="home-hero__title">Guided Clarity</h1>
-      <p class="home-hero__subtitle">
+      <p class="home-hero__eyebrow" data-i18n="home.eyebrow">Israeli Mortgage Assistant</p>
+      <h1 class="home-hero__title" data-i18n="home.title">Guided Clarity</h1>
+      <p class="home-hero__subtitle" data-i18n="home.subtitle">
         Ask mortgage questions in plain Hebrew or English — get clear,
         regulation-aware answers instantly. Ready to run the numbers?
       </p>
-      <a href="/simulator/simulator.html" class="home-hero__cta">Open Simulator →</a>
+      <a href="/simulator/simulator.html" class="home-hero__cta" data-i18n="home.cta">Open Simulator →</a>
     </header>
 
     <!-- ── Bot interface ──────────────────────────────────────────────────── -->
@@ -297,7 +297,7 @@
         <div id="chat-window">
           <div class="chat-container">
 
-            <div class="bubble bubble-bot">
+            <div class="bubble bubble-bot" data-i18n="home.greeting">
               Hi! I'm your Mortgage Assistant. I can help you understand mortgage concepts, interest rate tracks, Bank of Israel regulations, and more. What would you like to know?
             </div>
 
@@ -308,20 +308,20 @@
           </div>
         </div>
 
-        <p class="chips-label">Suggested topics</p>
+        <p class="chips-label" data-i18n="home.chipsLabel">Suggested topics</p>
         <div id="chips-container">
-          <button class="chip" data-query="What is amortization?">What is amortization?</button>
-          <button class="chip" data-query="What are the mortgage track types?">Mortgage track types</button>
-          <button class="chip" data-query="How does the Bank of Israel prime rate work?">Prime rate explained</button>
-          <button class="chip" data-query="What is LTV (Loan to Value)?">What is LTV?</button>
-          <button class="chip" data-query="Fixed vs variable interest rate">Fixed vs variable rate</button>
-          <button class="chip" data-query="How is monthly payment calculated?">Monthly payment</button>
+          <button class="chip" data-query="What is amortization?" data-i18n="home.chip.amortization">What is amortization?</button>
+          <button class="chip" data-query="What are the mortgage track types?" data-i18n="home.chip.tracks">Mortgage track types</button>
+          <button class="chip" data-query="How does the Bank of Israel prime rate work?" data-i18n="home.chip.prime">Prime rate explained</button>
+          <button class="chip" data-query="What is LTV (Loan to Value)?" data-i18n="home.chip.ltv">What is LTV?</button>
+          <button class="chip" data-query="Fixed vs variable interest rate" data-i18n="home.chip.fixedVsVariable">Fixed vs variable rate</button>
+          <button class="chip" data-query="How is monthly payment calculated?" data-i18n="home.chip.monthlyPayment">Monthly payment</button>
         </div>
 
-        <p class="follow-ups-label" id="follow-ups-label" style="display:none">Follow-up questions</p>
+        <p class="follow-ups-label" id="follow-ups-label" style="display:none" data-i18n="home.followUpsLabel">Follow-up questions</p>
         <div id="follow-up-buttons"></div>
 
-        <div id="disclaimer-box" class="disclaimer">
+        <div id="disclaimer-box" class="disclaimer" data-i18n="home.disclaimer">
           This response is for educational purposes only and does not constitute financial advice. Please consult a licensed mortgage advisor before making any decisions.
         </div>
 
@@ -329,6 +329,7 @@
           <textarea
             id="chat-input"
             placeholder="Ask a mortgage question…"
+            data-i18n-placeholder="home.inputPlaceholder"
             rows="1"
             aria-label="Chat input"
           ></textarea>
@@ -344,6 +345,7 @@
 
   </div>
 
+  <script src="/shared/i18n.js"></script>
   <script src="/shared/authClient.js"></script>
   <script src="/shared/navbar.js"></script>
   <script src="/shared/inputField.js"></script>

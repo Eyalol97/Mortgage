@@ -214,12 +214,12 @@
       <section id="onboarding-section" aria-label="Profile setup">
         <div class="profile-onboarding card card-elevated">
           <span class="profile-onboarding__icon" aria-hidden="true">👤</span>
-          <h1>Build Your Financial Profile</h1>
-          <p>
+          <h1 data-i18n="profile.buildTitle">Build Your Financial Profile</h1>
+          <p data-i18n="profile.buildDesc">
             Your profile personalises mortgage simulations and bot answers
             to your actual situation. It only takes a minute.
           </p>
-          <button id="cta-btn" class="btn btn-primary">
+          <button id="cta-btn" class="btn btn-primary" data-i18n="profile.getStarted">
             Get Started
           </button>
         </div>
@@ -231,14 +231,14 @@
       <section id="form-section" hidden aria-label="Profile form">
 
         <div class="profile-form-header">
-          <h1>Your Financial Profile</h1>
-          <p>Kept private — used only to improve your results.</p>
+          <h1 data-i18n="profile.formTitle">Your Financial Profile</h1>
+          <p data-i18n="profile.formDesc">Kept private — used only to improve your results.</p>
         </div>
 
         <!-- Profile strength indicator -->
         <div class="strength-indicator">
           <div class="strength-indicator__header">
-            <span class="strength-indicator__title">Profile Strength</span>
+            <span class="strength-indicator__title" data-i18n="profile.strength">Profile Strength</span>
             <span id="strength-label" aria-live="polite">0%</span>
           </div>
           <div class="strength-indicator__track">
@@ -269,7 +269,7 @@
                 step="500"
                 aria-label="Monthly net income in shekels"
               />
-              <label for="income" class="input-label">Monthly Net Income (₪)</label>
+              <label for="income" class="input-label" data-i18n="profile.income">Monthly Net Income (₪)</label>
             </div>
             <button
               type="button"
@@ -277,7 +277,7 @@
               aria-label="Why do we need your income?"
               data-tooltip="tooltip-income"
             >?</button>
-            <div id="tooltip-income" class="field-row__tooltip-text" role="tooltip">
+            <div id="tooltip-income" class="field-row__tooltip-text" role="tooltip" data-i18n="profile.incomeTooltip">
               Used to estimate which mortgage tracks fit your repayment capacity.
             </div>
           </div>
@@ -295,7 +295,7 @@
                 step="10000"
                 aria-label="Available equity or down payment in shekels"
               />
-              <label for="equity" class="input-label">Equity / Down Payment (₪)</label>
+              <label for="equity" class="input-label" data-i18n="profile.equity">Equity / Down Payment (₪)</label>
             </div>
             <button
               type="button"
@@ -303,7 +303,7 @@
               aria-label="Why do we need your equity?"
               data-tooltip="tooltip-equity"
             >?</button>
-            <div id="tooltip-equity" class="field-row__tooltip-text" role="tooltip">
+            <div id="tooltip-equity" class="field-row__tooltip-text" role="tooltip" data-i18n="profile.equityTooltip">
               Determines your loan-to-value ratio and the mortgage tracks you qualify for.
             </div>
           </div>
@@ -321,7 +321,7 @@
                 step="10000"
                 aria-label="Total savings in shekels"
               />
-              <label for="savings" class="input-label">Total Savings (₪)</label>
+              <label for="savings" class="input-label" data-i18n="profile.savings">Total Savings (₪)</label>
             </div>
             <button
               type="button"
@@ -329,7 +329,7 @@
               aria-label="Why do we need your savings?"
               data-tooltip="tooltip-savings"
             >?</button>
-            <div id="tooltip-savings" class="field-row__tooltip-text" role="tooltip">
+            <div id="tooltip-savings" class="field-row__tooltip-text" role="tooltip" data-i18n="profile.savingsTooltip">
               Helps calculate how long until you reach your target equity level.
             </div>
           </div>
@@ -347,7 +347,7 @@
                 step="1"
                 aria-label="Number of people in household"
               />
-              <label for="householdSize" class="input-label">Household Size (people)</label>
+              <label for="householdSize" class="input-label" data-i18n="profile.householdSize">Household Size (people)</label>
             </div>
             <button
               type="button"
@@ -355,14 +355,14 @@
               aria-label="Why do we need your household size?"
               data-tooltip="tooltip-householdSize"
             >?</button>
-            <div id="tooltip-householdSize" class="field-row__tooltip-text" role="tooltip">
+            <div id="tooltip-householdSize" class="field-row__tooltip-text" role="tooltip" data-i18n="profile.householdTooltip">
               Affects affordability estimates and eligibility for certain mortgage grants.
             </div>
           </div>
 
           <!-- Actions — save button; ValidationMessage anchors here on error -->
           <div class="profile-form__actions">
-            <button id="save-btn" type="button" class="btn btn-primary">
+            <button id="save-btn" type="button" class="btn btn-primary" data-i18n="profile.saveBtn">
               Save Profile
             </button>
           </div>
@@ -376,14 +376,14 @@
       <section id="confirmation-section" hidden aria-label="Profile saved">
         <div class="profile-confirmation card card-elevated">
           <span class="profile-confirmation__icon" aria-hidden="true">✓</span>
-          <h2>Profile Saved!</h2>
-          <p>
+          <h2 data-i18n="profile.savedTitle">Profile Saved!</h2>
+          <p data-i18n="profile.savedDesc">
             Your financial details are saved. The Mortgage Bot and Simulator
             will now tailor results to your profile.
           </p>
           <div class="profile-confirmation__links">
-            <a href="/" class="btn btn-primary">Go to Mortgage Bot</a>
-            <a href="/simulator/simulator.html" class="btn btn-secondary">Open Simulator</a>
+            <a href="/" class="btn btn-primary" data-i18n="profile.goToBot">Go to Mortgage Bot</a>
+            <a href="/simulator/simulator.html" class="btn btn-secondary" data-i18n="profile.openSimulator">Open Simulator</a>
           </div>
         </div>
       </section>
@@ -391,6 +391,7 @@
     </main>
   </div>
 
+  <script src="/shared/i18n.js"></script>
   <script src="/shared/authClient.js"></script>
   <script>
     // Guard before any profile modules load — guests go to the login page

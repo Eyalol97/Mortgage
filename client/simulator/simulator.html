@@ -17,8 +17,8 @@
 
     <div id="disclaimer"></div>
 
-    <h1 class="simulator-page__title">Mortgage Simulator</h1>
-    <p class="simulator-page__subtitle">
+    <h1 class="simulator-page__title" data-i18n="sim.title">Mortgage Simulator</h1>
+    <p class="simulator-page__subtitle" data-i18n-html="sim.subtitle">
       Fill in any 3 of the 4 financial fields and press <strong>Solve</strong>
       to calculate the missing value.
     </p>
@@ -27,72 +27,72 @@
     <section class="simulator-form" aria-label="Mortgage inputs">
 
       <div class="simulator-form__mandatory">
-        <h2 class="simulator-form__section-title">Loan Settings</h2>
+        <h2 class="simulator-form__section-title" data-i18n="sim.loanSettings">Loan Settings</h2>
 
         <div class="simulator-form__field">
-          <label for="repaymentMethod">Repayment Method</label>
+          <label for="repaymentMethod" data-i18n="sim.repaymentMethod">Repayment Method</label>
           <select id="repaymentMethod" name="repaymentMethod">
-            <option value="">— Select —</option>
-            <option value="shpitzer">Shpitzer (Fixed Payment)</option>
-            <option value="keren-shava">Equal Principal (Keren Shava)</option>
-            <option value="bullet">Bullet (Interest Only)</option>
+            <option value="" data-i18n="sim.selectDefault">— Select —</option>
+            <option value="shpitzer" data-i18n="sim.shpitzer">Shpitzer (Fixed Payment)</option>
+            <option value="keren-shava" data-i18n="sim.kerenShava">Equal Principal (Keren Shava)</option>
+            <option value="bullet" data-i18n="sim.bullet">Bullet (Interest Only)</option>
           </select>
         </div>
 
         <div class="simulator-form__field">
-          <label for="interestMethod">Interest Method</label>
+          <label for="interestMethod" data-i18n="sim.interestMethod">Interest Method</label>
           <select id="interestMethod" name="interestMethod">
-            <option value="">— Select —</option>
-            <option value="prime-linked">Prime-Linked</option>
-            <option value="fixed">Fixed</option>
-            <option value="cpi-linked">CPI-Linked</option>
+            <option value="" data-i18n="sim.selectDefault">— Select —</option>
+            <option value="prime-linked" data-i18n="sim.primeLinked">Prime-Linked</option>
+            <option value="fixed" data-i18n="sim.fixed">Fixed</option>
+            <option value="cpi-linked" data-i18n="sim.cpiLinked">CPI-Linked</option>
           </select>
         </div>
 
         <div class="simulator-form__field">
-          <label for="annualRate">Annual Interest Rate (%) <span class="simulator-form__optional">— optional, leave empty for market default</span></label>
+          <label for="annualRate"><span data-i18n="sim.annualRate">Annual Interest Rate (%)</span> <span class="simulator-form__optional" data-i18n="sim.annualRateHint">— optional, leave empty for market default</span></label>
           <input type="number" id="annualRate" name="annualRate"
                  min="0" step="0.01" placeholder="e.g. 4.5" />
         </div>
       </div>
 
       <div class="simulator-form__financial">
-        <h2 class="simulator-form__section-title">Financial Fields <span class="simulator-form__hint">(fill exactly 3 of 4)</span></h2>
+        <h2 class="simulator-form__section-title"><span data-i18n="sim.financialFields">Financial Fields</span> <span class="simulator-form__hint" data-i18n="sim.fill3of4">(fill exactly 3 of 4)</span></h2>
 
         <div class="simulator-form__field">
-          <label for="propertyPrice">Property Price (₪)</label>
+          <label for="propertyPrice" data-i18n="sim.propertyPrice">Property Price (₪)</label>
           <input type="number" id="propertyPrice" name="propertyPrice"
                  min="0" step="1000" placeholder="e.g. 2000000" />
         </div>
 
         <div class="simulator-form__field">
-          <label for="equity">Equity / Down Payment (₪)</label>
+          <label for="equity" data-i18n="sim.equity">Equity / Down Payment (₪)</label>
           <input type="number" id="equity" name="equity"
                  min="0" step="1000" placeholder="e.g. 600000" />
         </div>
 
         <div class="simulator-form__field">
-          <label for="duration">Loan Duration (years)</label>
+          <label for="duration" data-i18n="sim.duration">Loan Duration (years)</label>
           <input type="number" id="duration" name="duration"
                  min="1" max="30" step="1" placeholder="e.g. 25" />
         </div>
 
         <div class="simulator-form__field">
-          <label for="monthlyPayment">Monthly Payment (₪)</label>
+          <label for="monthlyPayment" data-i18n="sim.monthlyPayment">Monthly Payment (₪)</label>
           <input type="number" id="monthlyPayment" name="monthlyPayment"
                  min="0" step="100" placeholder="e.g. 5500" />
         </div>
       </div>
 
       <div class="simulator-form__actions">
-        <button id="solve-btn" class="btn btn--primary" disabled>Solve</button>
+        <button id="solve-btn" class="btn btn--primary" disabled data-i18n="sim.solve">Solve</button>
       </div>
 
     </section>
 
     <!-- ── Results ───────────────────────────────────────────────────────── -->
     <section id="results-section" class="simulator-results" hidden aria-live="polite">
-      <h2 class="simulator-results__title">Results</h2>
+      <h2 class="simulator-results__title" data-i18n="sim.results">Results</h2>
 
       <div class="simulator-results__solved">
         <span class="simulator-results__solved-label" id="results-solved-label"></span>:
@@ -101,54 +101,55 @@
 
       <div class="simulator-results__summary">
         <div class="simulator-results__item">
-          <span class="simulator-results__item-label">Monthly Payment</span>
+          <span class="simulator-results__item-label" data-i18n="sim.monthlyPaymentLabel">Monthly Payment</span>
           <span class="simulator-results__item-value" id="results-monthly-payment">—</span>
         </div>
         <div class="simulator-results__item">
-          <span class="simulator-results__item-label">Total Interest</span>
+          <span class="simulator-results__item-label" data-i18n="sim.totalInterest">Total Interest</span>
           <span class="simulator-results__item-value" id="results-total-interest">—</span>
         </div>
         <div class="simulator-results__item">
-          <span class="simulator-results__item-label">Total Payment</span>
+          <span class="simulator-results__item-label" data-i18n="sim.totalPayment">Total Payment</span>
           <span class="simulator-results__item-value" id="results-total-payment">—</span>
         </div>
       </div>
 
       <div class="simulator-results__actions">
-        <button id="show-amort-btn" class="btn btn--secondary">View Amortization Schedule</button>
-        <button id="save-mix-btn"   class="btn btn--secondary" hidden>Save as Mix</button>
+        <button id="show-amort-btn" class="btn btn--secondary" data-i18n="sim.viewAmort">View Amortization Schedule</button>
+        <button id="save-mix-btn"   class="btn btn--secondary" hidden data-i18n="sim.saveAsMix">Save as Mix</button>
       </div>
     </section>
 
     <!-- ── Mix manager ───────────────────────────────────────────────────── -->
     <section class="mix-manager" aria-label="Saved mixes">
       <div id="mix-tabs" class="mix-manager__tabs"></div>
-      <button id="show-comparison-btn" class="btn btn--secondary" hidden>
+      <button id="show-comparison-btn" class="btn btn--secondary" hidden data-i18n="sim.compareAll">
         Compare All Mixes
       </button>
     </section>
 
     <!-- ── Comparison table ──────────────────────────────────────────────── -->
     <section id="comparison-section" class="simulator-comparison" hidden aria-label="Mix comparison">
-      <h2 class="simulator-comparison__title">Mix Comparison</h2>
+      <h2 class="simulator-comparison__title" data-i18n="sim.mixComparison">Mix Comparison</h2>
       <div id="comparison-table-container"></div>
     </section>
 
     <!-- ── Amortization schedule ─────────────────────────────────────────── -->
     <section id="amortization-section" class="simulator-amort" hidden aria-label="Amortization schedule">
-      <h2 id="amortization-title" class="simulator-amort__title">Amortization Schedule</h2>
+      <h2 id="amortization-title" class="simulator-amort__title" data-i18n="sim.amortSchedule">Amortization Schedule</h2>
       <div id="amortization-table-container" class="simulator-amort__table-wrapper"></div>
     </section>
 
     <!-- ── PDF download ──────────────────────────────────────────────────── -->
     <div class="simulator-pdf">
-      <button id="pdf-btn" class="btn btn--secondary" hidden>
+      <button id="pdf-btn" class="btn btn--secondary" hidden data-i18n="sim.downloadPdf">
         Download PDF Summary
       </button>
     </div>
 
   </main>
 
+  <script src="/shared/i18n.js"></script>
   <script src="/shared/authClient.js"></script>
   <script src="/shared/navbar.js"></script>
   <script src="/shared/formatCurrency.js"></script>

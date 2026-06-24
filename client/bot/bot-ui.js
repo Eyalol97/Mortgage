@@ -6,9 +6,15 @@
   const followUpContainer = document.getElementById('follow-up-buttons');
   const followUpsLabel    = document.getElementById('follow-ups-label');
 
-  const OUT_OF_DOMAIN_MSG =
-    "I can only help with mortgage-related questions — concepts, interest rate tracks, " +
-    "loan types, or Bank of Israel regulations. Please try a different question.";
+  function _outOfDomainMsg() {
+    return window.I18n ? window.I18n.t('bot.outOfDomain')
+      : "I can only help with mortgage-related questions — concepts, interest rate tracks, loan types, or Bank of Israel regulations. Please try a different question.";
+  }
+
+  function _networkErrMsg() {
+    return window.I18n ? window.I18n.t('bot.networkError')
+      : 'Sorry, something went wrong reaching the server. Please try again.';
+  }
 
   // ── session clear on page exit ──────────────────────────────────────────────
   window.addEventListener('beforeunload', () => {
@@ -57,9 +63,7 @@
       _handleDecision(data);
     } catch {
       ChatWindow.hideTyping();
-      ChatWindow.appendBotMessage(
-        'Sorry, something went wrong reaching the server. Please try again.'
-      );
+      ChatWindow.appendBotMessage(_networkErrMsg());
     } finally {
       ChatInput.unlock();
     }
@@ -80,11 +84,11 @@
         break;
 
       case 'OUT_OF_DOMAIN':
-        ChatWindow.appendBotMessage(OUT_OF_DOMAIN_MSG);
+        ChatWindow.appendBotMessage(_outOfDomainMsg());
         break;
 
       default:
-        ChatWindow.appendBotMessage(reply || OUT_OF_DOMAIN_MSG);
+        ChatWindow.appendBotMessage(reply || _outOfDomainMsg());
     }
   }
 

@@ -149,6 +149,7 @@
           role="tab"
           aria-selected="true"
           aria-controls="form-login"
+          data-i18n="auth.signIn"
         >Sign In</button>
         <button
           id="tab-signup"
@@ -156,13 +157,14 @@
           role="tab"
           aria-selected="false"
           aria-controls="form-signup"
+          data-i18n="auth.signUp"
         >Sign Up</button>
       </div>
 
       <!-- Login form -->
       <div id="form-login" class="auth-form auth-form--active" role="tabpanel" aria-labelledby="tab-login">
         <div class="auth-form__group">
-          <label class="auth-form__label" for="login-email">Email</label>
+          <label class="auth-form__label" for="login-email" data-i18n="auth.email">Email</label>
           <input
             id="login-email"
             class="auth-form__input"
@@ -172,7 +174,7 @@
           />
         </div>
         <div class="auth-form__group">
-          <label class="auth-form__label" for="login-password">Password</label>
+          <label class="auth-form__label" for="login-password" data-i18n="auth.password">Password</label>
           <input
             id="login-password"
             class="auth-form__input"
@@ -181,7 +183,7 @@
             placeholder="••••••••"
           />
         </div>
-        <button id="login-btn" class="btn btn-primary auth-form__submit">Sign In</button>
+        <button id="login-btn" class="btn btn-primary auth-form__submit" data-i18n="auth.loginBtn">Sign In</button>
         <div id="login-error"   class="auth-error"></div>
         <div id="login-success" class="auth-success"></div>
       </div>
@@ -189,7 +191,7 @@
       <!-- Sign-up form -->
       <div id="form-signup" class="auth-form" role="tabpanel" aria-labelledby="tab-signup">
         <div class="auth-form__group">
-          <label class="auth-form__label" for="signup-email">Email</label>
+          <label class="auth-form__label" for="signup-email" data-i18n="auth.email">Email</label>
           <input
             id="signup-email"
             class="auth-form__input"
@@ -199,20 +201,21 @@
           />
         </div>
         <div class="auth-form__group">
-          <label class="auth-form__label" for="signup-password">Password</label>
+          <label class="auth-form__label" for="signup-password" data-i18n="auth.password">Password</label>
           <input
             id="signup-password"
             class="auth-form__input"
             type="password"
             autocomplete="new-password"
             placeholder="At least 8 characters"
+            data-i18n-placeholder="auth.signupPassPlaceholder"
             minlength="8"
           />
-          <p style="font-size:var(--text-xs);color:var(--on-surface-variant);margin-top:0.25rem;">
+          <p style="font-size:var(--text-xs);color:var(--on-surface-variant);margin-top:0.25rem;" data-i18n="auth.passwordHint">
             Use a unique password you don't use elsewhere.
           </p>
         </div>
-        <button id="signup-btn" class="btn btn-primary auth-form__submit">Create Account</button>
+        <button id="signup-btn" class="btn btn-primary auth-form__submit" data-i18n="auth.createBtn">Create Account</button>
         <div id="signup-error"   class="auth-error"></div>
         <div id="signup-success" class="auth-success"></div>
       </div>
@@ -220,6 +223,7 @@
     </div>
   </div>
 
+  <script src="/shared/i18n.js"></script>
   <script src="/shared/authClient.js"></script>
   <script src="/shared/navbar.js"></script>
 
@@ -276,7 +280,7 @@
         const password = document.getElementById('login-password').value;
 
         if (!email || !password) {
-          showError('login-error', 'Please enter your email and password.');
+          showError('login-error', window.I18n ? window.I18n.t('auth.error.missingFields') : 'Please enter your email and password.');
           return;
         }
 
@@ -287,11 +291,11 @@
             body:    JSON.stringify({ email, password }),
           });
           const data = await res.json();
-          if (!res.ok) { showError('login-error', data.message || 'Sign in failed.'); return; }
+          if (!res.ok) { showError('login-error', data.message || (window.I18n ? window.I18n.t('auth.error.loginFailed') : 'Sign in failed.')); return; }
           window.Auth.saveToken(data.token);
           _redirectAfterLogin();
         } catch {
-          showError('login-error', 'Network error — please try again.');
+          showError('login-error', window.I18n ? window.I18n.t('auth.error.network') : 'Network error — please try again.');
         }
       });
 
@@ -302,11 +306,11 @@
         const password = document.getElementById('signup-password').value;
 
         if (!email || !password) {
-          showError('signup-error', 'Please enter your email and password.');
+          showError('signup-error', window.I18n ? window.I18n.t('auth.error.missingFields') : 'Please enter your email and password.');
           return;
         }
         if (password.length < 8) {
-          showError('signup-error', 'Password must be at least 8 characters.');
+          showError('signup-error', window.I18n ? window.I18n.t('auth.error.shortPassword') : 'Password must be at least 8 characters.');
           return;
         }
 
@@ -317,11 +321,11 @@
             body:    JSON.stringify({ email, password }),
           });
           const data = await res.json();
-          if (!res.ok) { showError('signup-error', data.message || 'Sign up failed.'); return; }
+          if (!res.ok) { showError('signup-error', data.message || (window.I18n ? window.I18n.t('auth.error.signupFailed') : 'Sign up failed.')); return; }
           window.Auth.saveToken(data.token);
           _redirectAfterLogin();
         } catch {
-          showError('signup-error', 'Network error — please try again.');
+          showError('signup-error', window.I18n ? window.I18n.t('auth.error.network') : 'Network error — please try again.');
         }
       });
 

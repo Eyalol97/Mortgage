@@ -54,10 +54,7 @@ async function respond(query, history, { advisory = false } = {}) {
     console.error('[mortgageBotHandler] generateContent failed:', {
       model: LLM_MODEL, status: apiErr.status, message: apiErr.message,
     });
-    return {
-      reply:     `[Debug-API] ${apiErr.status || 'err'}: ${(apiErr.message || '').slice(0, 100)}`,
-      followUps: [],
-    };
+    return { reply: "I'm having trouble reaching my knowledge base right now. Please try again in a moment.", followUps: [] };
   }
 
   let raw;
@@ -66,13 +63,9 @@ async function respond(query, history, { advisory = false } = {}) {
   } catch (textErr) {
     const candidate = result.response.candidates?.[0];
     console.error('[mortgageBotHandler] response.text() threw:', {
-      finishReason: candidate?.finishReason,
-      textErr: textErr.message,
+      finishReason: candidate?.finishReason, message: textErr.message,
     });
-    return {
-      reply:     `[Debug-Text] finishReason=${candidate?.finishReason || '?'} ${textErr.message?.slice(0, 80)}`,
-      followUps: [],
-    };
+    return { reply: "I'm having trouble reaching my knowledge base right now. Please try again in a moment.", followUps: [] };
   }
 
   return _parseResponse(raw);

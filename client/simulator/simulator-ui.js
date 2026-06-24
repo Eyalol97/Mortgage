@@ -67,9 +67,13 @@
     }
   }
 
+  function _t(key, fallback) {
+    return (window.I18n ? window.I18n.t(key) : null) || fallback;
+  }
+
   function setLoading(isLoading) {
     solveBtn.disabled = isLoading;
-    solveBtn.textContent = isLoading ? 'Calculating…' : 'Solve';
+    solveBtn.textContent = isLoading ? _t('sim.calculating', 'Calculating…') : _t('sim.solve', 'Solve');
   }
 
   function show(el) { if (el) el.hidden = false; }
@@ -77,15 +81,8 @@
 
   // ── Results display ───────────────────────────────────────────────────────
 
-  const FIELD_LABELS = {
-    propertyPrice:  'Property Price',
-    equity:         'Equity',
-    duration:       'Duration (years)',
-    monthlyPayment: 'Monthly Payment',
-  };
-
   function renderResults(result) {
-    if (solvedLabel) solvedLabel.textContent = FIELD_LABELS[result.solvedField] || result.solvedField;
+    if (solvedLabel) solvedLabel.textContent = _t(`sim.fieldLabel.${result.solvedField}`, result.solvedField);
     if (solvedValue) solvedValue.textContent = window.formatCurrency(result.solvedValue);
     if (monthlyPayment) monthlyPayment.textContent = window.formatCurrency(result.firstMonthlyPayment);
     if (totalInterest)  totalInterest.textContent  = window.formatCurrency(result.totalInterest);
@@ -104,7 +101,7 @@
     mixes.forEach((mix, i) => {
       const btn = document.createElement('button');
       btn.className = 'mix-tab' + (i === activeMixIdx ? ' mix-tab--active' : '');
-      btn.textContent = `Mix ${i + 1}`;
+      btn.textContent = `${_t('sim.mixTab', 'Mix')} ${i + 1}`;
       btn.addEventListener('click', () => switchToMix(i));
       mixTabsContainer.appendChild(btn);
     });
@@ -128,7 +125,7 @@
 
   function renderAmortization(mix) {
     if (!amortContainer) return;
-    if (amortTitle) amortTitle.textContent = `Amortization Schedule — Mix ${activeMixIdx + 1}`;
+    if (amortTitle) amortTitle.textContent = `${_t('sim.amortSchedule', 'Amortization Schedule')} — ${_t('sim.mixTab', 'Mix')} ${activeMixIdx + 1}`;
 
     const schedule = mix.schedule || [];
     const table = document.createElement('table');
@@ -138,11 +135,11 @@
     const thead = document.createElement('thead');
     thead.innerHTML = `
       <tr>
-        <th>Month</th>
-        <th>Payment</th>
-        <th>Principal</th>
-        <th>Interest</th>
-        <th>Balance</th>
+        <th>${_t('sim.amortHeader.month', 'Month')}</th>
+        <th>${_t('sim.amortHeader.payment', 'Payment')}</th>
+        <th>${_t('sim.amortHeader.principal', 'Principal')}</th>
+        <th>${_t('sim.amortHeader.interest', 'Interest')}</th>
+        <th>${_t('sim.amortHeader.balance', 'Balance')}</th>
       </tr>`;
     table.appendChild(thead);
 
@@ -170,7 +167,7 @@
 
   function triggerPdfDownload() {
     const mixes = getMixes();
-    if (mixes.length === 0) { showError('No mixes saved yet.'); return; }
+    if (mixes.length === 0) { showError(_t('sim.error.noMixes', 'No mixes saved yet.')); return; }
     const encoded = encodeURIComponent(JSON.stringify(mixes));
     const link = document.createElement('a');
     link.href = `/api/simulator/pdf?mixes=${encoded}`;
@@ -203,7 +200,7 @@
       const data = await res.json();
 
       if (!res.ok) {
-        const msg = (data.errors && data.errors.map(e => e.message || e).join(', ')) || data.error || 'Calculation failed.';
+        const msg = (data.errors && data.errors.map(e => e.message || e).join(', ')) || data.error || _t('sim.error.calcFailed', 'Calculation failed.');
         showError(msg);
         return;
       }
@@ -215,7 +212,7 @@
       hide(amortSection);
 
     } catch (err) {
-      showError('Network error — please try again.');
+      showError(_t('sim.error.network', 'Network error — please try again.'));
     } finally {
       setLoading(false);
     }

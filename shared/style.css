@@ -250,3 +250,42 @@ h1, h2, h3 {
   }
   h1 { font-size: var(--text-2xl); }
 }
+
+/* ── RTL overrides (Hebrew mode) ─────────────────────────────────────────── */
+
+/* Floating label position */
+html[dir="rtl"] .input-label {
+  left: auto;
+  right: 0.75rem;
+}
+
+/* Bot bubble: flip the border accent to inline-end */
+html[dir="rtl"] .bubble-bot {
+  border-left: none;
+  border-right: 3px solid var(--secondary);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: 4px;
+}
+
+/* User bubble: swap the flat corner */
+html[dir="rtl"] .bubble-user {
+  border-bottom-right-radius: var(--radius-lg);
+  border-bottom-left-radius: 4px;
+}
+
+/* List indent inside bot bubble */
+html[dir="rtl"] .bubble-bot ul {
+  margin-right: var(--space-4);
+  margin-left: 0;
+}
+
+/* Profile tooltip button: keep at inline-end (right in LTR → left in RTL) */
+html[dir="rtl"] .field-row__tooltip-btn {
+  right: auto;
+  left: 0;
+}
+
+html[dir="rtl"] .field-row__tooltip-text {
+  right: auto;
+  left: 0;
+}

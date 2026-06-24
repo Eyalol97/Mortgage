@@ -78,7 +78,7 @@
       await window.ProfileForm.submit();
       showConfirmation();
     } catch (err) {
-      if (msg) msg.showInvalid((err && err.message) || 'Could not save profile. Please try again.');
+      if (msg) msg.showInvalid((err && err.message) || (window.I18n ? window.I18n.t('profile.error.saveFailed') : 'Could not save profile. Please try again.'));
       saveBtn.disabled = false;
     }
   }
