@@ -439,6 +439,16 @@ h1, h2, h3 {
   display: flex;
   gap: var(--space-4);
   flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+
+/* ── Mix-level actions (Save as Mix, Download PDF) — centered ───────────────── */
+.sim-mix-actions {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
 }
 
 /* ── Amortization schedule ──────────────────────────────────────────────────── */

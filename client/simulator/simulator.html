@@ -103,12 +103,11 @@
         </table>
       </div>
 
-      <div id="sim-message" class="sim-message" hidden></div>
-
       <div class="sim-table-actions">
-        <button id="save-mix-btn" class="btn btn--secondary" hidden data-i18n="sim.saveAsMix">Save as Mix</button>
-        <button id="pdf-btn"      class="btn btn--secondary" hidden data-i18n="sim.downloadPdf">Download PDF</button>
+        <button id="solve-btn" class="btn btn--primary" data-i18n="sim.solve">Solve</button>
       </div>
+
+      <div id="sim-message" class="sim-message" hidden></div>
 
     </section>
 
@@ -136,6 +135,10 @@
 
     <!-- ── Mix manager ────────────────────────────────────────────────────────── -->
     <section class="mix-manager" aria-label="Saved mixes">
+      <div class="sim-mix-actions">
+        <button id="save-mix-btn" class="btn btn--secondary" hidden data-i18n="sim.saveAsMix">Save as Mix</button>
+        <button id="pdf-btn"      class="btn btn--secondary" hidden data-i18n="sim.downloadPdf">Download PDF</button>
+      </div>
       <div id="mix-tabs" class="mix-manager__tabs"></div>
       <button id="show-comparison-btn" class="btn btn--secondary" hidden data-i18n="sim.compareAll">Compare All Mixes</button>
     </section>

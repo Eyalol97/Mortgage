@@ -1,14 +1,12 @@
 'use strict';
 
-// SimulatorUI — real-time wiring for the simulator page.
-// Depends on: window.MortgageCalc, window.SimulatorForm, window.ComparisonTable,
-//             window.formatCurrency, window.formatDecimal
-
 (function () {
 
-  const SESSION_KEY = 'simulator_mixes';
+  const SESSION_KEY      = 'simulator_mixes';
   const AMORT_DEFAULT_ROWS = 12;
-  const FINANCIAL = ['propertyPrice', 'equity', 'duration', 'monthlyPayment'];
+  const FINANCIAL        = ['propertyPrice', 'equity', 'duration', 'monthlyPayment'];
+  const TAB_ORDER        = ['repaymentMethod', 'interestMethod', 'annualRate',
+                            'propertyPrice', 'equity', 'duration', 'monthlyPayment'];
 
   // ── Mix store ──────────────────────────────────────────────────────────────
 
@@ -27,6 +25,7 @@
 
   // ── DOM refs ───────────────────────────────────────────────────────────────
 
+  const solveBtn          = document.getElementById('solve-btn');
   const saveMixBtn        = document.getElementById('save-mix-btn');
   const pdfBtn            = document.getElementById('pdf-btn');
   const simMessage        = document.getElementById('sim-message');
@@ -44,10 +43,11 @@
 
   // ── State ──────────────────────────────────────────────────────────────────
 
-  let lastResult   = null;
-  let lastInput    = null;
-  let activeMixIdx = null;
-  const rateCache  = {};
+  let lastFormState = null;
+  let lastResult    = null;
+  let lastInput     = null;
+  let activeMixIdx  = null;
+  const rateCache   = {};
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -127,6 +127,7 @@
   // ── Results rendering ──────────────────────────────────────────────────────
 
   function renderResults(result, resolvedRate) {
+    clearSolvedStyling();
     const solvedEl = document.getElementById(result.solvedField);
     if (solvedEl) {
       solvedEl.value = result.solvedField === 'duration'
@@ -164,10 +165,10 @@
     const tr = document.createElement('tr');
     tr.innerHTML =
       '<td>' + row.month + '</td>' +
-      '<td>' + window.formatCurrency(row.payment)           + '</td>' +
-      '<td>' + window.formatCurrency(row.principal)         + '</td>' +
-      '<td>' + window.formatCurrency(row.interest)          + '</td>' +
-      '<td>' + window.formatCurrency(row.remainingBalance)  + '</td>';
+      '<td>' + window.formatCurrency(row.payment)          + '</td>' +
+      '<td>' + window.formatCurrency(row.principal)        + '</td>' +
+      '<td>' + window.formatCurrency(row.interest)         + '</td>' +
+      '<td>' + window.formatCurrency(row.remainingBalance) + '</td>';
     return tr;
   }
 
@@ -204,39 +205,73 @@
     show(amortSection);
   }
 
-  // ── Real-time calculation ──────────────────────────────────────────────────
+  // ── Form state tracking (no auto-calculation) ──────────────────────────────
 
-  async function onFormChange({ canSolve, solvedField, state, mandatoryComplete }) {
-    clearSolvedStyling();
+  function onFormChange(formState) {
+    lastFormState = formState;
+    clearResults();
+    hideMessage();
+  }
 
-    if (!canSolve) {
-      clearResults();
+  // ── Solve button ───────────────────────────────────────────────────────────
+
+  async function handleSolve() {
+    if (!lastFormState) return;
+
+    const { state } = lastFormState;
+
+    // ── Mandatory fields ───────────────────────────────────────────────────
+    if (!state.repaymentMethod) {
+      showMessage('error', 'Select a Repayment Method first (Shpitzer, Equal Principal, or Bullet).');
+      return;
+    }
+    if (!state.interestMethod) {
+      showMessage('error', 'Select an Interest Method first (Prime-Linked, Fixed, or CPI-Linked).');
       return;
     }
 
-    if (state.propertyPrice !== null && state.equity !== null && state.equity >= state.propertyPrice) {
-      showMessage('error', 'Equity must be less than the property price.');
-      clearResults();
+    // ── 3-of-4 check ──────────────────────────────────────────────────────
+    const filled = FINANCIAL.filter(f => state[f] !== null).length;
+    if (filled < 3) {
+      const missing = 3 - filled;
+      showMessage('error',
+        'Fill in ' + missing + ' more field' + (missing > 1 ? 's' : '') +
+        ' — exactly 3 of the 4 amount fields must be filled (Property Price, Equity, Duration, Monthly Payment). ' +
+        'The empty field will be calculated.');
       return;
     }
+    if (filled === 4) {
+      showMessage('error',
+        'All 4 fields are filled. Leave exactly one field empty — that value will be solved for you. ' +
+        'Clear the field you want to calculate and press Solve again.');
+      return;
+    }
+
+    // ── Field-level validation ─────────────────────────────────────────────
     if (state.duration !== null && (state.duration < 1 || state.duration > 30)) {
-      showMessage('error', 'Duration must be between 1 and 30 years.');
-      clearResults();
+      showMessage('error', 'Loan duration must be between 1 and 30 years. Please correct the Duration field.');
       return;
     }
-    if (state.monthlyPayment !== null && state.propertyPrice !== null && state.equity !== null &&
-        state.monthlyPayment >= (state.propertyPrice - state.equity)) {
-      showMessage('error', 'Monthly payment cannot exceed the loan amount.');
-      clearResults();
+    if (state.propertyPrice !== null && state.equity !== null && state.equity >= state.propertyPrice) {
+      showMessage('error', 'Equity cannot be equal to or greater than the property price. Please correct these fields.');
+      return;
+    }
+    if (state.annualRate !== null && state.annualRate <= 0) {
+      showMessage('error', 'Annual interest rate must be a positive number. Leave it empty to use the market default.');
       return;
     }
 
+    // ── Rate resolution ────────────────────────────────────────────────────
     const rate = await resolveRate(state.interestMethod, state.annualRate);
     if (rate === null) {
-      showMessage('error', 'Could not load the default rate for this interest method. Please enter a rate manually.');
-      clearResults();
+      showMessage('error',
+        'Could not load the market default rate for "' + state.interestMethod + '". ' +
+        'Please enter the Annual Interest Rate (%) manually and press Solve again.');
       return;
     }
+
+    // ── Calculate ──────────────────────────────────────────────────────────
+    if (solveBtn) { solveBtn.disabled = true; solveBtn.textContent = _t('sim.calculating', 'Calculating…'); }
 
     try {
       const result = window.MortgageCalc.calculate({
@@ -259,11 +294,7 @@
         schedule:             result.schedule,
         solvedField:          result.solvedField,
       };
-
-      lastInput = {
-        ...state,
-        annualRate: rate,
-      };
+      lastInput = { ...state, annualRate: rate };
 
       activeMixIdx = null;
       hide(comparisonSection);
@@ -271,8 +302,10 @@
       renderMixTabs();
 
     } catch (err) {
-      showMessage('error', err.message);
-      clearResults();
+      // Calculator errors: "payment too low", "duration cannot be solved for Bullet", etc.
+      showMessage('error', err.message + ' Please adjust your inputs and press Solve again.');
+    } finally {
+      if (solveBtn) { solveBtn.disabled = false; solveBtn.textContent = _t('sim.solve', 'Solve'); }
     }
   }
 
@@ -297,12 +330,23 @@
     const mixes = getMixes();
     if (!mixes[index]) return;
     activeMixIdx = index;
-    lastResult   = mixes[index];
+    const mix = mixes[index];
 
-    const mix          = mixes[index];
     const valuesToLoad = { ...mix, [mix.solvedField]: null };
-    window.SimulatorForm.loadValues(valuesToLoad);
+    window.SimulatorForm.loadValues(valuesToLoad); // triggers onFormChange → clearResults
     formatAllInputFields();
+
+    // Restore stored result directly — no re-calculation needed
+    lastResult = mix;
+    lastInput  = { ...mix, [mix.solvedField]: null };
+    renderResults({
+      solvedField:   mix.solvedField,
+      solvedValue:   mix[mix.solvedField],
+      loan:          mix.loan,
+      totalInterest: mix.totalInterest,
+      totalPayment:  mix.totalPayment,
+      schedule:      mix.schedule,
+    }, mix.annualRate);
 
     hide(comparisonSection);
   }
@@ -321,13 +365,13 @@
     document.body.removeChild(a);
   }
 
-  // ── Save as Mix (with backend validation) ─────────────────────────────────
+  // ── Save as Mix ────────────────────────────────────────────────────────────
 
   async function handleSaveMix() {
     if (!lastResult || !lastInput) return;
 
     saveMixBtn.disabled    = true;
-    saveMixBtn.textContent = 'Validating…';
+    saveMixBtn.textContent = _t('sim.calculating', 'Validating…');
 
     try {
       const authHeaders = (window.Auth && window.Auth.getAuthHeaders) ? window.Auth.getAuthHeaders() : {};
@@ -358,22 +402,28 @@
       showMessage('error', _t('sim.error.network', 'Could not validate. Please check your connection.'));
     } finally {
       saveMixBtn.disabled    = false;
-      saveMixBtn.textContent = 'Save as Mix';
+      saveMixBtn.textContent = _t('sim.saveAsMix', 'Save as Mix');
     }
   }
 
   // ── Enter key = Tab ────────────────────────────────────────────────────────
 
-  const TAB_ORDER = ['repaymentMethod', 'interestMethod', 'annualRate',
-                     'propertyPrice', 'equity', 'duration', 'monthlyPayment'];
-
   function handleEnterAsTab(e) {
     if (e.key !== 'Enter') return;
     const idx = TAB_ORDER.indexOf(e.target.id);
     if (idx === -1) return;
-    e.preventDefault();
+
     const next = document.getElementById(TAB_ORDER[idx + 1]);
-    if (next) next.focus();
+    if (!next) return;
+
+    if (e.target.tagName === 'SELECT') {
+      // Let the browser handle select first (close dropdown, fire change), then move
+      setTimeout(() => next.focus(), 0);
+    } else {
+      e.preventDefault();
+      e.target.blur(); // commit value + trigger any blur formatting
+      next.focus();
+    }
   }
 
   // ── Init ───────────────────────────────────────────────────────────────────
@@ -381,11 +431,13 @@
   function init() {
     window.SimulatorForm.init(onFormChange);
 
+    // Enter = Tab on all form fields
     TAB_ORDER.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('keydown', handleEnterAsTab);
     });
 
+    // Re-render dynamic content when language switches
     document.addEventListener('i18n:applied', () => {
       if (lastResult) {
         renderAmortization(lastResult, activeMixIdx);
@@ -393,6 +445,7 @@
       }
     });
 
+    // Financial inputs: comma formatting + clear solved field on focus
     FINANCIAL.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -411,6 +464,8 @@
       }
     });
 
+    // Button wiring
+    if (solveBtn)   solveBtn.addEventListener('click', handleSolve);
     if (saveMixBtn) saveMixBtn.addEventListener('click', handleSaveMix);
     if (pdfBtn)     pdfBtn.addEventListener('click', triggerPdf);
 
@@ -418,9 +473,7 @@
     if (showCompBtn) {
       showCompBtn.addEventListener('click', () => {
         const mixes = getMixes();
-        window.ComparisonTable.render(comparisonContainer, mixes, i => {
-          switchToMix(i);
-        });
+        window.ComparisonTable.render(comparisonContainer, mixes, i => switchToMix(i));
         show(comparisonSection);
         comparisonSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
