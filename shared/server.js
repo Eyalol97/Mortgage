@@ -8,6 +8,7 @@ import profileRoutes  from '../sever/profile/profileRoutes.js';
 import simulatorRoutes from '../sever/simulator/simulatorRoutes.js';
 import botRoutes      from '../sever/bot/botRoutes.js';
 import authRoutes     from '../sever/auth/authRoutes.js';
+import adminRoutes    from '../sever/admin/adminRoutes.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/shared', express.static(__dirname));
 // ── Feature routes ────────────────────────────────────────────────────────────
 
 app.use('/api/auth',      authRoutes);
+app.use('/api/admin',     adminRoutes);
 app.use('/api/profile',   profileRoutes);
 app.use('/api/simulator', simulatorRoutes);
 app.use('/api/bot',       botRoutes);

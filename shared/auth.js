@@ -190,4 +190,19 @@ async function googleAuth(req, res, next) {
   }
 }
 
-export { signup, login, googleAuth, authMiddleware };
+async function adminMiddleware(req, res, next) {
+  if (!env.ADMIN_EMAIL) {
+    return res.status(503).json({ message: 'Admin access is not configured on this server.' });
+  }
+  try {
+    const user = await User.findById(req.userId).select('email');
+    if (!user || user.email !== env.ADMIN_EMAIL.toLowerCase().trim()) {
+      return res.status(403).json({ message: 'Admin access required.' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { signup, login, googleAuth, authMiddleware, adminMiddleware };
