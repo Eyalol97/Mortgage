@@ -394,14 +394,46 @@
       return new Date(d).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
     }
 
+    function showError(msg) {
+      const existing = document.getElementById('admin-error-banner');
+      if (existing) existing.remove();
+      const banner = document.createElement('div');
+      banner.id = 'admin-error-banner';
+      banner.style.cssText = 'background:#fde8e8;color:#b91c1c;padding:0.75rem 1rem;border-radius:8px;margin-bottom:1.25rem;font-size:0.875rem;font-weight:600;border:1px solid #fca5a5;';
+      banner.textContent = msg;
+      document.querySelector('.admin-main').prepend(banner);
+    }
+
     async function apiFetch(path) {
-      const res = await fetch(path, { headers: authHeaders() });
+      let res;
+      try {
+        res = await fetch(path, { headers: authHeaders() });
+      } catch {
+        showError('Network error — could not reach the server.');
+        throw new Error('network');
+      }
+      if (res.status === 401) {
+        window.location.href = '/auth/login.html?redirect=/admin/admin.html';
+        throw new Error('unauthorized');
+      }
       if (res.status === 403) {
-        document.body.innerHTML = '<div style="text-align:center;padding:4rem;font-family:sans-serif"><h2>Access Denied</h2><p>This page is restricted to admins.</p></div>';
+        document.querySelector('.admin-main').innerHTML = `
+          <div style="text-align:center;padding:4rem">
+            <h2 style="color:#b91c1c;margin-bottom:0.5rem">Access Denied</h2>
+            <p style="color:#6b7280;max-width:380px;margin:0 auto;line-height:1.6">
+              Your account is not authorised as an admin.<br>
+              Make sure the <strong>ADMIN_EMAIL</strong> environment variable in Render
+              matches the email address you are currently signed in with.
+            </p>
+          </div>`;
         throw new Error('forbidden');
       }
-      if (!res.ok) throw new Error('API error ' + res.status);
-      return res.json();
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showError(body.message || `Server error (${res.status})`);
+        throw new Error('api-error');
+      }
+      return body;
     }
 
     // ── Delete modal ────────────────────────────────────────────────────────

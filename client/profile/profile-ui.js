@@ -83,12 +83,27 @@
     }
   }
 
+  // ── Account email ─────────────────────────────────────────────────────────
+
+  function loadAccountEmail() {
+    fetch('/api/auth/me', { headers: window.Auth.getAuthHeaders() })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || !data.email) return;
+        const el = document.getElementById('account-email-line');
+        if (el) { el.textContent = data.email; el.hidden = false; }
+      })
+      .catch(() => {});
+  }
+
   // ── Init ──────────────────────────────────────────────────────────────────
 
   async function init() {
     // Wire button listeners immediately — no need to wait for data load
     if (ctaBtn) ctaBtn.addEventListener('click', showForm);
     if (saveBtn) saveBtn.addEventListener('click', handleSave);
+
+    loadAccountEmail();
 
     // ProfileForm.init() loads existing data, pre-fills fields, and resolves
     // with { hasExistingData } once the fetch is complete.
