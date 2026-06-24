@@ -103,10 +103,24 @@
       'sim.fieldLabel.loanAmount': 'Loan Amount',
 
       // Simulator — PDF hints
-      'sim.pdf.noMixes':    'Solve and save at least 2 investment routes as Mix first to download the comparison PDF.',
+      'sim.pdf.noMixes':    'Solve and save at least one investment route as Mix first to download a PDF.',
       'sim.pdf.oneMix':     'You have 1 route saved — solve and save one more as Mix to unlock the comparison PDF.',
       'sim.pdf.generating': 'Generating PDF…',
       'sim.pdf.error':      'Could not generate PDF. Please try again.',
+
+      // Simulator — solve validation messages
+      'sim.solve.needRepayment': 'Select a Repayment Method first (Shpitzer, Equal Principal, or Bullet).',
+      'sim.solve.needInterest':  'Select an Interest Method first (Prime-Linked, Fixed, or CPI-Linked).',
+      'sim.solve.needMore':      'Fill in more fields — exactly 3 of the 4 amount fields must be filled.',
+      'sim.solve.tooMany':       'All 4 fields are filled. Leave exactly one empty — that value will be solved for you.',
+      'sim.solve.durationRange': 'Loan duration must be between 1 and 30 years.',
+      'sim.solve.equityGtPrice': 'Equity cannot be equal to or greater than the property price.',
+      'sim.solve.ratePositive':  'Annual interest rate must be a positive number. Leave it empty to use the market default.',
+      'sim.solve.noRate':        'Could not load the market rate. Please enter the Annual Interest Rate (%) manually.',
+
+      // Simulator — mix management
+      'sim.mix.delete':     'Remove this mix',
+      'sim.cmp.clickToView': 'Click to load this mix',
 
       // Simulator — errors
       'sim.error.noMixes':    'No mixes saved yet.',
@@ -262,10 +276,24 @@
       'sim.fieldLabel.loanAmount': 'סכום הלוואה',
 
       // Simulator — PDF hints
-      'sim.pdf.noMixes':    'פתור ושמור לפחות 2 מסלולי השקעה כמיקס לפני הורדת ה-PDF.',
-      'sim.pdf.oneMix':     'יש לך מיקס אחד — פתור ושמור עוד אחד לפתיחת ה-PDF.',
+      'sim.pdf.noMixes':    'פתור ושמור לפחות מסלול השקעה אחד כמיקס לפני הורדת ה-PDF.',
+      'sim.pdf.oneMix':     'יש לך מיקס אחד — פתור ושמור עוד אחד לקבלת השוואה.',
       'sim.pdf.generating': 'מייצר PDF…',
       'sim.pdf.error':      'לא ניתן ליצור PDF. אנא נסה שוב.',
+
+      // Simulator — solve validation messages
+      'sim.solve.needRepayment': 'בחר שיטת פירעון תחילה (שפיצר, קרן שווה, או בוליט).',
+      'sim.solve.needInterest':  'בחר שיטת ריבית תחילה (פריים, קבועה, או מדד).',
+      'sim.solve.needMore':      'מלא עוד שדות — יש למלא בדיוק 3 מתוך 4 שדות פיננסיים.',
+      'sim.solve.tooMany':       'כל 4 השדות מלאים. השאר שדה אחד ריק — אותו ערך יחושב עבורך.',
+      'sim.solve.durationRange': 'משך ההלוואה חייב להיות בין 1 ל-30 שנים.',
+      'sim.solve.equityGtPrice': 'ההון העצמי לא יכול להיות שווה או גדול ממחיר הנכס.',
+      'sim.solve.ratePositive':  'ריבית שנתית חייבת להיות מספר חיובי. השאר ריק לריבית שוק.',
+      'sim.solve.noRate':        'לא ניתן לטעון ריבית שוק. אנא הזן ריבית שנתית ידנית.',
+
+      // Simulator — mix management
+      'sim.mix.delete':     'הסר מיקס זה',
+      'sim.cmp.clickToView': 'לחץ לטעינת מיקס זה',
 
       // Simulator — errors
       'sim.error.noMixes':    'לא נשמרו מיקסים עדיין.',

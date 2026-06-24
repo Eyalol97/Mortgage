@@ -141,7 +141,7 @@
     if (resTotalPayment)  resTotalPayment.textContent  = window.formatCurrency(result.totalPayment);
 
     show(saveMixBtn);
-    if (getMixes().length > 0) show(pdfBtn);
+    if (getMixes().length > 0) { if (pdfBtn) pdfBtn.hidden = false; }
     hideMessage();
 
     renderAmortization(result, activeMixIdx);
@@ -218,11 +218,13 @@
 
     // ── Mandatory fields ───────────────────────────────────────────────────
     if (!state.repaymentMethod) {
-      showMessage('error', 'Select a Repayment Method first (Shpitzer, Equal Principal, or Bullet).');
+      showMessage('error', _t('sim.solve.needRepayment',
+        'Select a Repayment Method first (Shpitzer, Equal Principal, or Bullet).'));
       return;
     }
     if (!state.interestMethod) {
-      showMessage('error', 'Select an Interest Method first (Prime-Linked, Fixed, or CPI-Linked).');
+      showMessage('error', _t('sim.solve.needInterest',
+        'Select an Interest Method first (Prime-Linked, Fixed, or CPI-Linked).'));
       return;
     }
 
@@ -230,39 +232,39 @@
     const filled = FINANCIAL.filter(f => state[f] !== null).length;
     if (filled < 3) {
       const missing = 3 - filled;
-      showMessage('error',
+      showMessage('error', _t('sim.solve.needMore',
         'Fill in ' + missing + ' more field' + (missing > 1 ? 's' : '') +
-        ' — exactly 3 of the 4 amount fields must be filled (Property Price, Equity, Duration, Monthly Payment). ' +
-        'The empty field will be calculated.');
+        ' — exactly 3 of the 4 amount fields must be filled.'));
       return;
     }
     if (filled === 4) {
-      showMessage('error',
-        'All 4 fields are filled. Leave exactly one field empty — that value will be solved for you. ' +
-        'Clear the field you want to calculate and press Solve again.');
+      showMessage('error', _t('sim.solve.tooMany',
+        'All 4 fields are filled. Leave exactly one empty — that value will be solved for you.'));
       return;
     }
 
     // ── Field-level validation ─────────────────────────────────────────────
     if (state.duration !== null && (state.duration < 1 || state.duration > 30)) {
-      showMessage('error', 'Loan duration must be between 1 and 30 years. Please correct the Duration field.');
+      showMessage('error', _t('sim.solve.durationRange',
+        'Loan duration must be between 1 and 30 years.'));
       return;
     }
     if (state.propertyPrice !== null && state.equity !== null && state.equity >= state.propertyPrice) {
-      showMessage('error', 'Equity cannot be equal to or greater than the property price. Please correct these fields.');
+      showMessage('error', _t('sim.solve.equityGtPrice',
+        'Equity cannot be equal to or greater than the property price.'));
       return;
     }
     if (state.annualRate !== null && state.annualRate <= 0) {
-      showMessage('error', 'Annual interest rate must be a positive number. Leave it empty to use the market default.');
+      showMessage('error', _t('sim.solve.ratePositive',
+        'Annual interest rate must be a positive number. Leave it empty to use the market default.'));
       return;
     }
 
     // ── Rate resolution ────────────────────────────────────────────────────
     const rate = await resolveRate(state.interestMethod, state.annualRate);
     if (rate === null) {
-      showMessage('error',
-        'Could not load the market default rate for "' + state.interestMethod + '". ' +
-        'Please enter the Annual Interest Rate (%) manually and press Solve again.');
+      showMessage('error', _t('sim.solve.noRate',
+        'Could not load the market rate. Please enter the Annual Interest Rate (%) manually.'));
       return;
     }
 
@@ -307,17 +309,55 @@
 
   // ── Mix management ─────────────────────────────────────────────────────────
 
+  function deleteMix(index) {
+    const mixes = getMixes();
+    mixes.splice(index, 1);
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(mixes));
+
+    if (activeMixIdx === index) {
+      activeMixIdx = null;
+      clearResults();
+    } else if (activeMixIdx !== null && activeMixIdx > index) {
+      activeMixIdx--;
+    }
+
+    if (comparisonSection && !comparisonSection.hidden) {
+      if (mixes.length >= 2) {
+        window.ComparisonTable.render(comparisonContainer, mixes, i => switchToMix(i));
+      } else {
+        hide(comparisonSection);
+      }
+    }
+
+    renderMixTabs();
+    if (pdfBtn) pdfBtn.hidden = mixes.length === 0;
+  }
+
   function renderMixTabs() {
     if (!mixTabsContainer) return;
     const mixes = getMixes();
     mixTabsContainer.innerHTML = '';
     mixes.forEach((mix, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'mix-tab-wrap';
+
       const btn = document.createElement('button');
       btn.className   = 'mix-tab' + (i === activeMixIdx ? ' mix-tab--active' : '');
       btn.textContent = _t('sim.mixTab', 'Mix') + ' ' + (i + 1);
       btn.addEventListener('click', () => switchToMix(i));
-      mixTabsContainer.appendChild(btn);
+
+      const del = document.createElement('button');
+      del.className   = 'mix-tab__delete';
+      del.textContent = '×';
+      del.title       = _t('sim.mix.delete', 'Remove this mix');
+      del.setAttribute('aria-label', _t('sim.mix.delete', 'Remove mix ' + (i + 1)));
+      del.addEventListener('click', e => { e.stopPropagation(); deleteMix(i); });
+
+      wrap.appendChild(btn);
+      wrap.appendChild(del);
+      mixTabsContainer.appendChild(wrap);
     });
+
     const showCompBtn = document.getElementById('show-comparison-btn');
     if (showCompBtn) showCompBtn.hidden = mixes.length < 2;
   }
@@ -354,25 +394,20 @@
 
     if (mixes.length === 0) {
       showMessage('info', _t('sim.pdf.noMixes',
-        'Solve and save at least 2 investment routes as Mix first to download the comparison PDF.'));
-      return;
-    }
-    if (mixes.length < 2) {
-      showMessage('info', _t('sim.pdf.oneMix',
-        'You have 1 route saved — solve and save one more as Mix to unlock the comparison PDF.'));
+        'Solve and save at least one investment route as Mix first to download a PDF.'));
       return;
     }
 
     if (pdfBtn) { pdfBtn.disabled = true; pdfBtn.textContent = _t('sim.pdf.generating', 'Generating PDF…'); }
 
     try {
-      // Strip schedule (large array not needed for comparison-only PDF)
       const lean = mixes.map(({ schedule, ...rest }) => rest);
+      const lang = window.I18n ? window.I18n.current() : 'en';
 
       const res = await fetch('/api/simulator/pdf', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ mixes: lean }),
+        body:    JSON.stringify({ mixes: lean, lang }),
       });
 
       if (!res.ok) {
@@ -428,7 +463,7 @@
       const mixes  = storeMix({ ...lastResult, ...data });
       activeMixIdx = mixes.length - 1;
       renderMixTabs();
-      show(pdfBtn);
+      if (pdfBtn) pdfBtn.hidden = false;
       hide(saveMixBtn);
       hideMessage();
 
@@ -475,7 +510,14 @@
     document.addEventListener('i18n:applied', () => {
       if (lastResult) {
         renderAmortization(lastResult, activeMixIdx);
-        renderMixTabs();
+      }
+      renderMixTabs();
+      // Re-render comparison table if currently visible
+      if (comparisonSection && !comparisonSection.hidden) {
+        const mixes = getMixes();
+        if (mixes.length >= 2) {
+          window.ComparisonTable.render(comparisonContainer, mixes, i => switchToMix(i));
+        }
       }
     });
 
@@ -514,7 +556,7 @@
     }
 
     renderMixTabs();
-    if (getMixes().length > 0) show(pdfBtn);
+    if (getMixes().length > 0 && pdfBtn) pdfBtn.hidden = false;
   }
 
   document.addEventListener('DOMContentLoaded', init);
