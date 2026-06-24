@@ -71,11 +71,25 @@
     FINANCIAL.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
+        if (el.classList.contains('sim-table__input--solved')) el.type = 'number';
         el.classList.remove('sim-table__input--solved');
         el.removeAttribute('readonly');
-        el.type = 'number';
       }
     });
+  }
+
+  function formatField(el) {
+    if (!el || el.id === 'duration' || el.value === '') return;
+    if (el.classList.contains('sim-table__input--solved')) return;
+    const v = parseFloat(String(el.value).replace(/,/g, ''));
+    if (!isNaN(v) && v > 0) {
+      el.type  = 'text';
+      el.value = Math.round(v).toLocaleString('he-IL');
+    }
+  }
+
+  function formatAllInputFields() {
+    FINANCIAL.forEach(id => formatField(document.getElementById(id)));
   }
 
   // ── Rate fetching ──────────────────────────────────────────────────────────
@@ -188,6 +202,23 @@
       return;
     }
 
+    if (state.propertyPrice !== null && state.equity !== null && state.equity >= state.propertyPrice) {
+      showMessage('error', 'Equity must be less than the property price.');
+      clearResults();
+      return;
+    }
+    if (state.duration !== null && (state.duration < 1 || state.duration > 30)) {
+      showMessage('error', 'Duration must be between 1 and 30 years.');
+      clearResults();
+      return;
+    }
+    if (state.monthlyPayment !== null && state.propertyPrice !== null && state.equity !== null &&
+        state.monthlyPayment >= (state.propertyPrice - state.equity)) {
+      showMessage('error', 'Monthly payment cannot exceed the loan amount.');
+      clearResults();
+      return;
+    }
+
     const rate = await resolveRate(state.interestMethod, state.annualRate);
     if (rate === null) {
       showMessage('error', 'Could not load the default rate for this interest method. Please enter a rate manually.');
@@ -259,6 +290,7 @@
     const mix          = mixes[index];
     const valuesToLoad = { ...mix, [mix.solvedField]: null };
     window.SimulatorForm.loadValues(valuesToLoad);
+    formatAllInputFields();
 
     hide(comparisonSection);
   }
@@ -326,6 +358,7 @@
     FINANCIAL.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
+
       el.addEventListener('focus', () => {
         if (el.classList.contains('sim-table__input--solved')) {
           el.type  = 'number';
@@ -333,8 +366,16 @@
           el.classList.remove('sim-table__input--solved');
           el.removeAttribute('readonly');
           el.dispatchEvent(new Event('input'));
+        } else if (el.type === 'text') {
+          const raw = el.value.replace(/,/g, '');
+          el.type  = 'number';
+          el.value = raw;
         }
       });
+
+      if (id !== 'duration') {
+        el.addEventListener('blur', () => formatField(el));
+      }
     });
 
     if (saveMixBtn) saveMixBtn.addEventListener('click', handleSaveMix);

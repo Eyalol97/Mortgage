@@ -55,7 +55,7 @@ const SimulatorForm = (function () {
   }
 
   function handleNumber(name, el) {
-    const raw = el.value.trim();
+    const raw = el.value.replace(/,/g, '').trim();
     if (raw === '') {
       state[name] = null;
     } else {
