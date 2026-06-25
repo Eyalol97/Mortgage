@@ -24,7 +24,7 @@
       padding: 2.5rem 2rem 2rem;
     }
 
-    .sim-header__inner { max-width: 1200px; margin: 0 auto; }
+    .sim-header__inner { max-width: 1400px; margin: 0 auto; }
 
     .simulator-page__title {
       font-size: 2rem;
@@ -43,184 +43,163 @@
 
     #disclaimer { margin-bottom: 1.25rem; }
 
-    /* ─── Body container ─── */
+    /* ─── Body container — wider to accommodate the 10-col row ─── */
     .sim-body {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 2rem 2rem 4rem;
     }
 
-    /* ─── Calculator card (config + inputs + results + action) ─── */
+    /* ─── Calculator card ─── */
     .sim-card {
       background: #ffffff;
       border: 1px solid #d1d9e0;
       overflow: hidden;
       margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
-    /* ─── Config row ─── */
-    /*
-     * Uses a 3-column grid where each .sim-config__field is display:contents —
-     * its children (label, input, hint) slot directly into the parent grid rows.
-     * This guarantees all inputs land in the same grid row regardless of whether
-     * a hint is present.
-     */
-    .sim-config {
-      background: #f4f4f4;
+    /* ─── Horizontal row wrapper — scrolls on narrow viewports ─── */
+    .sim-row-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border-bottom: 1px solid #e0e0e0;
-      padding: 1.5rem 2rem 1.25rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-template-rows: auto 48px auto;
-      column-gap: 2rem;
     }
 
-    .sim-config__field { display: contents; }
+    /* ─── The single row: 10 flex cells, all equal height via stretch ─── */
+    .sim-row {
+      display: flex;
+      align-items: stretch;
+      min-width: max-content; /* prevents cells shrinking below their min-width */
+    }
 
-    .sim-config__label {
-      font-size: 0.9375rem;   /* 15px — readable */
-      font-weight: 500;
-      color: #1e293b;         /* dark, clearly active */
-      letter-spacing: 0;
+    /* ─── Individual cells ─── */
+    .sim-row__cell {
+      flex: 1 0 130px;
+      display: flex;
+      flex-direction: column;
+      padding: 1.125rem 1.25rem 1.125rem;
+      border-right: 1px solid #e0e0e0;
+      background: #ffffff;
+    }
+
+    .sim-row__cell:last-child { border-right: none; }
+
+    /* Wider cells for the method selects (longer option text) */
+    .sim-row__cell--wide { flex: 1.5 0 168px; }
+
+    /*
+     * Result cells: blue-tinted bg.
+     * The first result cell also gets a stronger left border to visually
+     * separate the input group from the computed output group.
+     */
+    .sim-row__cell--result { background: #edf4ff; }
+
+    .sim-row__cell--result-first {
+      border-left: 2px solid #a6c8ff;
+    }
+
+    /* ─── Column header labels ─── */
+    .sim-row__label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #525252;
+      display: block;
+      margin-bottom: 0.625rem;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    /* Subtle secondary line under Annual Rate label */
+    .sim-row__label-hint {
+      display: block;
+      font-size: 0.5625rem;
+      font-weight: 400;
+      color: #94a3b8;
       text-transform: none;
-      align-self: end;
-      padding-bottom: 0.375rem;
+      letter-spacing: 0;
+      margin-top: 0.1rem;
     }
 
-    /* ── All config inputs share row 2 of the grid ── */
-    .sim-config select,
-    .sim-config input[type="number"] {
-      -webkit-appearance: none;
-      appearance: none;
-      height: 48px;
-      padding: 0 0.875rem;
+    /*
+     * ─── Shared interactive element style ───────────────────────────────────
+     * margin-top: auto  ← key: pushes every element to the bottom of its cell
+     * Because all cells share the same height (flex align-items:stretch),
+     * this guarantees every input/select/value sits at the SAME vertical Y.
+     */
+    .sim-row__input {
+      margin-top: auto;
+      height: 44px;
       width: 100%;
+      padding: 0 0.75rem;
       font-family: var(--font-family);
       font-size: 0.9375rem;
       color: #1e293b;
       background: #ffffff;
       border: 1.5px solid #c8d1dc;
       border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      -webkit-appearance: none;
+      appearance: none;
       transition: border-color 0.15s, box-shadow 0.15s;
-      cursor: pointer;
     }
 
-    .sim-config select:hover,
-    .sim-config input[type="number"]:hover {
-      border-color: #94a3b8;
-    }
+    .sim-row__input:hover  { border-color: #94a3b8; }
 
-    .sim-config select:focus,
-    .sim-config input[type="number"]:focus {
+    .sim-row__input:focus {
       outline: none;
       border-color: #0f62fe;
       border-width: 2px;
-      box-shadow: 0 0 0 3px rgba(15,98,254,0.12);
+      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12);
     }
 
-    /* Hint row (row 3) — only third field has text; others have an empty span */
-    .sim-config__hint {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      padding-top: 0.3rem;
-      min-height: 1.25rem; /* keeps row height consistent even when empty */
+    /*
+     * Global .sim-table__input has its own background/border/padding.
+     * Override everything it brings so it inherits the row style instead.
+     */
+    .sim-row .sim-table__input {
+      margin-top: auto !important;
+      height: 44px !important;
+      padding: 0 0.75rem !important;
+      border: 1.5px solid #c8d1dc !important;
+      border-radius: 4px !important;
+      background: #ffffff !important;
+      color: #1e293b !important;
+      font-size: 0.9375rem !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+      min-width: 0 !important;
     }
 
-    /* ─── Blue input grid ─── */
-    .sim-inputs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: #0f62fe;
+    .sim-row .sim-table__input:hover  { border-color: #94a3b8 !important; }
+
+    .sim-row .sim-table__input:focus {
+      border-color: #0f62fe !important;
+      border-width: 2px !important;
+      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12) !important;
     }
 
-    .sim-input-cell {
-      padding: 1.5rem 1.75rem 1.375rem;
-      border-right: 1px solid rgba(255,255,255,0.12);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sim-input-cell:last-child { border-right: none; }
-
-    .sim-input-cell__label {
-      font-size: 0.75rem;   /* 12px — larger than before */
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 0.875rem;
-    }
-
-    /* Blue-context input overrides — !important beats global .sim-table__input */
-    .sim-inputs .sim-table__input {
-      background: transparent !important;
-      border: none !important;
-      border-bottom: 1.5px solid rgba(255,255,255,0.4) !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      width: 100%;
-      padding: 0.25rem 0 !important;
-      font-family: var(--font-family) !important;
-      font-size: 1.375rem !important;
-      font-weight: 600 !important;
-      color: #ffffff !important;
-      caret-color: #ffffff;
-      outline: none !important;
-      min-width: 0;
-      margin-top: auto;
-      transition: border-color 0.15s;
-    }
-
-    .sim-inputs .sim-table__input::placeholder {
-      color: rgba(255,255,255,0.35) !important;
-      font-weight: 300 !important;
-      font-size: 1.0625rem !important;
-    }
-
-    .sim-inputs .sim-table__input:focus {
-      border-bottom-color: rgba(255,255,255,0.9) !important;
-    }
-
-    .sim-inputs .sim-table__input--solved {
-      color: #a6c8ff !important;
-      border-bottom-color: rgba(166,200,255,0.5) !important;
+    /* Solved field: JS adds this class to the field that was calculated */
+    .sim-row .sim-table__input--solved {
+      background: #edf4ff !important;
+      color: #0043ce !important;
+      border-color: #a6c8ff !important;
+      font-weight: 700 !important;
       font-style: italic;
+      cursor: default;
     }
 
-    /* ─── Results band ─── */
-    .sim-results {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      background: #edf4ff;
-      border-top: 1px solid rgba(15,98,254,0.15);
-    }
-
-    .sim-result-cell {
-      padding: 1.125rem 1.75rem;
-      border-right: 1px solid rgba(15,98,254,0.12);
+    /* ─── Read-only result values ─── */
+    .sim-row__value {
+      margin-top: auto; /* aligns with inputs */
+      height: 44px;
       display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-
-    .sim-result-cell:last-child { border-right: none; }
-
-    .sim-result-cell__label {
-      font-size: 0.6875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #0043ce;
-      opacity: 0.65;
-    }
-
-    .sim-result-cell__value {
-      font-size: 1.5rem;
+      align-items: center;
+      font-size: 1.25rem;
       font-weight: 600;
       color: #0043ce;
-      letter-spacing: -0.01em;
+      white-space: nowrap;
     }
 
     /* ─── Action bar ─── */
@@ -229,7 +208,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 1.125rem 1.75rem;
-      border-top: 1px solid #e0e0e0;
       background: #ffffff;
       gap: 0.75rem;
       flex-wrap: wrap;
@@ -254,18 +232,18 @@
     /* ─── Message ─── */
     #sim-message { margin: 0 0 0.75rem; }
 
-    /* ─── Amortization — breakdown bar + table ─── */
+    /* ─── Dynamic sections wrapper ─── */
+    .sim-dynamic { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ─── Amortization panel ─── */
     .sim-amort {
       background: #ffffff;
       border: 1px solid #d1d9e0;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     .sim-amort__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       padding: 1.125rem 1.75rem;
       background: #f8fafc;
       border-bottom: 1px solid #e0e0e0;
@@ -278,11 +256,10 @@
       margin: 0;
     }
 
-    /* Visual principal vs interest breakdown strip */
+    /* Principal vs interest breakdown */
     .sim-amort-breakdown {
       padding: 1.25rem 1.75rem 1.375rem;
       border-bottom: 1px solid #e0e0e0;
-      background: #ffffff;
     }
 
     .sim-amort-breakdown__stats {
@@ -292,11 +269,7 @@
       flex-wrap: wrap;
     }
 
-    .sim-amort-breakdown__stat {
-      display: flex;
-      flex-direction: column;
-      gap: 0.125rem;
-    }
+    .sim-amort-breakdown__stat { display: flex; flex-direction: column; gap: 0.125rem; }
 
     .sim-amort-breakdown__stat-label {
       font-size: 0.6875rem;
@@ -306,19 +279,9 @@
       color: #94a3b8;
     }
 
-    .sim-amort-breakdown__stat-value {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: #1e293b;
-    }
+    .sim-amort-breakdown__stat-value { font-size: 1.125rem; font-weight: 600; color: #1e293b; }
+    .sim-amort-breakdown__stat-sub   { font-size: 0.75rem; color: #94a3b8; margin-top: 0.125rem; }
 
-    .sim-amort-breakdown__stat-sub {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      margin-top: 0.125rem;
-    }
-
-    /* The stacked bar */
     .sim-amort-breakdown__bar {
       height: 8px;
       border-radius: 4px;
@@ -330,15 +293,13 @@
     .sim-amort-breakdown__bar-principal {
       height: 100%;
       background: #0f62fe;
-      border-radius: 4px 0 0 4px;
       transition: width 0.4s ease;
     }
 
     .sim-amort-breakdown__bar-interest {
       height: 100%;
       background: #ff832b;
-      flex: 1; /* fills the rest */
-      border-radius: 0 4px 4px 0;
+      flex: 1;
     }
 
     .sim-amort-breakdown__legend {
@@ -366,12 +327,6 @@
     .sim-amort-breakdown__swatch--principal { background: #0f62fe; }
     .sim-amort-breakdown__swatch--interest  { background: #ff832b; }
 
-    .sim-amort-breakdown__pct {
-      font-weight: 700;
-      color: #1e293b;
-    }
-
-    /* Amort table */
     .sim-amort__wrapper {
       overflow-x: auto;
       max-height: 320px;
@@ -388,7 +343,7 @@
     .mix-manager {
       background: #ffffff;
       border: 1px solid #d1d9e0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     /* ─── Comparison ─── */
@@ -396,7 +351,7 @@
       background: #ffffff;
       border: 1px solid #d1d9e0;
       padding: 1.5rem 1.75rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     .simulator-comparison__title {
@@ -404,13 +359,6 @@
       font-weight: 600;
       color: #161616;
       margin: 0 0 1.25rem;
-    }
-
-    /* ─── Dynamic sections wrapper ─── */
-    .sim-dynamic {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
     }
 
     /* ─── Info cards ─── */
@@ -421,7 +369,7 @@
       border: 1px solid #d1d9e0;
       background: #ffffff;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     .sim-info-card {
@@ -434,70 +382,20 @@
     }
 
     .sim-info-card:last-child { border-right: none; }
-
-    .sim-info-card__icon {
-      font-size: 1.375rem;
-      display: block;
-    }
-
-    .sim-info-card h3 {
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: #161616;
-      margin: 0;
-    }
-
-    .sim-info-card p {
-      font-size: 0.8125rem;
-      color: #6f6f6f;
-      line-height: 1.65;
-      margin: 0;
-    }
+    .sim-info-card__icon { font-size: 1.375rem; display: block; }
+    .sim-info-card h3 { font-size: 0.9375rem; font-weight: 600; color: #161616; margin: 0; }
+    .sim-info-card p  { font-size: 0.8125rem; color: #6f6f6f; line-height: 1.65; margin: 0; }
 
     /* ─── Responsive ─── */
     @media (max-width: 900px) {
-      .sim-header  { padding: 2rem 1.5rem 1.5rem; }
-      .sim-body    { padding: 1.5rem 1.5rem 3rem; }
-
-      .sim-config {
-        grid-template-columns: 1fr;
-        grid-template-rows: none;
-        padding: 1.25rem 1.5rem 1rem;
-      }
-
-      /* Undo display:contents and go back to block fields for mobile */
-      .sim-config__field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        margin-bottom: 1.25rem;
-      }
-      .sim-config__field:last-child { margin-bottom: 0; }
-
-      .sim-inputs { grid-template-columns: repeat(2, 1fr); }
-      .sim-input-cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.12); }
-      .sim-input-cell:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.12); }
-      .sim-input-cell:last-child { border-bottom: none; }
-
-      .sim-results { grid-template-columns: 1fr; }
-      .sim-result-cell { border-right: none; border-bottom: 1px solid rgba(15,98,254,0.12); }
-      .sim-result-cell:last-child { border-bottom: none; }
-
+      .sim-header { padding: 2rem 1.5rem 1.5rem; }
+      .sim-body   { padding: 1.5rem 1.5rem 3rem; }
       .sim-info-cards { grid-template-columns: 1fr; }
-      .sim-info-card { border-right: none; border-bottom: 1px solid #e0e0e0; border-top: none; border-left: 3px solid #0f62fe; }
+      .sim-info-card  { border-right: none; border-bottom: 1px solid #e0e0e0; border-top: none; border-left: 3px solid #0f62fe; }
       .sim-info-card:last-child { border-bottom: none; }
-
       .sim-action-bar { flex-direction: column; align-items: flex-start; }
-      #solve-btn { min-width: unset; width: 100%; justify-content: center; }
-
+      #solve-btn { width: 100%; justify-content: center; }
       .sim-amort-breakdown__stats { gap: 1.25rem; }
-    }
-
-    @media (max-width: 560px) {
-      .sim-inputs { grid-template-columns: 1fr; }
-      .sim-input-cell:nth-child(odd) { border-right: none; }
-      .sim-input-cell { border-bottom: 1px solid rgba(255,255,255,0.12); }
-      .sim-input-cell:last-child { border-bottom: none; }
     }
   </style>
 </head>
@@ -521,98 +419,120 @@
     <!-- ── Body ────────────────────────────────────────────────────────────────── -->
     <div class="sim-body">
 
-      <!-- ── Calculator card ─────────────────────────────────────────────────── -->
+      <!-- Calculator card -->
       <div class="sim-card">
 
-        <!-- Config row: 3-column CSS grid; each field is display:contents -->
-        <div class="sim-config" aria-label="Loan settings">
+        <!--
+          Single horizontal row — all 10 columns in source order:
+          1 Property Price · 2 Equity · 3 Duration · 4 Repayment Method
+          5 Interest Method · 6 Annual Rate · 7 Monthly Payment
+          8 Loan Amount (result) · 9 Total Interest (result) · 10 Total Payment (result)
 
-          <!-- Field 1: Repayment Method -->
-          <div class="sim-config__field">
-            <label class="sim-config__label" for="repaymentMethod" data-i18n="sim.repaymentMethod">Repayment Method</label>
-            <select id="repaymentMethod">
-              <option value="" data-i18n="sim.selectDefault">— Select —</option>
-              <option value="shpitzer"    data-i18n="sim.shpitzer">Shpitzer (Fixed Payment)</option>
-              <option value="keren-shava" data-i18n="sim.kerenShava">Equal Principal (Keren Shava)</option>
-              <option value="bullet"      data-i18n="sim.bullet">Bullet (Interest Only)</option>
-            </select>
-            <span class="sim-config__hint"></span><!-- keeps grid row 3 balanced -->
-          </div>
+          margin-top:auto on every .sim-row__input / .sim-row__value guarantees
+          all interactive elements share the same baseline regardless of label height.
+        -->
+        <div class="sim-row-wrapper" aria-label="Mortgage calculator">
+          <div class="sim-row">
 
-          <!-- Field 2: Interest Method -->
-          <div class="sim-config__field">
-            <label class="sim-config__label" for="interestMethod" data-i18n="sim.interestMethod">Interest Method</label>
-            <select id="interestMethod">
-              <option value="" data-i18n="sim.selectDefault">— Select —</option>
-              <option value="prime-linked" data-i18n="sim.primeLinked">Prime-Linked</option>
-              <option value="fixed"        data-i18n="sim.fixed">Fixed</option>
-              <option value="cpi-linked"   data-i18n="sim.cpiLinked">CPI-Linked</option>
-            </select>
-            <span class="sim-config__hint"></span><!-- keeps grid row 3 balanced -->
-          </div>
+            <!-- 1 · Property Price -->
+            <div class="sim-row__cell">
+              <label class="sim-row__label" for="propertyPrice" data-i18n="sim.col.propertyPrice">Property Price (₪)</label>
+              <input type="text" inputmode="numeric" id="propertyPrice"
+                     class="sim-table__input sim-row__input"
+                     data-i18n-placeholder="sim.placeholder.propertyPrice"
+                     placeholder="e.g. 2,000,000" />
+            </div>
 
-          <!-- Field 3: Annual Rate (has a hint on row 3) -->
-          <div class="sim-config__field">
-            <label class="sim-config__label" for="annualRate" data-i18n="sim.annualRate">Annual Rate (%)</label>
-            <input type="number" id="annualRate" min="0" step="0.01"
-                   data-i18n-placeholder="sim.placeholder.annualRate" placeholder="e.g. 4.5" />
-            <span class="sim-config__hint" data-i18n="sim.annualRateHint">optional — market default used if empty</span>
-          </div>
+            <!-- 2 · Equity -->
+            <div class="sim-row__cell">
+              <label class="sim-row__label" for="equity" data-i18n="sim.col.equity">Equity (₪)</label>
+              <input type="text" inputmode="numeric" id="equity"
+                     class="sim-table__input sim-row__input"
+                     data-i18n-placeholder="sim.placeholder.equity"
+                     placeholder="e.g. 500,000" />
+            </div>
 
-        </div>
+            <!-- 3 · Duration -->
+            <div class="sim-row__cell">
+              <label class="sim-row__label" for="duration" data-i18n="sim.col.duration">Duration (yrs)</label>
+              <input type="number" id="duration"
+                     class="sim-table__input sim-row__input"
+                     min="1" max="30" step="1"
+                     data-i18n-placeholder="sim.placeholder.duration"
+                     placeholder="e.g. 25" />
+            </div>
 
-        <!-- Input grid -->
-        <div class="sim-inputs" aria-label="Mortgage inputs">
-          <div class="sim-input-cell">
-            <span class="sim-input-cell__label" data-i18n="sim.col.propertyPrice">Property Price (₪)</span>
-            <input type="text" inputmode="numeric" id="propertyPrice" class="sim-table__input"
-                   data-i18n-placeholder="sim.placeholder.propertyPrice"
-                   placeholder="e.g. 2,000,000" />
-          </div>
-          <div class="sim-input-cell">
-            <span class="sim-input-cell__label" data-i18n="sim.col.equity">Equity (₪)</span>
-            <input type="text" inputmode="numeric" id="equity" class="sim-table__input"
-                   data-i18n-placeholder="sim.placeholder.equity"
-                   placeholder="e.g. 500,000" />
-          </div>
-          <div class="sim-input-cell">
-            <span class="sim-input-cell__label" data-i18n="sim.col.duration">Duration (yrs)</span>
-            <input type="number" id="duration" class="sim-table__input"
-                   min="1" max="30" step="1"
-                   data-i18n-placeholder="sim.placeholder.duration"
-                   placeholder="e.g. 25" />
-          </div>
-          <div class="sim-input-cell">
-            <span class="sim-input-cell__label" data-i18n="sim.col.monthlyPayment">Monthly Payment (₪)</span>
-            <input type="text" inputmode="numeric" id="monthlyPayment" class="sim-table__input"
-                   data-i18n-placeholder="sim.placeholder.monthlyPayment"
-                   placeholder="e.g. 5,500" />
-          </div>
-        </div>
+            <!-- 4 · Repayment Method -->
+            <div class="sim-row__cell sim-row__cell--wide">
+              <label class="sim-row__label" for="repaymentMethod" data-i18n="sim.repaymentMethod">Repayment Method</label>
+              <select id="repaymentMethod" class="sim-row__input">
+                <option value=""            data-i18n="sim.selectDefault">— Select —</option>
+                <option value="shpitzer"    data-i18n="sim.shpitzer">Shpitzer (Fixed Payment)</option>
+                <option value="keren-shava" data-i18n="sim.kerenShava">Equal Principal (Keren Shava)</option>
+                <option value="bullet"      data-i18n="sim.bullet">Bullet (Interest Only)</option>
+              </select>
+            </div>
 
-        <!-- Results band -->
-        <div class="sim-results" aria-label="Results">
-          <div class="sim-result-cell">
-            <span class="sim-result-cell__label" data-i18n="sim.col.loanAmount">Loan Amount (₪)</span>
-            <span class="sim-result-cell__value" id="res-loan">—</span>
+            <!-- 5 · Interest Method -->
+            <div class="sim-row__cell sim-row__cell--wide">
+              <label class="sim-row__label" for="interestMethod" data-i18n="sim.interestMethod">Interest Method</label>
+              <select id="interestMethod" class="sim-row__input">
+                <option value=""             data-i18n="sim.selectDefault">— Select —</option>
+                <option value="prime-linked" data-i18n="sim.primeLinked">Prime-Linked</option>
+                <option value="fixed"        data-i18n="sim.fixed">Fixed</option>
+                <option value="cpi-linked"   data-i18n="sim.cpiLinked">CPI-Linked</option>
+              </select>
+            </div>
+
+            <!-- 6 · Annual Rate -->
+            <div class="sim-row__cell">
+              <label class="sim-row__label" for="annualRate">
+                <span data-i18n="sim.annualRate">Annual Rate (%)</span>
+                <span class="sim-row__label-hint" data-i18n="sim.annualRateHint">optional</span>
+              </label>
+              <input type="number" id="annualRate" class="sim-row__input"
+                     min="0" step="0.01"
+                     data-i18n-placeholder="sim.placeholder.annualRate"
+                     placeholder="e.g. 4.5" />
+            </div>
+
+            <!-- 7 · Monthly Payment -->
+            <div class="sim-row__cell">
+              <label class="sim-row__label" for="monthlyPayment" data-i18n="sim.col.monthlyPayment">Monthly Payment (₪)</label>
+              <input type="text" inputmode="numeric" id="monthlyPayment"
+                     class="sim-table__input sim-row__input"
+                     data-i18n-placeholder="sim.placeholder.monthlyPayment"
+                     placeholder="e.g. 5,500" />
+            </div>
+
+            <!-- 8 · Loan Amount (computed result) -->
+            <div class="sim-row__cell sim-row__cell--result sim-row__cell--result-first">
+              <span class="sim-row__label" data-i18n="sim.col.loanAmount">Loan Amount (₪)</span>
+              <span class="sim-row__value" id="res-loan">—</span>
+            </div>
+
+            <!-- 9 · Total Interest (computed result) -->
+            <div class="sim-row__cell sim-row__cell--result">
+              <span class="sim-row__label" data-i18n="sim.col.totalInterest">Total Interest (₪)</span>
+              <span class="sim-row__value" id="res-total-interest">—</span>
+            </div>
+
+            <!-- 10 · Total Payment (computed result) -->
+            <div class="sim-row__cell sim-row__cell--result">
+              <span class="sim-row__label" data-i18n="sim.col.totalPayment">Total Payment (₪)</span>
+              <span class="sim-row__value" id="res-total-payment">—</span>
+            </div>
+
           </div>
-          <div class="sim-result-cell">
-            <span class="sim-result-cell__label" data-i18n="sim.col.totalInterest">Total Interest (₪)</span>
-            <span class="sim-result-cell__value" id="res-total-interest">—</span>
-          </div>
-          <div class="sim-result-cell">
-            <span class="sim-result-cell__label" data-i18n="sim.col.totalPayment">Total Payment (₪)</span>
-            <span class="sim-result-cell__value" id="res-total-payment">—</span>
-          </div>
-        </div>
+        </div><!-- /.sim-row-wrapper -->
 
         <!-- Action bar -->
         <div class="sim-action-bar">
           <button id="solve-btn" class="btn btn--primary" data-i18n="sim.solve">Solve</button>
           <div class="sim-action-bar__secondary">
-            <button id="save-mix-btn"         class="btn btn--secondary" hidden data-i18n="sim.saveAsMix">Save as Mix</button>
-            <button id="show-comparison-btn"  class="btn btn--secondary" hidden data-i18n="sim.compareAll">Compare All Mixes</button>
-            <button id="pdf-btn"              class="btn btn--secondary" hidden data-i18n="sim.downloadPdf">Download PDF</button>
+            <button id="save-mix-btn"        class="btn btn--secondary" hidden data-i18n="sim.saveAsMix">Save as Mix</button>
+            <button id="show-comparison-btn" class="btn btn--secondary" hidden data-i18n="sim.compareAll">Compare All Mixes</button>
+            <button id="pdf-btn"             class="btn btn--secondary" hidden data-i18n="sim.downloadPdf">Download PDF</button>
           </div>
         </div>
 
@@ -624,37 +544,35 @@
       <!-- Dynamic sections -->
       <div class="sim-dynamic">
 
-        <!-- Amortization: breakdown bar + collapsible table -->
+        <!-- Amortization: breakdown bar + table -->
         <section id="amortization-section" class="sim-amort" hidden aria-label="Amortization schedule">
 
           <div class="sim-amort__header">
             <h2 id="amortization-title" class="sim-amort__title" data-i18n="sim.amortSchedule">Amortization Schedule</h2>
           </div>
 
-          <!-- Visual principal vs interest breakdown (populated by JS) -->
+          <!-- Visual principal vs interest breakdown (JS populates the values) -->
           <div class="sim-amort-breakdown">
             <div class="sim-amort-breakdown__stats">
               <div class="sim-amort-breakdown__stat">
                 <span class="sim-amort-breakdown__stat-label" data-i18n="sim.fieldLabel.loanAmount">Loan Amount</span>
                 <span class="sim-amort-breakdown__stat-value" id="amort-stat-principal">—</span>
-                <span class="sim-amort-breakdown__stat-sub" id="amort-principal-pct">—</span>
+                <span class="sim-amort-breakdown__stat-sub"   id="amort-principal-pct">—</span>
               </div>
               <div class="sim-amort-breakdown__stat">
                 <span class="sim-amort-breakdown__stat-label" data-i18n="sim.totalInterest">Total Interest</span>
                 <span class="sim-amort-breakdown__stat-value" id="amort-stat-interest">—</span>
-                <span class="sim-amort-breakdown__stat-sub" id="amort-interest-pct">—</span>
+                <span class="sim-amort-breakdown__stat-sub"   id="amort-interest-pct">—</span>
               </div>
               <div class="sim-amort-breakdown__stat">
                 <span class="sim-amort-breakdown__stat-label" data-i18n="sim.results">Total</span>
                 <span class="sim-amort-breakdown__stat-value" id="amort-stat-total">—</span>
               </div>
             </div>
-
             <div class="sim-amort-breakdown__bar">
               <div class="sim-amort-breakdown__bar-principal" id="amort-bar-principal" style="width:60%"></div>
               <div class="sim-amort-breakdown__bar-interest"  id="amort-bar-interest"></div>
             </div>
-
             <div class="sim-amort-breakdown__legend">
               <span class="sim-amort-breakdown__legend-item">
                 <span class="sim-amort-breakdown__swatch sim-amort-breakdown__swatch--principal"></span>
@@ -667,7 +585,7 @@
             </div>
           </div>
 
-          <!-- Monthly detail table -->
+          <!-- Monthly schedule table -->
           <div class="sim-amort__wrapper">
             <table class="sim-amort__table">
               <thead>
@@ -703,7 +621,7 @@
 
       </div><!-- /.sim-dynamic -->
 
-      <!-- Informational cards -->
+      <!-- Info cards -->
       <div class="sim-info-cards" aria-label="How it works">
         <div class="sim-info-card">
           <span class="sim-info-card__icon">📊</span>
