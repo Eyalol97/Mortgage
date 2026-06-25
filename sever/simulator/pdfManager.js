@@ -1,4 +1,4 @@
-import PDFDocument from 'pdfkit';
+﻿import PDFDocument from 'pdfkit';
 import path        from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,10 +11,14 @@ const _currency = v => 'ILS ' + Math.round(v).toLocaleString('en-US');
 const _pct      = v => (Math.round(v * 10) / 10).toFixed(1) + '%';
 const _genDate  = () => new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 
+// ── Hebrew space helper ────────────────────────────────────────────────────────
+// U+0020 (space) has BiDi class WS — the bidi algorithm strips it at RTL run
+// boundaries, making multi-word Hebrew labels appear without spaces.
+// U+00A0 (no-break space) has BiDi class CS — never stripped, renders correctly.
+const NBS = ' '; // non-breaking space, safe in Hebrew bidi runs
+function he(str) { return String(str).replace(/ /g, NBS); }
+
 // ── Static labels ──────────────────────────────────────────────────────────────
-// PDFKit 0.13+ includes the Unicode BiDi algorithm (via fontkit/bidi-js).
-// Pass Hebrew strings as-is — PDFKit reshapes and reorders glyphs automatically.
-// Do NOT pre-reverse: that causes double-reversal and garbled output.
 const EN = {
   bannerSubtitle:  'Mortgage Investment Route Comparison',
   sectionHeading:  'INVESTMENT ROUTE COMPARISON',
@@ -41,35 +45,35 @@ const EN = {
 };
 
 const HE = {
-  bannerSubtitle:  'השוואת מסלולי השקעה במשכנתא',
-  sectionHeading:  'השוואת מסלולי השקעה',
-  sectionHeading1: 'ניתוח מסלול השקעה',
+  bannerSubtitle:  he('השוואת מסלולי השקעה במשכנתא'),
+  sectionHeading:  he('השוואת מסלולי השקעה'),
+  sectionHeading1: he('ניתוח מסלול השקעה'),
   routeCol:        'מסלול',
-  repaymentMethod: 'שיטת פירעון',
-  interestMethod:  'שיטת ריבית',
-  annualRate:      'ריבית שנתית',
-  propertyPrice:   'מחיר הנכס',
-  equity:          'הון עצמי',
-  loanAmount:      'סכום הלוואה',
+  repaymentMethod: he('שיטת פירעון'),
+  interestMethod:  he('שיטת ריבית'),
+  annualRate:      he('ריבית שנתית'),
+  propertyPrice:   he('מחיר הנכס'),
+  equity:          he('הון עצמי'),
+  loanAmount:      he('סכום הלוואה'),
   duration:        'משך',
-  monthlyPayment:  'תשלום חודשי',
-  totalInterest:   'ריבית כוללת',
-  totalPayment:    'תשלום כולל',
+  monthlyPayment:  he('תשלום חודשי'),
+  totalInterest:   he('ריבית כוללת'),
+  totalPayment:    he('תשלום כולל'),
   methodShpitzer:  'שפיצר',
-  methodKerenShava:'קרן שווה',
+  methodKerenShava:he('קרן שווה'),
   methodBullet:    'בוליט',
   trackPrime:      'פריים',
   trackFixed:      'קבועה',
   trackCpi:        'מדד',
-  disclaimer1:     'מסמך זה הינו הערכה בלבד ואינו מהווה הצעת הלוואה רשמית מבנק ישראל.',
-  disclaimer2:     'אנא התייעץ עם יועץ משכנתאות מורשה לפני קבלת כל החלטה.',
+  disclaimer1:     he('מסמך זה הינו הערכה בלבד ואינו מהווה הצעת הלוואה רשמית מבנק ישראל.'),
+  disclaimer2:     he('אנא התייעץ עם יועץ משכנתאות מורשה לפני קבלת כל החלטה.'),
 };
 
 const HE_DYN = {
-  mix:      'מיקס ',
-  best:     ' מומלץ',
-  yrs:      " שנ'",
-  bestNote: 'בעל הריבית הכוללת הנמוכה ביותר',
+  mix:      'מיקס',       // NO trailing space — joined with NBS at call sites
+  best:     he(' מומלץ'), // leading NBS keeps space when appended
+  yrs:      NBS + 'שנ׳', // U+05F3 = Hebrew Geresh ׳ (NotoSansHebrew has it; U+0027 does not)
+  bestNote: he('בעל הריבית הכוללת הנמוכה ביותר'),
 };
 
 // ── Design tokens ──────────────────────────────────────────────────────────────
@@ -194,7 +198,7 @@ function drawTable(doc, mixes, startY, L, isHe) {
 
     let colLabel;
     if (isHe) {
-      colLabel = HE_DYN.mix + (i + 1) + (isBest ? HE_DYN.best : '');
+      colLabel = HE_DYN.mix + NBS + (i + 1) + (isBest ? HE_DYN.best : '');
     } else {
       colLabel = 'MIX ' + (i + 1) + (isBest ? '  [BEST]' : '');
     }
@@ -307,8 +311,8 @@ function drawBestNote(doc, mixes, y, isHe) {
 
   let note;
   if (isHe) {
-    note = HE_DYN.mix + (bestIdx + 1) + ' — ' + HE_DYN.bestNote;
-    if (saved > 0) note += ' | חסכון: ' + _currency(saved);
+    note = HE_DYN.mix + NBS + (bestIdx + 1) + NBS + '—' + NBS + HE_DYN.bestNote;
+    if (saved > 0) note += NBS + '|' + NBS + he('חסכון:') + NBS + _currency(saved);
   } else {
     const savings = saved > 0 ? '  --  saves ' + _currency(saved) + ' vs. most expensive option' : '';
     note = 'MIX ' + (bestIdx + 1) + ' has the lowest total interest' + savings;

@@ -124,6 +124,13 @@
       'sim.mix.hint':       'Click to load a mix · ✕ to remove and try different settings',
       'sim.cmp.clickToView': 'Click to load this mix',
 
+      // Simulator — input placeholders
+      'sim.placeholder.annualRate':     'e.g. 4.5',
+      'sim.placeholder.propertyPrice':  'e.g. 2,000,000',
+      'sim.placeholder.equity':         'e.g. 500,000',
+      'sim.placeholder.duration':       'e.g. 25',
+      'sim.placeholder.monthlyPayment': 'e.g. 5,500',
+
       // Simulator — errors
       'sim.error.noMixes':    'No mixes saved yet.',
       'sim.error.calcFailed': 'Calculation failed.',
@@ -298,6 +305,13 @@
       'sim.mix.deleteHint': 'הסר מיקס',
       'sim.mix.hint':       'לחץ לטעינת מיקס · ✕ להסרה ולניסיון הגדרות שונות',
       'sim.cmp.clickToView': 'לחץ לטעינת מיקס זה',
+
+      // Simulator — input placeholders
+      'sim.placeholder.annualRate':     'לדוגמה: 4.5',
+      'sim.placeholder.propertyPrice':  'לדוגמה: 2,000,000',
+      'sim.placeholder.equity':         'לדוגמה: 500,000',
+      'sim.placeholder.duration':       'לדוגמה: 25',
+      'sim.placeholder.monthlyPayment': 'לדוגמה: 5,500',
 
       // Simulator — errors
       'sim.error.noMixes':    'לא נשמרו מיקסים עדיין.',
