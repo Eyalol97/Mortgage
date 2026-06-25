@@ -24,6 +24,12 @@ function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
   return kept;
 }
 
+function _errorReply(lang) {
+  return lang === 'he'
+    ? 'אירעה שגיאה בגישה לבסיס הידע. אנא נסה שוב.'
+    : "I'm having trouble reaching my knowledge base right now. Please try again in a moment.";
+}
+
 async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
   const systemPrompt = mortgageBotPrompt.getPrompt({ advisory, lang });
 
@@ -57,7 +63,7 @@ async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
     console.error('[mortgageBotHandler] generateContent failed:', {
       model: LLM_MODEL, status: apiErr.status, message: apiErr.message,
     });
-    return { reply: "I'm having trouble reaching my knowledge base right now. Please try again in a moment.", followUps: [] };
+    return { reply: _errorReply(lang), followUps: [] };
   }
 
   let raw;
@@ -68,7 +74,7 @@ async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
     console.error('[mortgageBotHandler] response.text() threw:', {
       finishReason: candidate?.finishReason, message: textErr.message,
     });
-    return { reply: "I'm having trouble reaching my knowledge base right now. Please try again in a moment.", followUps: [] };
+    return { reply: _errorReply(lang), followUps: [] };
   }
 
   return _parseResponse(raw);

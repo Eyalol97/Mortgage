@@ -34,21 +34,28 @@ function _recordTurn(sessionId, query, reply) {
 async function _handleChip(query, sessionId, lang, res) {
   UsageCounter.increment('chip').catch(() => {});
 
-  // Hebrew mode: use LLM so the response and follow-ups are in Hebrew
-  if (lang === 'he') {
-    const history = _getHistory(sessionId);
-    const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
-    _recordTurn(sessionId, query, reply);
-    return res.json({ decision: 'EDUCATION', reply, followUps });
-  }
-
   const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const term = await GlossaryTerm.findOne({
     term: { $regex: new RegExp(`^${escaped}$`, 'i') },
   });
 
+  // Hebrew mode: use LLM so the response and follow-ups are in Hebrew.
+  // Falls back to English DB definition if the LLM call fails.
+  if (lang === 'he') {
+    const history = _getHistory(sessionId);
+    const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
+    const isError = reply.startsWith("I'm having trouble");
+    if (!isError) {
+      _recordTurn(sessionId, query, reply);
+      return res.json({ decision: 'EDUCATION', reply, followUps });
+    }
+    // LLM failed — fall through to DB definition below
+  }
+
   const reply    = term?.definition ?? `I don't have a glossary entry for "${query}" yet — try asking me in the chat!`;
-  const followUps = term?.followUps ?? [];
+  const followUps = lang === 'he'
+    ? (term?.followUpsHe?.length ? term.followUpsHe : term?.followUps ?? [])
+    : (term?.followUps ?? []);
 
   _recordTurn(sessionId, query, reply);
   return res.json({ decision: 'EDUCATION', reply, followUps });
