@@ -131,6 +131,12 @@
       'sim.placeholder.duration':       'e.g. 25',
       'sim.placeholder.monthlyPayment': 'e.g. 5,500',
 
+      // Simulator — Bank of Israel regulation violations
+      'sim.reg.maxLtv':            'LTV exceeds the Bank of Israel limit of 75% for a primary residence. Increase your equity or reduce the loan.',
+      'sim.reg.equityExceedsPrice':'Equity cannot equal or exceed the property price.',
+      'sim.reg.maxLoanYears':      'Loan duration exceeds the maximum of 30 years.',
+      'sim.reg.trackRatio':        'A track allocation exceeds the Bank of Israel cap.',
+
       // Simulator — errors
       'sim.error.noMixes':    'No mixes saved yet.',
       'sim.error.calcFailed': 'Calculation failed.',
@@ -312,6 +318,12 @@
       'sim.placeholder.equity':         'לדוגמה: 500,000',
       'sim.placeholder.duration':       'לדוגמה: 25',
       'sim.placeholder.monthlyPayment': 'לדוגמה: 5,500',
+
+      // Simulator — Bank of Israel regulation violations
+      'sim.reg.maxLtv':            'יחס המימון (LTV) עולה על מגבלת בנק ישראל של 75% למגורים ראשוניים. הגדל את ההון העצמי או הקטן את ההלוואה.',
+      'sim.reg.equityExceedsPrice':'ההון העצמי לא יכול להיות שווה או גדול ממחיר הנכס.',
+      'sim.reg.maxLoanYears':      'משך ההלוואה עולה על המקסימום המותר של 30 שנה.',
+      'sim.reg.trackRatio':        'הקצאת מסלול עולה על מגבלת בנק ישראל.',
 
       // Simulator — errors
       'sim.error.noMixes':    'לא נשמרו מיקסים עדיין.',

@@ -47,12 +47,6 @@ export async function runSimulation(req, res, next) {
       return res.status(400).json({ error: `duration must be between 1 and 30 years (got ${duration})` });
     }
 
-    // ── Bank of Israel regulation check (on provided fields only) ────────────
-    const validation = validateMortgage({ propertyPrice, equity, loanDuration: duration });
-    if (!validation.is_valid) {
-      return res.status(400).json({ errors: validation.violations });
-    }
-
     // ── Rate resolution ───────────────────────────────────────────────────────
     const resolvedRate = (annualRate != null)
       ? annualRate
@@ -64,6 +58,17 @@ export async function runSimulation(req, res, next) {
       result = calculate({ repaymentMethod, annualRate: resolvedRate, propertyPrice, equity, duration, monthlyPayment });
     } catch (calcErr) {
       return res.status(400).json({ error: calcErr.message });
+    }
+
+    // ── Bank of Israel regulation check (using fully-resolved values) ─────────
+    // Must run AFTER calculate() so null solved-fields are filled in.
+    // Running before with nulls causes JS coercion (null→0), producing wrong LTV.
+    const fullPrice    = result.solvedField === 'propertyPrice' ? result.solvedValue : propertyPrice;
+    const fullEquity   = result.solvedField === 'equity'        ? result.solvedValue : equity;
+    const fullDuration = result.solvedField === 'duration'      ? result.solvedValue : duration;
+    const validation   = validateMortgage({ propertyPrice: fullPrice, equity: fullEquity, loanDuration: fullDuration });
+    if (!validation.is_valid) {
+      return res.status(400).json({ errors: validation.violations });
     }
 
     UsageCounter.increment('simulator').catch(() => {});

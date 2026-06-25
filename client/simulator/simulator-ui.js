@@ -8,6 +8,24 @@
   const TAB_ORDER        = ['repaymentMethod', 'interestMethod', 'annualRate',
                             'propertyPrice', 'equity', 'duration', 'monthlyPayment'];
 
+  // ── Regulation violation formatter ────────────────────────────────────────
+  // Server returns { rule, reason } objects (not { message }).
+  // Map known rule codes to localised strings; fall back to the English reason.
+  const RULE_KEYS = {
+    MAX_LTV:              'sim.reg.maxLtv',
+    EQUITY_EXCEEDS_PRICE: 'sim.reg.equityExceedsPrice',
+    MAX_LOAN_YEARS:       'sim.reg.maxLoanYears',
+    TRACK_RATIO_EXCEEDED: 'sim.reg.trackRatio',
+  };
+  function formatViolation(v) {
+    const key = v && v.rule && RULE_KEYS[v.rule];
+    if (key) {
+      const localised = _t(key, null);
+      if (localised) return localised;
+    }
+    return (v && (v.reason || v.message)) || String(v);
+  }
+
   // ── Mix store ──────────────────────────────────────────────────────────────
 
   function getMixes() {
@@ -231,10 +249,8 @@
     // ── 3-of-4 check ──────────────────────────────────────────────────────
     const filled = FINANCIAL.filter(f => state[f] !== null).length;
     if (filled < 3) {
-      const missing = 3 - filled;
       showMessage('error', _t('sim.solve.needMore',
-        'Fill in ' + missing + ' more field' + (missing > 1 ? 's' : '') +
-        ' — exactly 3 of the 4 amount fields must be filled.'));
+        'Fill in more fields — exactly 3 of the 4 amount fields must be filled.'));
       return;
     }
     if (filled === 4) {
@@ -478,7 +494,9 @@
       const data = await res.json();
 
       if (!res.ok) {
-        const msg = (data.errors && data.errors.map(e => e.message || e).join(', '))
+        const msg = (data.errors && data.errors.length
+            ? data.errors.map(formatViolation).join(' ')
+            : null)
           || data.error
           || _t('sim.error.calcFailed', 'Validation failed.');
         showMessage('error', msg);
