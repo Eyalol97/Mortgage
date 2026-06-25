@@ -52,7 +52,11 @@ async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
     }
   }
 
-  prompt += `\n\nUser: ${query}\nAssistant:`;
+  if (lang === 'he') {
+    prompt += `\n\n[הוראה קריטית: ענה אך ורק בעברית. כל מילה ב-"reply" וב-"followUps" חייבת להיות בעברית בלבד.]\nUser: ${query}\nAssistant:`;
+  } else {
+    prompt += `\n\nUser: ${query}\nAssistant:`;
+  }
 
   const model = genAI.getGenerativeModel({ model: LLM_MODEL });
 
