@@ -13,6 +13,10 @@ const glossaryTermSchema = new mongoose.Schema(
       type:     String,
       required: true,
     },
+    definitionHe: {
+      type:    String,
+      default: '',
+    },
     related_terms: {
       type:    [String],
       default: [],
