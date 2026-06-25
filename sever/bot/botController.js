@@ -31,13 +31,21 @@ function _recordTurn(sessionId, query, reply) {
 
 // ── chip path ──────────────────────────────────────────────────────────────────
 
-async function _handleChip(query, sessionId, res) {
+async function _handleChip(query, sessionId, lang, res) {
+  UsageCounter.increment('chip').catch(() => {});
+
+  // Hebrew mode: use LLM so the response and follow-ups are in Hebrew
+  if (lang === 'he') {
+    const history = _getHistory(sessionId);
+    const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
+    _recordTurn(sessionId, query, reply);
+    return res.json({ decision: 'EDUCATION', reply, followUps });
+  }
+
   const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const term = await GlossaryTerm.findOne({
     term: { $regex: new RegExp(`^${escaped}$`, 'i') },
   });
-
-  UsageCounter.increment('chip').catch(() => {});   // fire-and-forget; never blocks response
 
   const reply    = term?.definition ?? `I don't have a glossary entry for "${query}" yet — try asking me in the chat!`;
   const followUps = term?.followUps ?? [];
@@ -48,7 +56,7 @@ async function _handleChip(query, sessionId, res) {
 
 // ── free-text path ─────────────────────────────────────────────────────────────
 
-async function _handleFreeText(query, sessionId, res) {
+async function _handleFreeText(query, sessionId, lang, res) {
   const history = _getHistory(sessionId);
 
   // Layer 1 — lightweight intent classifier
@@ -67,19 +75,19 @@ async function _handleFreeText(query, sessionId, res) {
     }
 
     case 'ADVISORY_BLOCK': {
-      const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: true });
+      const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: true, lang });
       _recordTurn(sessionId, query, reply);
       return res.json({ decision: 'ADVISORY', reply, followUps });
     }
 
     case 'ALLOW': {
-      const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false });
+      const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
       _recordTurn(sessionId, query, reply);
       return res.json({ decision: 'EDUCATION', reply, followUps });
     }
 
     case 'AMBIGUOUS': {
-      const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false });
+      const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
       _recordTurn(sessionId, query, reply);
       return res.json({ decision: 'AMBIGUOUS', reply, followUps });
     }
@@ -93,7 +101,7 @@ async function _handleFreeText(query, sessionId, res) {
 // ── exported route handlers ────────────────────────────────────────────────────
 
 async function chat(req, res) {
-  const { query, sessionId, isChip = false } = req.body;
+  const { query, sessionId, isChip = false, lang = 'en' } = req.body;
 
   if (!query || typeof query !== 'string' || !query.trim()) {
     return res.status(400).json({ error: 'query is required' });
@@ -103,8 +111,8 @@ async function chat(req, res) {
   }
 
   try {
-    if (isChip) return await _handleChip(query.trim(), sessionId, res);
-    return await _handleFreeText(query.trim(), sessionId, res);
+    if (isChip) return await _handleChip(query.trim(), sessionId, lang, res);
+    return await _handleFreeText(query.trim(), sessionId, lang, res);
   } catch (err) {
     return errorHandler(err, req, res);
   }

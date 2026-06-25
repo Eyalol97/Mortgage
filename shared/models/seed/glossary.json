@@ -7,6 +7,11 @@
       "How does the interest-to-principal split change over time?",
       "What is the difference between Shpitzer and Keren Shava repayment?",
       "How does a longer loan term affect total interest paid?"
+    ],
+    "followUpsHe": [
+      "כיצד משתנה חלוקת הריבית-קרן לאורך זמן?",
+      "מה ההבדל בין שיטת שפיצר לקרן שווה?",
+      "כיצד משך הלוואה ארוך יותר משפיע על סך הריבית ששולמה?"
     ]
   },
   {
@@ -17,6 +22,11 @@
       "What is the Bank of Israel track mix rule?",
       "Which track is best for a rising interest-rate environment?",
       "How does the prime-linked track payment change with rate decisions?"
+    ],
+    "followUpsHe": [
+      "מה כלל תמהיל המסלולים של בנק ישראל?",
+      "איזה מסלול עדיף בסביבת ריבית עולה?",
+      "כיצד משתנה תשלום מסלול הפריים עם החלטות הריבית?"
     ]
   },
   {
@@ -27,6 +37,11 @@
       "How often does the Bank of Israel change its benchmark rate?",
       "How does a rate change translate into my monthly payment?",
       "What is the prime-linked track regulation regarding track mix?"
+    ],
+    "followUpsHe": [
+      "באיזו תדירות בנק ישראל משנה את ריבית הייחוס שלו?",
+      "כיצד שינוי ריבית משפיע על התשלום החודשי שלי?",
+      "מה התקנה לגבי מסלול הפריים בתמהיל המשכנתא?"
     ]
   },
   {
@@ -37,6 +52,11 @@
       "What is the maximum LTV for a first home in Israel?",
       "How does a low appraisal affect the maximum loan I can get?",
       "How can I reduce my LTV ratio?"
+    ],
+    "followUpsHe": [
+      "מהו ה-LTV המרבי לדירה ראשונה בישראל?",
+      "כיצד שמאות נמוכה משפיעה על ההלוואה המרבית שאוכל לקבל?",
+      "כיצד אוכל להקטין את יחס ה-LTV שלי?"
     ]
   },
   {
@@ -47,6 +67,11 @@
       "Can I lock in a fixed rate for only part of my loan?",
       "What happens to my fixed-rate track if I want to repay early?",
       "What is the Bank of Israel track mix rule?"
+    ],
+    "followUpsHe": [
+      "האם אפשר לנעול ריבית קבועה על חלק מההלוואה בלבד?",
+      "מה קורה למסלול הקבוע שלי אם ארצה לפרוע מוקדם?",
+      "מה כלל תמהיל המסלולים של בנק ישראל?"
     ]
   },
   {
@@ -57,6 +82,11 @@
       "Which repayment method results in the lowest total interest paid?",
       "How does the Shpitzer formula change for CPI-linked tracks?",
       "How does a shorter loan term affect the monthly payment?"
+    ],
+    "followUpsHe": [
+      "איזו שיטת פירעון מביאה לסך ריבית הנמוך ביותר?",
+      "כיצד משתנה נוסחת שפיצר במסלולים צמודי מדד?",
+      "כיצד משך הלוואה קצר יותר משפיע על התשלום החודשי?"
     ]
   },
   {
@@ -67,6 +97,11 @@
       "How does the prime rate affect my monthly payment?",
       "What is the Bank of Israel's role in setting the prime rate?",
       "How does a prime-linked track compare to a fixed track?"
+    ],
+    "followUpsHe": [
+      "כיצד ריבית הפריים משפיעה על התשלום החודשי שלי?",
+      "מה תפקיד בנק ישראל בקביעת ריבית הפריים?",
+      "כיצד מסלול הפריים משתווה למסלול הקבוע?"
     ]
   },
   {
@@ -77,6 +112,11 @@
       "What happens if I repay a fixed-rate track early?",
       "Is a fixed rate always more expensive than a variable rate?",
       "Can I combine a fixed track with a variable track in one mortgage?"
+    ],
+    "followUpsHe": [
+      "מה קורה אם אפרע מסלול קבוע מוקדם?",
+      "האם ריבית קבועה תמיד יקרה יותר מריבית משתנה?",
+      "האם אפשר לשלב מסלול קבוע עם מסלול משתנה במשכנתא אחת?"
     ]
   },
   {
@@ -87,6 +127,11 @@
       "What is the one-third cap on prime-linked track in Israel?",
       "Is there a prepayment penalty on a prime-linked track?",
       "How does a prime-linked track perform during a rate-cutting cycle?"
+    ],
+    "followUpsHe": [
+      "מהי מגבלת השליש על מסלול הפריים בישראל?",
+      "האם יש עמלת פירעון מוקדם במסלול הפריים?",
+      "כיצד מסלול הפריים מתפקד בתקופה של הורדת ריבית?"
     ]
   },
   {
@@ -97,6 +142,11 @@
       "Can my outstanding balance grow above the original loan amount?",
       "How does high inflation affect a CPI-linked mortgage?",
       "What is the prepayment penalty on a CPI-linked track?"
+    ],
+    "followUpsHe": [
+      "האם יתרת החוב שלי יכולה לגדול מעבר לסכום ההלוואה המקורי?",
+      "כיצד אינפלציה גבוהה משפיעה על משכנתא צמודת מדד?",
+      "מהי עמלת הפירעון המוקדם במסלול צמוד מדד?"
     ]
   },
   {
@@ -107,6 +157,11 @@
       "Why does the fixed unlinked track carry a higher initial rate?",
       "When is the fixed unlinked track the best choice?",
       "What is the early repayment penalty on a fixed unlinked track?"
+    ],
+    "followUpsHe": [
+      "מדוע המסלול הקבוע הלא-צמוד נושא ריבית התחלתית גבוהה יותר?",
+      "מתי המסלול הקבוע הלא-צמוד הוא הבחירה הטובה ביותר?",
+      "מהי עמלת הפירעון המוקדם על מסלול קבוע לא-צמוד?"
     ]
   },
   {
@@ -117,6 +172,11 @@
       "What is the LTV cap for a second property in Israel?",
       "How does the bank appraise my property for LTV purposes?",
       "Can I reduce my LTV by increasing the down payment?"
+    ],
+    "followUpsHe": [
+      "מהי מגבלת ה-LTV לנכס שני בישראל?",
+      "כיצד הבנק מעריך את נכסי לצורך חישוב ה-LTV?",
+      "האם אוכל להקטין את ה-LTV על ידי הגדלת ההון העצמי?"
     ]
   },
   {
@@ -127,6 +187,11 @@
       "What is the minimum down payment required in Israel?",
       "Can gifted money from family be used as a down payment?",
       "How does a larger down payment affect my interest rate?"
+    ],
+    "followUpsHe": [
+      "מהו ההון העצמי המינימלי הנדרש בישראל?",
+      "האם כסף שניתן כמתנה ממשפחה יכול לשמש כהון עצמי?",
+      "כיצד הון עצמי גבוה יותר משפיע על הריבית שלי?"
     ]
   },
   {
@@ -137,6 +202,11 @@
       "How do I read an amortization schedule?",
       "What happens to my amortization if I make an extra payment?",
       "How does a CPI-linked track change the amortization schedule?"
+    ],
+    "followUpsHe": [
+      "כיצד קוראים לוח סילוקין?",
+      "מה קורה ללוח הסילוקין שלי אם אשלם תשלום נוסף?",
+      "כיצד מסלול צמוד מדד משנה את לוח הסילוקין?"
     ]
   },
   {
@@ -147,6 +217,11 @@
       "Why does so little of my early payment go toward principal?",
       "What happens to my principal on a CPI-linked track?",
       "How does making extra principal payments affect my loan?"
+    ],
+    "followUpsHe": [
+      "מדוע כל כך מעט מהתשלומים הראשונים שלי הולך לקרן?",
+      "מה קורה לקרן שלי במסלול צמוד מדד?",
+      "כיצד תשלומי קרן נוספים משפיעים על ההלוואה שלי?"
     ]
   },
   {
@@ -157,6 +232,11 @@
       "What percentage of income should my mortgage payment be?",
       "How does my monthly payment change with a rate hike?",
       "Can I reduce my monthly payment by extending the loan term?"
+    ],
+    "followUpsHe": [
+      "איזה אחוז מההכנסה צריך להיות תשלום המשכנתא שלי?",
+      "כיצד התשלום החודשי שלי משתנה עם עלייה בריבית?",
+      "האם אוכל להקטין את התשלום החודשי על ידי הארכת תקופת ההלוואה?"
     ]
   },
   {
@@ -167,6 +247,11 @@
       "What is the maximum mortgage term allowed in Israel?",
       "How much extra interest do I pay on a 30-year vs 20-year loan?",
       "Can I shorten my loan term by making extra payments?"
+    ],
+    "followUpsHe": [
+      "מהי תקופת המשכנתא המרבית המותרת בישראל?",
+      "כמה ריבית נוספת אשלם על הלוואה ל-30 שנה לעומת 20 שנה?",
+      "האם אוכל לקצר את תקופת ההלוואה על ידי תשלומים נוספים?"
     ]
   },
   {
@@ -177,6 +262,11 @@
       "What is the regulatory limit on the prime-linked portion?",
       "Why do advisors recommend splitting a mortgage across tracks?",
       "Can I change my track mix after the mortgage is issued?"
+    ],
+    "followUpsHe": [
+      "מהי המגבלה הרגולטורית על חלק מסלול הפריים?",
+      "מדוע יועצים ממליצים לפצל משכנתא על פני מסלולים?",
+      "האם אפשר לשנות את תמהיל המסלולים לאחר מתן המשכנתא?"
     ]
   },
   {
@@ -187,6 +277,11 @@
       "How is the Israeli CPI published and updated?",
       "What was the typical Israeli CPI in recent years?",
       "How does high CPI affect my loan balance on a CPI-linked track?"
+    ],
+    "followUpsHe": [
+      "כיצד מדד המחירים לצרכן הישראלי מפורסם ומעודכן?",
+      "מהו מדד המחירים לצרכן הישראלי הטיפוסי בשנים האחרונות?",
+      "כיצד מדד גבוה משפיע על יתרת ההלוואה שלי במסלול צמוד מדד?"
     ]
   },
   {
@@ -197,6 +292,11 @@
       "What LTV limits does the Bank of Israel set?",
       "How often does the Bank of Israel meet to decide on interest rates?",
       "Where can I find the latest Bank of Israel mortgage regulations?"
+    ],
+    "followUpsHe": [
+      "אילו מגבלות LTV בנק ישראל קובע?",
+      "באיזו תדירות בנק ישראל מתכנס להחלטה על ריביות?",
+      "היכן ניתן למצוא את תקנות המשכנתא העדכניות של בנק ישראל?"
     ]
   },
   {
@@ -207,6 +307,11 @@
       "How is a prepayment penalty calculated in Israel?",
       "Which tracks can I repay early without penalty?",
       "Is it worth paying the prepayment penalty to refinance?"
+    ],
+    "followUpsHe": [
+      "כיצד מחושבת עמלת הפירעון המוקדם בישראל?",
+      "אילו מסלולים אוכל לפרוע מוקדם ללא עמלה?",
+      "האם כדאי לשלם עמלת פירעון מוקדם כדי למחזר משכנתא?"
     ]
   },
   {
@@ -217,6 +322,11 @@
       "How do I estimate my prepayment penalty before refinancing?",
       "When is the prepayment penalty zero even on a fixed track?",
       "Does refinancing to a lower rate outweigh the prepayment penalty?"
+    ],
+    "followUpsHe": [
+      "כיצד אעריך את עמלת הפירעון המוקדם לפני מיחזור?",
+      "מתי עמלת הפירעון המוקדם היא אפס גם במסלול קבוע?",
+      "האם מיחזור לריבית נמוכה יותר משתלם על אף עמלת הפירעון?"
     ]
   },
   {
@@ -227,6 +337,11 @@
       "Can my balance grow above the original loan on a CPI-linked track?",
       "How do I find my current outstanding balance?",
       "How does making a lump-sum payment reduce my outstanding balance?"
+    ],
+    "followUpsHe": [
+      "האם יתרתי יכולה לגדול מעל ההלוואה המקורית במסלול צמוד מדד?",
+      "כיצד אדע מהי יתרת החוב הנוכחית שלי?",
+      "כיצד תשלום חד-פעמי מקטין את יתרת החוב שלי?"
     ]
   },
   {
@@ -237,6 +352,11 @@
       "How do I compare total interest cost across different offers?",
       "How much more interest do I pay on a 30-year vs 20-year term?",
       "Does a slightly lower interest rate make a big difference in total cost?"
+    ],
+    "followUpsHe": [
+      "כיצד אשווה עלות ריבית כוללת בין הצעות שונות?",
+      "כמה ריבית נוספת אשלם על תקופה של 30 שנה לעומת 20 שנה?",
+      "האם ריבית נמוכה מעט יותר יוצרת הבדל גדול בעלות הכוללת?"
     ]
   },
   {
@@ -247,6 +367,11 @@
       "What happens if the appraisal comes in below the purchase price?",
       "Who pays for the property appraisal in Israel?",
       "How long does an appraisal take and does it expire?"
+    ],
+    "followUpsHe": [
+      "מה קורה אם השמאות נמוכה ממחיר הרכישה?",
+      "מי משלם עבור שמאות הנכס בישראל?",
+      "כמה זמן לוקחת שמאות והאם היא פוקעת?"
     ]
   },
   {
@@ -257,6 +382,11 @@
       "Is mortgage insurance mandatory for all Israeli home loans?",
       "Can I shop around for mortgage insurance or must I use the bank's provider?",
       "How is the life insurance premium calculated?"
+    ],
+    "followUpsHe": [
+      "האם ביטוח משכנתא חובה לכל הלוואות הדיור בישראל?",
+      "האם אוכל לרכוש ביטוח משכנתא ממבטח חיצוני או שחייב להשתמש בספק הבנק?",
+      "כיצד מחושבת פרמיית ביטוח החיים?"
     ]
   }
 ]

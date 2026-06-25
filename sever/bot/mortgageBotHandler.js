@@ -24,8 +24,8 @@ function _trimHistory(history, maxTokens = MAX_HISTORY_TOKENS) {
   return kept;
 }
 
-async function respond(query, history, { advisory = false } = {}) {
-  const systemPrompt = mortgageBotPrompt.getPrompt({ advisory });
+async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
+  const systemPrompt = mortgageBotPrompt.getPrompt({ advisory, lang });
 
   let prompt = systemPrompt;
   prompt += '\n\nOUTPUT RULES (follow exactly):'
@@ -33,6 +33,9 @@ async function respond(query, history, { advisory = false } = {}) {
           + '\n- Respond ONLY with a JSON object. No markdown, no code fences, no preamble.'
           + '\n- Do NOT put literal newline characters inside the JSON string values.'
           + '\n- Use \\n (two characters: backslash + n) if you need a line break inside the reply.'
+          + (lang === 'he'
+              ? '\n- You MUST write the "reply" value and ALL "followUps" items in Hebrew only. No English.'
+              : '')
           + '\n- Exact shape: {"reply":"<concise answer>","followUps":["<q1>","<q2>","<q3>"]}';
 
   const trimmed = _trimHistory(history);

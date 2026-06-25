@@ -27,7 +27,7 @@
   // ── chip row clicks (delegated) ─────────────────────────────────────────────
   chipsContainer.addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
-    if (chip) handleQuery(chip.dataset.query, true);
+    if (chip) handleQuery(chip.dataset.query, true, chip.textContent.trim());
   });
 
   // ── follow-up button clicks (delegated — buttons are added dynamically) ─────
@@ -40,20 +40,20 @@
   ChatInput.onSubmit((text) => handleQuery(text, false));
 
   // ── core query handler ──────────────────────────────────────────────────────
-  async function handleQuery(query, isChip) {
+  async function handleQuery(query, isChip, displayLabel) {
     if (!query) return;
 
     DisclaimerBox.hide();
     clearFollowUps();
     ChatInput.lock();
-    ChatWindow.appendUserMessage(query);
+    ChatWindow.appendUserMessage(displayLabel || query);
     ChatWindow.showTyping();
 
     try {
       const res  = await fetch('/api/bot/chat', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ query, sessionId, isChip }),
+        body:    JSON.stringify({ query, sessionId, isChip, lang: window.I18n ? window.I18n.current() : 'en' }),
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

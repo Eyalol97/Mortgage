@@ -21,6 +21,10 @@ const glossaryTermSchema = new mongoose.Schema(
       type:    [String],
       default: [],
     },
+    followUpsHe: {
+      type:    [String],
+      default: [],
+    },
   },
   {
     // auto-generates created_at; no updatedAt — terms are seeded, not updated
