@@ -23,7 +23,7 @@ export const GEMINI_API_KEY  = process.env.GEMINI_API_KEY;
 export const BOI_API_KEY     = process.env.BOI_API_KEY;
 export const BOI_API_ENDPOINT = process.env.BOI_API_ENDPOINT;
 export const PDF_SIZE_LIMIT  = Number(process.env.PDF_SIZE_LIMIT);
-export const LLM_MODEL        = process.env.LLM_MODEL || 'gemini-2.0-flash-lite';
+export const LLM_MODEL        = (process.env.LLM_MODEL || 'gemini-2.0-flash-lite').trim();
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const ADMIN_EMAIL      = process.env.ADMIN_EMAIL;
 
