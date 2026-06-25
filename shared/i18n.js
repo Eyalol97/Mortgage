@@ -143,6 +143,14 @@
       'sim.error.calcFailed': 'Calculation failed.',
       'sim.error.network':    'Network error — please try again.',
 
+      // Simulator — info cards
+      'sim.info.card1.title': '3 of 4 Solver',
+      'sim.info.card1.desc':  'Fill any three of the four financial fields. The simulator derives the missing value — monthly payment, duration, equity, or price.',
+      'sim.info.card2.title': 'Bank of Israel Aligned',
+      'sim.info.card2.desc':  'All calculations follow Bank of Israel regulations, including LTV limits, track mix rules, and standard amortization conventions.',
+      'sim.info.card3.title': 'PDF Export',
+      'sim.info.card3.desc':  'Save multiple mortgage scenarios as mixes and download a side-by-side PDF summary to share with your mortgage advisor.',
+
       // Profile
       'profile.buildTitle':    'Build Your Financial Profile',
       'profile.buildDesc':     'Your profile personalises mortgage simulations and bot answers to your actual situation. It only takes a minute.',
@@ -365,6 +373,14 @@
       'sim.error.noMixes':    'לא נשמרו מיקסים עדיין.',
       'sim.error.calcFailed': 'החישוב נכשל.',
       'sim.error.network':    'שגיאת רשת — אנא נסה שוב.',
+
+      // Simulator — info cards
+      'sim.info.card1.title': '3 מתוך 4 שדות',
+      'sim.info.card1.desc':  'מלא שלושה מתוך ארבעת השדות הפיננסיים. הסימולטור מחשב את הערך החסר — תשלום חודשי, משך, הון עצמי, או מחיר הנכס.',
+      'sim.info.card2.title': 'מבוסס תקנות בנק ישראל',
+      'sim.info.card2.desc':  'כל החישובים מבוצעים לפי תקנות בנק ישראל, כולל מגבלות LTV, כללי תמהיל מסלולים ושיטות הפחתה מקובלות.',
+      'sim.info.card3.title': 'ייצוא PDF',
+      'sim.info.card3.desc':  'שמור מספר תרחישי משכנתא כמיקסים והורד סיכום PDF השוואתי לשיתוף עם יועץ המשכנתא שלך.',
 
       // Profile
       'profile.buildTitle':    'בנה את הפרופיל הפיננסי שלך',

@@ -198,6 +198,33 @@
       : baseLabel;
     if (amortTitle) amortTitle.textContent = label;
 
+    // ── Visual breakdown bar ───────────────────────────────────────────────
+    const loan          = result.loan;
+    const totalInterest = result.totalInterest;
+    const totalPayment  = result.totalPayment;
+    if (loan != null && totalPayment) {
+      const principalPct = Math.round((loan / totalPayment) * 100);
+      const interestPct  = 100 - principalPct;
+
+      const bPrincipal = document.getElementById('amort-bar-principal');
+      if (bPrincipal) bPrincipal.style.width = principalPct + '%';
+
+      const tPrincipal = document.getElementById('amort-stat-principal');
+      if (tPrincipal) tPrincipal.textContent = window.formatCurrency(loan);
+
+      const tInterest = document.getElementById('amort-stat-interest');
+      if (tInterest) tInterest.textContent = window.formatCurrency(totalInterest);
+
+      const tTotal = document.getElementById('amort-stat-total');
+      if (tTotal) tTotal.textContent = window.formatCurrency(totalPayment);
+
+      const pPct = document.getElementById('amort-principal-pct');
+      if (pPct) pPct.textContent = principalPct + '% of total';
+
+      const iPct = document.getElementById('amort-interest-pct');
+      if (iPct) iPct.textContent = interestPct + '% of total';
+    }
+
     amortTbody.innerHTML = '';
     hide(amortToggleWrap);
 
