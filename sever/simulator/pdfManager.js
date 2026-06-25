@@ -72,7 +72,7 @@ const HE = {
 const HE_DYN = {
   mix:      'מיקס',       // NO trailing space — joined with NBS at call sites
   best:     he(' מומלץ'), // leading NBS keeps space when appended
-  yrs:      NBS + 'שנ׳', // U+05F3 = Hebrew Geresh ׳ (NotoSansHebrew has it; U+0027 does not)
+  yrs:      NBS + 'שנים',
   bestNote: he('בעל הריבית הכוללת הנמוכה ביותר'),
 };
 
@@ -98,6 +98,12 @@ const C = {
 // Rendering any of those via NotoSansHebrew produces box glyphs.
 // This helper accepts `parts` in VISUAL left-to-right order and renders each
 // segment with the appropriate font: he:true → NotoSansHebrew, he:false → Helvetica.
+//
+// Baseline alignment: different fonts have different ascender heights, so
+// rendering two fonts at the same y puts their tops level but their baselines
+// at different vertical positions. We read each font's ascender via
+// doc._font (PDFKit internal, stable since v0.13) and shift shorter-ascender
+// fonts DOWN so every segment's baseline lands at the same absolute y.
 function drawMixedRtl(doc, parts, x, y, w, h, opts = {}) {
   const fs    = opts.fontSize || 8.5;
   const bold  = opts.bold  || false;
@@ -105,15 +111,26 @@ function drawMixedRtl(doc, parts, x, y, w, h, opts = {}) {
   const pad   = opts.padH  || 8;
   const align = opts.align || 'center';
 
+  // Measure width and ascender for each segment
   const measured = parts.map(p => {
     const font = p.he
       ? (bold ? 'HeBold' : 'HeReg')
       : (bold ? 'Helvetica-Bold' : 'Helvetica');
-    return { ...p, font, w: doc.font(font).fontSize(fs).widthOfString(p.text) };
+    doc.font(font).fontSize(fs);
+    let ascender = fs * 0.75; // safe fallback (≈ typical cap-height ratio)
+    try {
+      const f = doc._font;
+      if (f && f.ascender && f.unitsPerEm) {
+        ascender = Math.abs(f.ascender / f.unitsPerEm) * fs;
+      }
+    } catch {}
+    return { ...p, font, w: doc.widthOfString(p.text), ascender };
   });
 
+  // baseY is where the tallest ascender's top sits (cell-centred)
+  const maxAscender = Math.max(...measured.map(m => m.ascender));
+  const baseY  = y + Math.max(2, (h - fs * 1.15) / 2);
   const totalW = measured.reduce((s, m) => s + m.w, 0);
-  const textY  = y + Math.max(2, (h - fs * 1.15) / 2);
 
   let curX;
   if (align === 'center') {
@@ -125,11 +142,13 @@ function drawMixedRtl(doc, parts, x, y, w, h, opts = {}) {
   }
 
   for (const m of measured) {
+    // Push shorter-ascender fonts down so all baselines share the same y
+    const segY = baseY + (maxAscender - m.ascender);
     doc.save()
        .fillColor(color)
        .font(m.font)
        .fontSize(fs)
-       .text(m.text, curX, textY, { lineBreak: false })
+       .text(m.text, curX, segY, { lineBreak: false })
        .restore();
     curX += m.w;
   }
@@ -209,6 +228,14 @@ function drawTable(doc, mixes, startY, L, isHe) {
   const HDR_H = 28;
   const ROW_H = 19;
 
+  // RTL layout: label column on the RIGHT, data columns on the LEFT (reversed).
+  // Reading right-to-left: label → Mix 1 (rightmost data col) → Mix 2 → ...
+  // LTR layout: label column on the LEFT, data columns on the RIGHT (normal order).
+  const lblX = isHe ? ML + mixes.length * mixW : ML;
+  const datX = isHe
+    ? i => ML + (mixes.length - 1 - i) * mixW   // Mix 1 rightmost (adjacent to label)
+    : i => ML + LBLW + i * mixW;                  // Mix 1 leftmost after label
+
   const bestIdx = mixes.length > 1
     ? mixes.reduce((b, m, i) => (m.totalInterest < mixes[b].totalInterest ? i : b), 0)
     : 0;
@@ -228,13 +255,13 @@ function drawTable(doc, mixes, startY, L, isHe) {
 
   // ── Column headers ───────────────────────────────────────────────────────────
 
-  fillRect(doc, ML, y, LBLW, HDR_H, C.primary);
-  cellText(doc, L.routeCol, ML, y, LBLW, HDR_H, {
+  fillRect(doc, lblX, y, LBLW, HDR_H, C.primary);
+  cellText(doc, L.routeCol, lblX, y, LBLW, HDR_H, {
     bold: true, fontSize: 7.5, color: '#cfe9e7', align: 'center', isHe,
   });
 
   mixes.forEach((mix, i) => {
-    const x      = ML + LBLW + i * mixW;
+    const x      = datX(i);
     const isBest = mixes.length > 1 && i === bestIdx;
     fillRect(doc, x, y, mixW, HDR_H, isBest ? C.primaryDark : C.primaryMid);
 
@@ -288,11 +315,11 @@ function drawTable(doc, mixes, startY, L, isHe) {
     { label: L.equity,          fn: m => _currency(m.equity),               textVal: false },
     { label: L.loanAmount,      fn: m => _currency(m.loan),                 textVal: false },
     { label: L.duration,        fn: getDuration,                            textVal: false,
-      // Hebrew: year number must be in Helvetica; only 'שנ׳' goes in NotoSansHebrew.
-      // Visual L-to-R: [digits+space] [שנ׳]
+      // Hebrew: year digit must be in Helvetica; only 'שנים' goes in NotoSansHebrew.
+      // Visual L-to-R: [digits+space] [שנים]
       partsFn: isHe ? m => [
         { text: String(m.duration) + ' ', he: false },
-        { text: 'שנ׳', he: true },
+        { text: 'שנים', he: true },
       ] : null },
     null,
     { label: L.monthlyPayment,  fn: m => _currency(m.firstMonthlyPayment),  textVal: false },
@@ -313,8 +340,8 @@ function drawTable(doc, mixes, startY, L, isHe) {
     dataRowIdx++;
 
     // Label cell
-    fillRect(doc, ML, y, LBLW, ROW_H, rowBg);
-    cellText(doc, row.label, ML, y, LBLW, ROW_H, {
+    fillRect(doc, lblX, y, LBLW, ROW_H, rowBg);
+    cellText(doc, row.label, lblX, y, LBLW, ROW_H, {
       bold:    isResults,
       fontSize: 8,
       color:   isResults ? C.textDark : C.textMed,
@@ -324,7 +351,7 @@ function drawTable(doc, mixes, startY, L, isHe) {
 
     // Value cells
     mixes.forEach((mix, i) => {
-      const x      = ML + LBLW + i * mixW;
+      const x      = datX(i);
       const isBest = mixes.length > 1 && i === bestIdx;
       fillRect(doc, x, y, mixW, ROW_H, isBest ? C.primaryPale : rowBg);
 
