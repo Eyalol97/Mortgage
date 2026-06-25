@@ -65,8 +65,8 @@ const HE = {
   trackPrime:      'פריים',
   trackFixed:      'קבועה',
   trackCpi:        'מדד',
-  disclaimer1:     he('מסמך זה הינו הערכה בלבד ואינו מהווה הצעת הלוואה רשמית מבנק ישראל.'),
-  disclaimer2:     he('אנא התייעץ עם יועץ משכנתאות מורשה לפני קבלת כל החלטה.'),
+  disclaimer1:     he('מסמך זה הינו הערכה בלבד ואינו מהווה הצעת הלוואה רשמית מבנק ישראל'),
+  disclaimer2:     he('אנא התייעץ עם יועץ משכנתאות מורשה לפני קבלת כל החלטה'),
 };
 
 const HE_DYN = {
@@ -92,6 +92,48 @@ const C = {
   bestBorder:  '#4d7c7a',
   disclaimer:  '#6b7280',
 };
+
+// ── Mixed-script cell renderer ────────────────────────────────────────────────
+// NotoSansHebrew does not contain Basic Latin glyphs (digits, dash, pipe, period).
+// Rendering any of those via NotoSansHebrew produces box glyphs.
+// This helper accepts `parts` in VISUAL left-to-right order and renders each
+// segment with the appropriate font: he:true → NotoSansHebrew, he:false → Helvetica.
+function drawMixedRtl(doc, parts, x, y, w, h, opts = {}) {
+  const fs    = opts.fontSize || 8.5;
+  const bold  = opts.bold  || false;
+  const color = opts.color || C.textDark;
+  const pad   = opts.padH  || 8;
+  const align = opts.align || 'center';
+
+  const measured = parts.map(p => {
+    const font = p.he
+      ? (bold ? 'HeBold' : 'HeReg')
+      : (bold ? 'Helvetica-Bold' : 'Helvetica');
+    return { ...p, font, w: doc.font(font).fontSize(fs).widthOfString(p.text) };
+  });
+
+  const totalW = measured.reduce((s, m) => s + m.w, 0);
+  const textY  = y + Math.max(2, (h - fs * 1.15) / 2);
+
+  let curX;
+  if (align === 'center') {
+    curX = x + (w - totalW) / 2;
+  } else if (align === 'right') {
+    curX = x + w - pad - totalW;
+  } else {
+    curX = x + pad;
+  }
+
+  for (const m of measured) {
+    doc.save()
+       .fillColor(color)
+       .font(m.font)
+       .fontSize(fs)
+       .text(m.text, curX, textY, { lineBreak: false })
+       .restore();
+    curX += m.w;
+  }
+}
 
 // ── Low-level helpers ──────────────────────────────────────────────────────────
 
@@ -196,16 +238,27 @@ function drawTable(doc, mixes, startY, L, isHe) {
     const isBest = mixes.length > 1 && i === bestIdx;
     fillRect(doc, x, y, mixW, HDR_H, isBest ? C.primaryDark : C.primaryMid);
 
-    let colLabel;
     if (isHe) {
-      colLabel = HE_DYN.mix + NBS + (i + 1) + (isBest ? HE_DYN.best : '');
+      // Digit and spaces must use Helvetica — NotoSansHebrew lacks Basic Latin glyphs.
+      // Visual L-to-R: [מומלץ space num space מיקס]  OR  [num space מיקס]
+      const colParts = isBest
+        ? [
+            { text: 'מומלץ', he: true },
+            { text: ' ' + (i + 1) + ' ', he: false },
+            { text: 'מיקס', he: true },
+          ]
+        : [
+            { text: String(i + 1) + ' ', he: false },
+            { text: 'מיקס', he: true },
+          ];
+      drawMixedRtl(doc, colParts, x, y, mixW, HDR_H, {
+        bold: true, fontSize: 9.5, color: C.white, align: 'center',
+      });
     } else {
-      colLabel = 'MIX ' + (i + 1) + (isBest ? '  [BEST]' : '');
+      cellText(doc, 'MIX ' + (i + 1) + (isBest ? '  [BEST]' : ''), x, y, mixW, HDR_H, {
+        bold: true, fontSize: 9.5, color: C.white, align: 'center', isHe: false,
+      });
     }
-
-    cellText(doc, colLabel, x, y, mixW, HDR_H, {
-      bold: true, fontSize: 9.5, color: C.white, align: 'center', isHe,
-    });
   });
 
   strokeRect(doc, ML, y, W, HDR_H, C.primaryDark, 1);
@@ -234,7 +287,13 @@ function drawTable(doc, mixes, startY, L, isHe) {
     { label: L.propertyPrice,   fn: m => _currency(m.propertyPrice),        textVal: false },
     { label: L.equity,          fn: m => _currency(m.equity),               textVal: false },
     { label: L.loanAmount,      fn: m => _currency(m.loan),                 textVal: false },
-    { label: L.duration,        fn: getDuration,                            textVal: isHe },
+    { label: L.duration,        fn: getDuration,                            textVal: false,
+      // Hebrew: year number must be in Helvetica; only 'שנ׳' goes in NotoSansHebrew.
+      // Visual L-to-R: [digits+space] [שנ׳]
+      partsFn: isHe ? m => [
+        { text: String(m.duration) + ' ', he: false },
+        { text: 'שנ׳', he: true },
+      ] : null },
     null,
     { label: L.monthlyPayment,  fn: m => _currency(m.firstMonthlyPayment),  textVal: false },
     { label: L.totalInterest,   fn: m => _currency(m.totalInterest),        textVal: false },
@@ -269,17 +328,23 @@ function drawTable(doc, mixes, startY, L, isHe) {
       const isBest = mixes.length > 1 && i === bestIdx;
       fillRect(doc, x, y, mixW, ROW_H, isBest ? C.primaryPale : rowBg);
 
-      const val = row.fn(mix);
-      cellText(doc, val, x, y, mixW, ROW_H, {
-        bold:     isBest && isResults,
+      const cellOpts = {
+        bold:    isBest && isResults,
         fontSize: 8,
-        color:    isBest ? C.bestText : C.textDark,
-        align:    'right',
-        padH:     9,
-        // Use Hebrew font for text values (method/track names) and duration suffix
-        // Use Helvetica for pure LTR currency/percentages — cleaner rendering
-        isHe:     isHe && row.textVal,
-      });
+        color:   isBest ? C.bestText : C.textDark,
+        align:   'right',
+        padH:    9,
+      };
+
+      if (row.partsFn) {
+        // Mixed Hebrew+Latin — render each segment in its correct font
+        drawMixedRtl(doc, row.partsFn(mix), x, y, mixW, ROW_H, cellOpts);
+      } else {
+        cellText(doc, row.fn(mix), x, y, mixW, ROW_H, {
+          ...cellOpts,
+          isHe: isHe && row.textVal,
+        });
+      }
     });
 
     strokeRect(doc, ML, y, W, ROW_H, C.border, 0.35);
@@ -309,25 +374,37 @@ function drawBestNote(doc, mixes, y, isHe) {
   fillRect(doc, ML, y, W, boxH, C.primaryPale);
   strokeRect(doc, ML, y, W, boxH, C.bestBorder, 1);
 
-  let note;
   if (isHe) {
-    note = HE_DYN.mix + NBS + (bestIdx + 1) + NBS + '—' + NBS + HE_DYN.bestNote;
-    if (saved > 0) note += NBS + '|' + NBS + he('חסכון:') + NBS + _currency(saved);
+    // Mix number, em dash, pipe, and currency string all require Helvetica
+    // (NotoSansHebrew lacks Basic Latin). Visual L-to-R order:
+    // [bestNote(HE)] [ — num ](LA) [ מיקס](HE) [ | חסכון](HE) [: ILS X](LA)
+    const noteParts = [
+      { text: HE_DYN.bestNote, he: true },
+      { text: ' — ' + (bestIdx + 1) + ' ', he: false },
+      { text: HE_DYN.mix, he: true },
+    ];
+    if (saved > 0) {
+      noteParts.push({ text: '  |  ', he: false });
+      noteParts.push({ text: 'חסכון', he: true });
+      noteParts.push({ text: ': ' + _currency(saved), he: false });
+    }
+    drawMixedRtl(doc, noteParts, ML + 10, y, W - 20, boxH, {
+      bold: true, fontSize: 8.5, color: C.bestText, align: 'center',
+    });
   } else {
     const savings = saved > 0 ? '  --  saves ' + _currency(saved) + ' vs. most expensive option' : '';
-    note = 'MIX ' + (bestIdx + 1) + ' has the lowest total interest' + savings;
+    const note = 'MIX ' + (bestIdx + 1) + ' has the lowest total interest' + savings;
+    doc.save()
+       .fillColor(C.bestText)
+       .font('Helvetica-Bold')
+       .fontSize(8.5)
+       .text(note, ML + 10, y + (boxH - 8.5) / 2 - 1, {
+         width: W - 20,
+         align: 'left',
+         lineBreak: false,
+       })
+       .restore();
   }
-
-  doc.save()
-     .fillColor(C.bestText)
-     .font(isHe ? 'HeBold' : 'Helvetica-Bold')
-     .fontSize(8.5)
-     .text(note, ML + 10, y + (boxH - 8.5) / 2 - 1, {
-       width: W - 20,
-       align: isHe ? 'right' : 'left',
-       lineBreak: false,
-     })
-     .restore();
 
   return y + boxH;
 }
