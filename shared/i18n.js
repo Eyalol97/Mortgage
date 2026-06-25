@@ -3,6 +3,7 @@
     en: {
       // Navbar
       'nav.simulator': 'Simulator',
+      'nav.bot':       'Bot',
       'nav.signIn':    'Sign In',
       'nav.profile':   'Profile',
       'nav.langBtn':   'עברית',
@@ -191,6 +192,7 @@
     he: {
       // Navbar
       'nav.simulator': 'סימולטור',
+      'nav.bot':       'בוט',
       'nav.signIn':    'כניסה',
       'nav.profile':   'פרופיל',
       'nav.langBtn':   'English',

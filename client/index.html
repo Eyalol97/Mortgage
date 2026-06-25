@@ -4,273 +4,415 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guided Clarity — Mortgage Assistant</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/shared/style.css" />
   <style>
-    /* Page scrolls naturally — no viewport lock */
-    .home-wrapper {
+    /* ── Layout ── */
+    .lp-wrapper {
       display: flex;
       flex-direction: column;
     }
 
-    /* ── Hero ──────────────────────────────────────────────────────────────── */
-    .home-hero {
-      text-align: center;
-      padding: var(--space-4) var(--space-4) var(--space-3);
-      border-bottom: 1px solid var(--outline-variant);
-      background: linear-gradient(to bottom, #f0f7f7, #ffffff);
+    /* ── Hero ── */
+    .lp-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
     }
 
-    .home-hero__eyebrow {
+    .lp-hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface-variant);
+      color: var(--on-surface);
       font-size: var(--text-xs);
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--secondary);
-      margin-bottom: var(--space-1);
+      padding: 0.375rem 0.75rem;
+      margin-bottom: 1.5rem;
     }
 
-    .home-hero__title {
-      font-size: var(--text-xl);
+    .lp-hero__title {
+      font-size: 3.25rem;
+      font-weight: 300;
+      color: var(--on-surface);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .lp-hero__title strong {
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: var(--space-1);
     }
 
-    .home-hero__subtitle {
-      font-size: var(--text-sm);
-      color: var(--on-surface-variant);
-      line-height: 1.5;
-      max-width: 520px;
-      margin: 0 auto var(--space-2);
+    .lp-hero__subtitle {
+      font-size: var(--text-md);
+      color: var(--secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
     }
 
-    .home-hero__cta {
-      font-size: var(--text-sm);
+    .lp-hero__ctas {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .lp-cta-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      padding: 0.875rem 1.5rem;
+      font-family: var(--font-family);
+      font-size: var(--text-md);
       font-weight: 600;
-      color: var(--primary);
+      border: none;
+      cursor: pointer;
       text-decoration: none;
-      border: 1.5px solid var(--primary);
-      border-radius: 9999px;
-      padding: 0.3rem 1rem;
-      transition: background-color 0.2s, color 0.2s;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      min-width: 200px;
+      transition: background-color 0.15s;
     }
 
-    .home-hero__cta:hover {
-      background-color: var(--primary);
-      color: #ffffff;
+    .lp-cta-primary:hover { background: #0353e9; }
+
+    .lp-cta-ghost {
+      color: var(--primary);
+      padding: 0.875rem 1.5rem;
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 0.15s;
     }
 
-    /* ── Bot section ───────────────────────────────────────────────────────── */
-    .bot-page {
-      display: flex;
-      flex-direction: column;
-    }
+    .lp-cta-ghost:hover { background: var(--surface-variant); }
 
-    .bot-main {
-      display: flex;
-      flex-direction: column;
-      max-width: 720px;
-      width: 100%;
-      margin: 0 auto;
-      padding: var(--space-4);
-    }
-
-    #chat-window {
-      height: 380px;
-      min-height: 200px;
-      overflow-y: auto;
+    /* ── Hero stat card ── */
+    .lp-hero__card {
       border: 1px solid var(--outline-variant);
-      border-radius: var(--radius-lg);
-      padding: var(--space-3);
-      margin-bottom: var(--space-2);
-      background: #fafafa;
+      background: #ffffff;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
-    .typing-indicator {
-      display: none;
-      align-self: flex-start;
-      padding: var(--space-3) var(--space-4);
-      background-color: var(--surface-variant);
-      border-radius: var(--radius-lg);
-      border-bottom-left-radius: 4px;
-    }
-
-    .typing-indicator span {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background-color: var(--on-surface-variant);
-      border-radius: 50%;
-      margin: 0 2px;
-      animation: bounce 1.2s infinite;
-    }
-
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); }
-      30%            { transform: translateY(-6px); }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .bubble {
-      animation: fadeInUp 0.2s ease-out;
-    }
-
-    .bubble-bot {
-      background-color: var(--surface-variant);
-      border-inline-start: 3px solid var(--secondary);
-      padding: var(--space-3) var(--space-4);
-      border-radius: var(--radius-lg);
-      border-end-start-radius: 4px;
-      max-width: 85%;
-      align-self: flex-start;
-      line-height: 1.65;
-      text-align: start;
-    }
-
-    .bubble-bot ul {
-      margin: var(--space-1) 0 var(--space-1) var(--space-4);
-      padding: 0;
-    }
-
-    .bubble-bot li {
+    .lp-rate-label {
+      font-size: var(--text-xs);
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       margin-bottom: 0.25rem;
     }
 
-    .bubble-user {
-      background-color: var(--primary);
-      color: var(--on-primary);
-      padding: var(--space-3) var(--space-4);
-      border-radius: var(--radius-lg);
-      border-bottom-right-radius: 4px;
-      max-width: 75%;
-      align-self: flex-end;
-    }
-
-    .chips-label {
-      font-size: var(--text-xs);
+    .lp-rate-value {
+      font-size: 2.5rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--on-surface-variant);
-      padding-bottom: var(--space-1);
+      color: var(--on-surface);
+      margin-bottom: 2rem;
     }
 
-    #chips-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
-      padding: var(--space-1) 0 var(--space-2);
-    }
-
-    .follow-ups-label {
-      font-size: var(--text-xs);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--secondary);
-      padding: var(--space-2) 0 var(--space-1);
-    }
-
-    #follow-up-buttons {
-      display: none;
-      flex-wrap: wrap;
-      gap: var(--space-2);
-      padding: 0 0 var(--space-2);
-    }
-
-    #follow-up-buttons .chip {
-      background-color: var(--surface);
-      border-color: var(--secondary);
+    .lp-rate-value span {
+      font-size: var(--text-lg);
+      font-weight: 300;
       color: var(--secondary);
     }
 
-    #follow-up-buttons .chip:hover {
-      background-color: var(--secondary);
-      color: var(--on-primary);
-    }
-
-    .chat-input-row {
+    .lp-rate-bar-label {
       display: flex;
-      gap: var(--space-2);
-      padding: var(--space-2) 0;
-      align-items: flex-end;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
     }
 
-    #chat-input {
-      flex: 1;
-      resize: none;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--outline-variant);
-      border-radius: var(--radius-lg);
-      font-family: var(--font-family);
-      font-size: var(--text-md);
-      background: white;
-      outline: none;
-      line-height: 1.5;
-      max-height: 120px;
-      overflow-y: auto;
-      transition: border-color 0.2s;
+    .lp-rate-bar-label span:last-child { color: #198038; }
+
+    .lp-rate-bar-track {
+      height: 4px;
+      background: var(--surface-variant);
+      margin-bottom: 2rem;
     }
 
-    #chat-input:focus {
-      border-color: var(--primary);
-      border-width: 2px;
+    .lp-rate-bar-fill {
+      height: 100%;
+      width: 72%;
+      background: var(--primary);
     }
 
-    #send-btn {
-      flex-shrink: 0;
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: var(--on-primary);
+    .lp-rate-divider {
       border: none;
+      border-top: 1px solid var(--outline-variant);
+      margin-bottom: 1.25rem;
+    }
+
+    .lp-rate-cta {
+      font-size: var(--text-sm);
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: gap 0.15s;
+    }
+
+    .lp-rate-cta:hover { gap: 0.875rem; }
+
+    /* ── Features section ── */
+    .lp-features {
+      border-top: 1px solid var(--outline-variant);
+      border-bottom: 1px solid var(--outline-variant);
+      background: var(--surface);
+    }
+
+    .lp-features__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .lp-section-title {
+      font-size: var(--text-3xl);
+      font-weight: 300;
+      color: var(--on-surface);
+      margin-bottom: 0.75rem;
+    }
+
+    .lp-section-accent {
+      width: 48px;
+      height: 3px;
+      background: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .lp-section-sub {
+      font-size: var(--text-md);
+      color: var(--secondary);
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .lp-features__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--outline-variant);
+    }
+
+    .lp-feature-card {
+      background: #ffffff;
+      padding: 3rem;
       cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: background-color 0.15s;
+      border-right: 1px solid var(--outline-variant);
+    }
+
+    .lp-feature-card:last-child { border-right: none; }
+    .lp-feature-card:hover { background: var(--surface-variant); }
+
+    .lp-feature-card__icon {
+      width: 48px;
+      height: 48px;
+      background: #e8f0fe;
+      color: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: filter 0.2s, box-shadow 0.2s;
+      font-size: 1.375rem;
+      margin-bottom: 1.75rem;
     }
 
-    #send-btn:hover {
-      filter: brightness(1.1);
-      box-shadow: var(--shadow-1);
+    .lp-feature-card__icon--secondary {
+      background: var(--secondary-container);
+      color: var(--secondary);
     }
 
-    #send-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      filter: none;
+    .lp-feature-card h3 {
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--on-surface);
+      margin-bottom: 0.875rem;
     }
 
-    #send-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
+    .lp-feature-card p {
+      color: var(--secondary);
+      line-height: 1.65;
+      margin-bottom: 2rem;
+      font-size: var(--text-md);
     }
 
-    #disclaimer-box {
-      display: none;
-      margin: var(--space-2) 0;
+    .lp-feature-card ul {
+      list-style: none;
+      margin-bottom: 2.5rem;
     }
 
-    @media (max-width: 768px) {
-      .bot-main { padding: var(--space-2); }
-      .home-hero { padding: var(--space-3) var(--space-3) var(--space-2); }
-      .home-hero__title { font-size: var(--text-lg); }
-      #chat-window { height: 300px; }
+    .lp-feature-card li {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: var(--text-sm);
+      color: var(--secondary);
+      margin-bottom: 0.875rem;
+    }
+
+    .lp-feature-card__check {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .lp-feature-card__check--secondary { color: var(--secondary); }
+
+    .lp-feature-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: var(--text-sm);
+      transition: gap 0.15s;
+    }
+
+    .lp-feature-card:hover .lp-feature-card__link { gap: 0.875rem; }
+    .lp-feature-card__link--secondary { color: var(--secondary); }
+
+    /* ── Value prop ── */
+    .lp-value {
+      background: #161616;
+      color: #ffffff;
+    }
+
+    .lp-value__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .lp-value h2 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 1.25rem;
+    }
+
+    .lp-value p {
+      color: #8d8d8d;
+      font-size: var(--text-md);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .lp-value__cta {
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.875rem 1.5rem;
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: background-color 0.15s;
+    }
+
+    .lp-value__cta:hover { background: #0353e9; }
+
+    .lp-value__right {
+      border: 1px solid #393939;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .lp-value__stat {
+      border-top: 1px solid #393939;
+      padding-top: 1.5rem;
+    }
+
+    .lp-value__stat-num {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 0.25rem;
+    }
+
+    .lp-value__stat-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #8d8d8d;
+    }
+
+    /* ── Footer ── */
+    .lp-footer {
+      background: var(--surface-variant);
+      border-top: 1px solid var(--outline-variant);
+      padding: 2rem;
+    }
+
+    .lp-footer__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lp-footer__copy {
+      font-size: var(--text-xs);
+      color: var(--outline);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .lp-hero {
+        grid-template-columns: 1fr;
+        padding: 3rem 1.5rem 2rem;
+        gap: 2.5rem;
+      }
+      .lp-hero__title { font-size: 2.25rem; }
+      .lp-hero__card { display: none; }
+      .lp-features__grid { grid-template-columns: 1fr; }
+      .lp-feature-card { border-right: none; border-bottom: 1px solid var(--outline-variant); }
+      .lp-feature-card:last-child { border-bottom: none; }
+      .lp-value__inner { grid-template-columns: 1fr; }
+      .lp-value__right { display: none; }
+      .lp-features__inner, .lp-value__inner { padding: 3rem 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .lp-hero__ctas { flex-direction: column; }
+      .lp-cta-primary { min-width: unset; width: 100%; }
+      .lp-feature-card { padding: 2rem; }
     }
   </style>
 </head>
@@ -278,83 +420,125 @@
 
   <div id="navbar-root"></div>
 
-  <div class="home-wrapper">
+  <div class="lp-wrapper">
 
-    <!-- ── Welcome hero ───────────────────────────────────────────────────── -->
-    <header class="home-hero" aria-label="Introduction">
-      <p class="home-hero__eyebrow" data-i18n="home.eyebrow">Israeli Mortgage Assistant</p>
-      <h1 class="home-hero__title" data-i18n="home.title">Guided Clarity</h1>
-      <p class="home-hero__subtitle" data-i18n="home.subtitle">
-        Ask mortgage questions in plain Hebrew or English — get clear,
-        regulation-aware answers instantly. Ready to run the numbers?
-      </p>
-      <a href="/simulator/simulator.html" class="home-hero__cta" data-i18n="home.cta">Open Simulator →</a>
-    </header>
+    <!-- ── Hero ── -->
+    <section class="lp-hero" aria-label="Introduction">
+      <div>
+        <div class="lp-hero__eyebrow">
+          🔒 Israeli Mortgage Assistant
+        </div>
+        <h1 class="lp-hero__title">
+          Mortgage Guidance,<br>
+          <strong>Simplified</strong> for your future.
+        </h1>
+        <p class="lp-hero__subtitle">
+          Navigate the complex landscape of Israeli home financing with intelligent
+          simulations and AI-powered guidance — regulation-aware and instantly accessible.
+        </p>
+        <div class="lp-hero__ctas">
+          <a href="/bot/home.html" class="lp-cta-primary">
+            <span>Get Started Now</span>
+            <span>→</span>
+          </a>
+          <a href="/simulator/simulator.html" class="lp-cta-ghost">Explore Simulator</a>
+        </div>
+      </div>
 
-    <!-- ── Bot interface ──────────────────────────────────────────────────── -->
-    <div class="bot-page">
-      <main class="bot-main">
+      <div class="lp-hero__card" aria-hidden="true">
+        <p class="lp-rate-label">Ask the Bot</p>
+        <p class="lp-rate-value">24/7 <span>AI guidance</span></p>
+        <div>
+          <div class="lp-rate-bar-label">
+            <span>Profile Completion</span>
+            <span>+Better Results</span>
+          </div>
+          <div class="lp-rate-bar-track"><div class="lp-rate-bar-fill"></div></div>
+        </div>
+        <hr class="lp-rate-divider" />
+        <a href="/bot/home.html" class="lp-rate-cta">Talk to the Concierge <span>→</span></a>
+      </div>
+    </section>
 
-        <div id="chat-window">
-          <div class="chat-container">
+    <!-- ── Features ── -->
+    <section class="lp-features" aria-label="Features">
+      <div class="lp-features__inner">
+        <h2 class="lp-section-title">Elite Tools for Smart Decisions</h2>
+        <div class="lp-section-accent"></div>
+        <p class="lp-section-sub">
+          Our specialised modules provide the deep insights you need to secure the best mortgage terms available today.
+        </p>
 
-            <div class="bubble bubble-bot" data-i18n="home.greeting">
-              Hi! I'm your Mortgage Assistant. I can help you understand mortgage concepts, interest rate tracks, Bank of Israel regulations, and more. What would you like to know?
-            </div>
+        <div class="lp-features__grid">
+          <a href="/simulator/simulator.html" class="lp-feature-card">
+            <div class="lp-feature-card__icon">📊</div>
+            <h3>Mortgage Simulator</h3>
+            <p>
+              Run high-fidelity financial scenarios. Adjust interest rates, terms, and down payments
+              to see the long-term impact on your wealth instantly.
+            </p>
+            <ul>
+              <li><span class="lp-feature-card__check">✓</span> Amortization Schedule</li>
+              <li><span class="lp-feature-card__check">✓</span> Multi-track Mix Comparison</li>
+              <li><span class="lp-feature-card__check">✓</span> PDF Summary Export</li>
+            </ul>
+            <span class="lp-feature-card__link">Open Simulator →</span>
+          </a>
 
-            <div class="typing-indicator" id="typing-indicator">
-              <span></span><span></span><span></span>
-            </div>
+          <a href="/bot/home.html" class="lp-feature-card">
+            <div class="lp-feature-card__icon lp-feature-card__icon--secondary">🤖</div>
+            <h3>Mortgage Concierge</h3>
+            <p>
+              Get instant insights through our AI-driven concierge. Ask complex questions and receive
+              guidance tailored to Bank of Israel regulations.
+            </p>
+            <ul>
+              <li><span class="lp-feature-card__check lp-feature-card__check--secondary">✓</span> Available 24/7</li>
+              <li><span class="lp-feature-card__check lp-feature-card__check--secondary">✓</span> Regulation-Aware Answers</li>
+              <li><span class="lp-feature-card__check lp-feature-card__check--secondary">✓</span> Personalised to Your Profile</li>
+            </ul>
+            <span class="lp-feature-card__link lp-feature-card__link--secondary">Talk to Concierge →</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
+    <!-- ── Value prop ── -->
+    <section class="lp-value" aria-label="About">
+      <div class="lp-value__inner">
+        <div>
+          <h2>Guided Clarity.<br>Professional Results.</h2>
+          <p>
+            Everyone deserves the level of financial insight typically reserved for elite investors.
+            Our platform democratises mortgage intelligence for every Israeli homebuyer.
+          </p>
+          <a href="/auth/login.html" class="lp-value__cta">Create Free Account →</a>
+        </div>
+        <div class="lp-value__right">
+          <div class="lp-value__stat">
+            <div class="lp-value__stat-num">Bank of Israel</div>
+            <div class="lp-value__stat-label">Regulation-aligned guidance</div>
+          </div>
+          <div class="lp-value__stat">
+            <div class="lp-value__stat-num">HE + EN</div>
+            <div class="lp-value__stat-label">Full bilingual support</div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <p class="chips-label" data-i18n="home.chipsLabel">Suggested topics</p>
-        <div id="chips-container">
-          <button class="chip" data-query="What is amortization?" data-i18n="home.chip.amortization">What is amortization?</button>
-          <button class="chip" data-query="What are the mortgage track types?" data-i18n="home.chip.tracks">Mortgage track types</button>
-          <button class="chip" data-query="How does the Bank of Israel prime rate work?" data-i18n="home.chip.prime">Prime rate explained</button>
-          <button class="chip" data-query="What is LTV (Loan to Value)?" data-i18n="home.chip.ltv">What is LTV?</button>
-          <button class="chip" data-query="Fixed vs variable interest rate" data-i18n="home.chip.fixedVsVariable">Fixed vs variable rate</button>
-          <button class="chip" data-query="How is monthly payment calculated?" data-i18n="home.chip.monthlyPayment">Monthly payment</button>
-        </div>
-
-        <p class="follow-ups-label" id="follow-ups-label" style="display:none" data-i18n="home.followUpsLabel">Follow-up questions</p>
-        <div id="follow-up-buttons"></div>
-
-        <div id="disclaimer-box" class="disclaimer" data-i18n="home.disclaimer">
-          This response is for educational purposes only and does not constitute financial advice. Please consult a licensed mortgage advisor before making any decisions.
-        </div>
-
-        <div class="chat-input-row">
-          <textarea
-            id="chat-input"
-            placeholder="Ask a mortgage question…"
-            data-i18n-placeholder="home.inputPlaceholder"
-            rows="1"
-            aria-label="Chat input"
-          ></textarea>
-          <button id="send-btn" aria-label="Send message" disabled>
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-          </button>
-        </div>
-
-      </main>
-    </div>
+    <!-- ── Footer ── -->
+    <footer class="lp-footer">
+      <div class="lp-footer__inner">
+        <p class="lp-footer__copy">© 2025 Guided Clarity — Mortgage Intelligence Platform</p>
+      </div>
+    </footer>
 
   </div>
 
   <script src="/shared/i18n.js"></script>
   <script src="/shared/authClient.js"></script>
   <script src="/shared/navbar.js"></script>
-  <script src="/shared/inputField.js"></script>
-  <script src="/shared/disclaimerBox.js"></script>
-
-  <script src="/bot/chatWindow.js"></script>
-  <script src="/bot/chatInput.js"></script>
-  <script src="/bot/bot-ui.js"></script>
 
 </body>
 </html>

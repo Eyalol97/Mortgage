@@ -1,31 +1,32 @@
-/* 
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+/*
   Mortgage Project - Guided Clarity Stylesheet
-  Design System: Guided Clarity
-  Aesthetic: Soft Fintech (Material Design 2 based)
+  Design System: IBM Carbon-inspired
 */
 
 :root {
-  /* Colors - Derived from Guided Clarity Design System */
-  --primary: #4d7c7a;
+  /* Colors — Carbon palette */
+  --primary: #0f62fe;
   --on-primary: #ffffff;
-  --primary-container: #cfe9e7;
-  --on-primary-container: #072b2a;
-  
-  --secondary: #516362;
-  --on-secondary: #ffffff;
-  --secondary-container: #d4e8e6;
-  --on-secondary-container: #0e1f1e;
-  
-  --surface: #f8f9ff;
-  --on-surface: #191c1e;
-  --surface-variant: #dce5e3;
-  --on-surface-variant: #404948;
-  
-  --outline: #707978;
-  --outline-variant: #bfc9c7;
+  --primary-container: #d0e2ff;
+  --on-primary-container: #001d6c;
 
-  /* Typography Scale - Nunito Sans */
-  --font-family: 'Nunito Sans', sans-serif;
+  --secondary: #6f6f6f;
+  --on-secondary: #ffffff;
+  --secondary-container: #e0e0e0;
+  --on-secondary-container: #525252;
+
+  --surface: #ffffff;
+  --on-surface: #161616;
+  --surface-variant: #f4f4f4;
+  --on-surface-variant: #525252;
+
+  --outline: #8d8d8d;
+  --outline-variant: #e0e0e0;
+
+  /* Typography — IBM Plex Sans */
+  --font-family: 'IBM Plex Sans', sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-md: 1rem;
@@ -44,10 +45,10 @@
   --space-8: 2rem;
   --space-12: 3rem;
 
-  /* Roundness & Elevation */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  /* Roundness — Carbon: mostly square */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
   --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   --shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
@@ -75,8 +76,8 @@ body {
 }
 
 h1, h2, h3 {
-  font-weight: 700;
-  color: var(--primary);
+  font-weight: 600;
+  color: var(--on-surface);
   margin-bottom: var(--space-4);
 }
 
@@ -89,8 +90,8 @@ h1, h2, h3 {
   justify-content: center;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  border-radius: 9999px; /* Pill shape for Soft Fintech */
-  transition: all 0.2s ease;
+  border-radius: 2px;
+  transition: all 0.15s ease;
   cursor: pointer;
   border: none;
   font-size: var(--text-md);
@@ -185,12 +186,12 @@ h1, h2, h3 {
   padding: 0.5rem 1rem;
   background-color: var(--secondary-container);
   color: var(--on-secondary-container);
-  border-radius: 9999px;
+  border-radius: 4px;
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .chip:hover {

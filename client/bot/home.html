@@ -2,10 +2,316 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0;url=/" />
-  <title>Redirecting…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mortgage Bot | Guided Clarity</title>
+  <link rel="stylesheet" href="/shared/style.css" />
+  <style>
+    .bot-page {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .home-hero {
+      text-align: center;
+      padding: var(--space-4) var(--space-4) var(--space-3);
+      border-bottom: 1px solid var(--outline-variant);
+      background: var(--surface-variant);
+    }
+
+    .home-hero__eyebrow {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      margin-bottom: var(--space-1);
+    }
+
+    .home-hero__title {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: var(--space-1);
+    }
+
+    .home-hero__subtitle {
+      font-size: var(--text-sm);
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+      max-width: 520px;
+      margin: 0 auto var(--space-2);
+    }
+
+    .home-hero__cta {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
+      border: 1.5px solid var(--primary);
+      padding: 0.3rem 1rem;
+      border-radius: 2px;
+      transition: background-color 0.15s, color 0.15s;
+      display: inline-block;
+    }
+
+    .home-hero__cta:hover {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .bot-main {
+      display: flex;
+      flex-direction: column;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-4);
+    }
+
+    #chat-window {
+      height: 380px;
+      min-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-3);
+      margin-bottom: var(--space-2);
+      background: #fafafa;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--surface-variant);
+    }
+
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: var(--on-surface-variant);
+      border-radius: 50%;
+      margin: 0 2px;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%            { transform: translateY(-6px); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .bubble { animation: fadeInUp 0.2s ease-out; }
+
+    .bubble-bot {
+      background-color: var(--surface-variant);
+      border-inline-start: 3px solid var(--secondary);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      max-width: 85%;
+      align-self: flex-start;
+      line-height: 1.65;
+      text-align: start;
+    }
+
+    .bubble-bot ul {
+      margin: var(--space-1) 0 var(--space-1) var(--space-4);
+      padding: 0;
+    }
+
+    .bubble-bot li { margin-bottom: 0.25rem; }
+
+    .bubble-user {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      max-width: 75%;
+      align-self: flex-end;
+    }
+
+    .chips-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      padding-bottom: var(--space-1);
+    }
+
+    #chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      padding: var(--space-1) 0 var(--space-2);
+    }
+
+    .follow-ups-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--secondary);
+      padding: var(--space-2) 0 var(--space-1);
+    }
+
+    #follow-up-buttons {
+      display: none;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      padding: 0 0 var(--space-2);
+    }
+
+    #follow-up-buttons .chip {
+      background-color: var(--surface);
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    #follow-up-buttons .chip:hover {
+      background-color: var(--secondary);
+      color: var(--on-primary);
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      align-items: flex-end;
+    }
+
+    #chat-input {
+      flex: 1;
+      resize: none;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--outline-variant);
+      border-radius: 2px;
+      font-family: var(--font-family);
+      font-size: var(--text-md);
+      background: white;
+      outline: none;
+      line-height: 1.5;
+      max-height: 120px;
+      overflow-y: auto;
+      transition: border-color 0.15s;
+    }
+
+    #chat-input:focus {
+      border-color: var(--primary);
+      border-width: 2px;
+    }
+
+    #send-btn {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 2px;
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: filter 0.15s;
+    }
+
+    #send-btn:hover { filter: brightness(1.12); }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
+
+    #send-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    #disclaimer-box { display: none; margin: var(--space-2) 0; }
+
+    @media (max-width: 768px) {
+      .bot-main { padding: var(--space-2); }
+      .home-hero { padding: var(--space-3) var(--space-3) var(--space-2); }
+      .home-hero__title { font-size: var(--text-lg); }
+      #chat-window { height: 300px; }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="/">Mortgage Bot</a>…</p>
+
+  <div id="navbar-root"></div>
+
+  <div class="bot-page">
+
+    <header class="home-hero" aria-label="Introduction">
+      <p class="home-hero__eyebrow" data-i18n="home.eyebrow">Israeli Mortgage Assistant</p>
+      <h1 class="home-hero__title" data-i18n="home.title">Guided Clarity</h1>
+      <p class="home-hero__subtitle" data-i18n="home.subtitle">
+        Ask mortgage questions in plain Hebrew or English — get clear,
+        regulation-aware answers instantly. Ready to run the numbers?
+      </p>
+      <a href="/simulator/simulator.html" class="home-hero__cta" data-i18n="home.cta">Open Simulator →</a>
+    </header>
+
+    <main class="bot-main">
+
+      <div id="chat-window">
+        <div class="chat-container">
+          <div class="bubble bubble-bot" data-i18n="home.greeting">
+            Hi! I'm your Mortgage Assistant. I can help you understand mortgage concepts, interest rate tracks, Bank of Israel regulations, and more. What would you like to know?
+          </div>
+          <div class="typing-indicator" id="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <p class="chips-label" data-i18n="home.chipsLabel">Suggested topics</p>
+      <div id="chips-container">
+        <button class="chip" data-query="What is amortization?" data-i18n="home.chip.amortization">What is amortization?</button>
+        <button class="chip" data-query="What are the mortgage track types?" data-i18n="home.chip.tracks">Mortgage track types</button>
+        <button class="chip" data-query="How does the Bank of Israel prime rate work?" data-i18n="home.chip.prime">Prime rate explained</button>
+        <button class="chip" data-query="What is LTV (Loan to Value)?" data-i18n="home.chip.ltv">What is LTV?</button>
+        <button class="chip" data-query="Fixed vs variable interest rate" data-i18n="home.chip.fixedVsVariable">Fixed vs variable rate</button>
+        <button class="chip" data-query="How is monthly payment calculated?" data-i18n="home.chip.monthlyPayment">Monthly payment</button>
+      </div>
+
+      <p class="follow-ups-label" id="follow-ups-label" style="display:none" data-i18n="home.followUpsLabel">Follow-up questions</p>
+      <div id="follow-up-buttons"></div>
+
+      <div id="disclaimer-box" class="disclaimer" data-i18n="home.disclaimer">
+        This response is for educational purposes only and does not constitute financial advice. Please consult a licensed mortgage advisor before making any decisions.
+      </div>
+
+      <div class="chat-input-row">
+        <textarea
+          id="chat-input"
+          placeholder="Ask a mortgage question…"
+          data-i18n-placeholder="home.inputPlaceholder"
+          rows="1"
+          aria-label="Chat input"
+        ></textarea>
+        <button id="send-btn" aria-label="Send message" disabled>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/shared/i18n.js"></script>
+  <script src="/shared/authClient.js"></script>
+  <script src="/shared/navbar.js"></script>
+  <script src="/shared/inputField.js"></script>
+  <script src="/shared/disclaimerBox.js"></script>
+
+  <script src="/bot/chatWindow.js"></script>
+  <script src="/bot/chatInput.js"></script>
+  <script src="/bot/bot-ui.js"></script>
+
 </body>
 </html>

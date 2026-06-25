@@ -6,7 +6,8 @@
     if (_path.includes('/simulator/')) return 'simulator';
     if (_path.includes('/profile/'))   return 'profile';
     if (_path.includes('/admin/'))     return 'admin';
-    return 'bot'; // / and /bot/home.html both map to bot
+    if (_path.includes('/bot/'))       return 'bot';
+    return 'home';
   }
 
   // ── Auth state ─────────────────────────────────────────────────────────────
@@ -25,95 +26,118 @@
   const _css = `
     .navbar {
       background-color: #ffffff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      border-bottom: 1px solid #e0e0e0;
       position: sticky;
       top: 0;
       z-index: 100;
     }
     .navbar__inner {
-      max-width: 1280px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 0 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 56px;
     }
     .navbar__brand {
-      font-family: 'Nunito Sans', sans-serif;
+      font-family: 'IBM Plex Sans', sans-serif;
       font-weight: 700;
       font-size: 1.125rem;
-      color: #4d7c7a;
+      color: #161616;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
+    .navbar__brand-icon {
+      width: 28px;
+      height: 28px;
+      background: #0f62fe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .navbar__brand-light { font-weight: 300; }
     .navbar__links {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 0;
       list-style: none;
       margin: 0;
       padding: 0;
     }
     .navbar__link {
-      font-family: 'Nunito Sans', sans-serif;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: #404948;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #525252;
       text-decoration: none;
-      padding: 0.5rem 0.875rem;
-      border-radius: 9999px;
-      transition: background-color 0.2s, color 0.2s;
+      padding: 0.5rem 1rem;
+      border-radius: 0;
+      transition: background-color 0.15s, color 0.15s;
+      display: block;
+      height: 56px;
+      line-height: 56px;
+      padding: 0 1rem;
+      border-bottom: 2px solid transparent;
+      box-sizing: border-box;
     }
     .navbar__link:hover {
-      background-color: #cfe9e7;
-      color: #4d7c7a;
+      background-color: #f4f4f4;
+      color: #161616;
     }
     .navbar__link--active {
-      background-color: #cfe9e7;
-      color: #4d7c7a;
+      color: #0f62fe;
+      border-bottom-color: #0f62fe;
+      font-weight: 600;
     }
     .navbar__lang-btn {
-      font-family: 'Nunito Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 700;
-      color: #4d7c7a;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #0f62fe;
       background: none;
-      border: 1.5px solid #4d7c7a;
-      border-radius: 9999px;
-      padding: 0.3rem 0.75rem;
+      border: 1px solid #0f62fe;
+      border-radius: 2px;
+      padding: 0.375rem 0.875rem;
       cursor: pointer;
-      margin-inline-start: 0.5rem;
-      transition: background-color 0.2s, color 0.2s;
+      margin-inline-start: 1rem;
+      transition: background-color 0.15s, color 0.15s;
       white-space: nowrap;
     }
     .navbar__lang-btn:hover {
-      background-color: #4d7c7a;
+      background-color: #0f62fe;
       color: #ffffff;
     }
     .navbar__logout-btn {
-      font-family: 'Nunito Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #6b7280;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: #525252;
       background: none;
-      border: 1.5px solid #d1d5db;
-      border-radius: 9999px;
-      padding: 0.3rem 0.75rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 2px;
+      padding: 0.375rem 0.875rem;
       cursor: pointer;
-      margin-inline-start: 0.25rem;
-      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+      margin-inline-start: 0.5rem;
+      transition: background-color 0.15s, color 0.15s, border-color 0.15s;
       white-space: nowrap;
     }
     .navbar__logout-btn:hover {
-      background-color: #fee2e2;
-      color: #b91c1c;
-      border-color: #fca5a5;
+      background-color: #fff1f1;
+      color: #da1e28;
+      border-color: #da1e28;
     }
-    @media (max-width: 480px) {
-      .navbar__brand { font-size: 1rem; }
-      .navbar__link  { padding: 0.5rem 0.5rem; font-size: 0.875rem; }
-      .navbar__lang-btn { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
-      .navbar__logout-btn { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
+    @media (max-width: 600px) {
+      .navbar__inner { padding: 0 1rem; }
+      .navbar__brand-light { display: none; }
+      .navbar__link { padding: 0 0.625rem; font-size: 0.8125rem; }
+      .navbar__lang-btn { padding: 0.3rem 0.5rem; }
+      .navbar__logout-btn { padding: 0.3rem 0.5rem; }
     }
   `;
 
@@ -128,6 +152,7 @@
 
     const links = [
       { id: 'simulator', label: _t('nav.simulator', 'Simulator'), href: '/simulator/simulator.html' },
+      { id: 'bot',       label: _t('nav.bot',       'Bot'),       href: '/bot/home.html' },
       {
         id:    'profile',
         label: loggedIn ? _t('nav.profile', 'Profile') : _t('nav.signIn', 'Sign In'),
@@ -154,8 +179,11 @@
     return `
       <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__inner">
-          <a class="navbar__brand" href="/">Guided Clarity</a>
-          <div style="display:flex;align-items:center;gap:0.25rem;">
+          <a class="navbar__brand" href="/">
+            <div class="navbar__brand-icon">⊞</div>
+            Guided <span class="navbar__brand-light">Clarity</span>
+          </a>
+          <div style="display:flex;align-items:center;">
             <ul class="navbar__links">
               ${items.join('\n')}
             </ul>
