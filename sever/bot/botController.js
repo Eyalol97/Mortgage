@@ -43,9 +43,8 @@ async function _handleChip(query, sessionId, lang, res) {
   // Falls back to English DB definition if the LLM call fails.
   if (lang === 'he') {
     const history = _getHistory(sessionId);
-    const { reply, followUps = [] } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
-    const isError = reply.startsWith("I'm having trouble");
-    if (!isError) {
+    const { reply, followUps = [], error } = await mortgageBotHandler.respond(query, history, { advisory: false, lang });
+    if (!error) {
       _recordTurn(sessionId, query, reply);
       return res.json({ decision: 'EDUCATION', reply, followUps });
     }

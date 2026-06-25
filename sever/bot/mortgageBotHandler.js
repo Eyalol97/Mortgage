@@ -63,7 +63,7 @@ async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
     console.error('[mortgageBotHandler] generateContent failed:', {
       model: LLM_MODEL, status: apiErr.status, message: apiErr.message,
     });
-    return { reply: _errorReply(lang), followUps: [] };
+    return { reply: _errorReply(lang), followUps: [], error: true };
   }
 
   let raw;
@@ -74,7 +74,7 @@ async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
     console.error('[mortgageBotHandler] response.text() threw:', {
       finishReason: candidate?.finishReason, message: textErr.message,
     });
-    return { reply: _errorReply(lang), followUps: [] };
+    return { reply: _errorReply(lang), followUps: [], error: true };
   }
 
   return _parseResponse(raw);
