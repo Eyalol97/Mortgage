@@ -416,6 +416,142 @@
     ]
   },
   {
+    "term": "How does the interest-to-principal split change over time?",
+    "definition": "In the early years of amortization, most of each payment goes to interest and only a small portion reduces the principal. As the balance shrinks, interest decreases and a larger share of each payment goes to principal. By the end of the loan, nearly all of each payment is principal. This is the core mechanic of Shpitzer (annuity) repayment.",
+    "definitionHe": "בשנים הראשונות של ההלוואה, רוב כל תשלום הולך לריבית ורק חלק קטן מקטין את הקרן. ככל שיתרת הקרן קטנה, הריבית פוחתת — ולכן חלק גדל מכל תשלום הולך לקרן. בסוף ההלוואה, כמעט כל התשלום הוא קרן. זהו המנגנון המרכזי של שיטת שפיצר.",
+    "related_terms": ["What is amortization?", "How is monthly payment calculated?"],
+    "followUps": ["What is the difference between Shpitzer and Keren Shava repayment?", "How does a longer loan term affect total interest paid?"],
+    "followUpsHe": ["מה ההבדל בין שיטת שפיצר לקרן שווה?", "כיצד משך הלוואה ארוך יותר משפיע על סך הריבית ששולמה?"]
+  },
+  {
+    "term": "What is the difference between Shpitzer and Keren Shava repayment?",
+    "definition": "Shpitzer (annuity) has a fixed monthly payment throughout — mostly interest early on, mostly principal later. Keren Shava (equal principal) has a fixed principal portion each month with shrinking interest, so payments start higher but decrease over time. Total interest paid is lower with Keren Shava because the balance falls faster.",
+    "definitionHe": "בשפיצר התשלום החודשי קבוע לכל אורך ההלוואה — בתחילה בעיקר ריבית, ובסוף בעיקר קרן. בקרן שווה חלק הקרן קבוע בכל חודש, הריבית קטנה ככל שהיתרה יורדת — התשלומים מתחילים גבוהים יותר אך יורדים עם הזמן. סך הריבית הכוללת נמוכה יותר בקרן שווה כי הקרן פוחתת מהר יותר.",
+    "related_terms": ["What is amortization?", "How is monthly payment calculated?"],
+    "followUps": ["Which repayment method results in the lowest total interest paid?", "How does the interest-to-principal split change over time?"],
+    "followUpsHe": ["איזו שיטת פירעון מביאה לסך ריבית הנמוך ביותר?", "כיצד משתנה חלוקת הריבית-קרן לאורך זמן?"]
+  },
+  {
+    "term": "How does a longer loan term affect total interest paid?",
+    "definition": "A longer loan term lowers the monthly payment but increases total interest paid significantly. For example, a 30-year mortgage pays much more total interest than a 20-year mortgage on the same principal. The longer the term, the more months interest accrues on the remaining balance.",
+    "definitionHe": "משך הלוואה ארוך יותר מקטין את התשלום החודשי, אך מגדיל משמעותית את סך הריבית הכוללת. לדוגמה, משכנתא ל-30 שנה על אותה קרן משלמת הרבה יותר ריבית כוללת מאשר משכנתא ל-20 שנה. ככל שהתקופה ארוכה יותר, כך הריבית מצטברת על פני יותר חודשים.",
+    "related_terms": ["What is amortization?", "How is monthly payment calculated?"],
+    "followUps": ["How does a shorter loan term affect the monthly payment?", "Which repayment method results in the lowest total interest paid?"],
+    "followUpsHe": ["כיצד משך הלוואה קצר יותר משפיע על התשלום החודשי?", "איזו שיטת פירעון מביאה לסך ריבית הנמוך ביותר?"]
+  },
+  {
+    "term": "What is the Bank of Israel track mix rule?",
+    "definition": "Bank of Israel regulations require that no single variable-rate track exceed one-third (33.3%) of the total mortgage. The remainder must be in fixed-rate or fixed-spread tracks. This rule protects borrowers from excessive exposure to interest-rate fluctuations.",
+    "definitionHe": "תקנות בנק ישראל קובעות שאף מסלול משתנה לא יעלה על שליש (33.3%) מסך המשכנתא. השאר חייב להיות במסלולים קבועים. כלל זה מגן על הלווים מחשיפה מוגזמת לתנודות ריבית.",
+    "related_terms": ["What are the mortgage track types?", "Fixed vs variable interest rate"],
+    "followUps": ["Which track is best for a rising interest-rate environment?", "What is the prime-linked track regulation regarding track mix?"],
+    "followUpsHe": ["איזה מסלול עדיף בסביבת ריבית עולה?", "מה התקנה לגבי מסלול הפריים בתמהיל המשכנתא?"]
+  },
+  {
+    "term": "Which track is best for a rising interest-rate environment?",
+    "definition": "In a rising interest-rate environment, a fixed unlinked track is generally preferred — your rate is locked and won't increase. A prime-linked track becomes more expensive with each Bank of Israel rate hike. A CPI-linked track may also increase if inflation rises alongside interest rates.",
+    "definitionHe": "בסביבת ריבית עולה, מסלול קבוע לא-צמוד עדיף בדרך כלל — הריבית שלך נעולה ולא תעלה. מסלול פריים מתייקר עם כל העלאת ריבית של בנק ישראל. מסלול צמוד מדד עשוי גם להתייקר אם האינפלציה עולה עם הריבית.",
+    "related_terms": ["What are the mortgage track types?", "Fixed vs variable interest rate"],
+    "followUps": ["What is the Bank of Israel track mix rule?", "How does the prime-linked track payment change with rate decisions?"],
+    "followUpsHe": ["מה כלל תמהיל המסלולים של בנק ישראל?", "כיצד משתנה תשלום מסלול הפריים עם החלטות הריבית?"]
+  },
+  {
+    "term": "How does the prime-linked track payment change with rate decisions?",
+    "definition": "With every Bank of Israel rate decision, the prime rate changes by the same amount. A 0.25% rate hike adds roughly ₪104/month per ₪500,000 remaining balance (exact amount depends on remaining term). A rate cut reduces the payment proportionally.",
+    "definitionHe": "עם כל החלטת ריבית של בנק ישראל, ריבית הפריים משתנה באותה כמות. לדוגמה, העלאה של 0.25% מוסיפה כ-104 ₪ לחודש על כל 500,000 ₪ יתרת קרן (הסכום המדויק תלוי בתקופה שנותרה). הורדת ריבית מקטינה את התשלום בהתאם.",
+    "related_terms": ["How does the Bank of Israel prime rate work?", "Prime Interest Rate"],
+    "followUps": ["How often does the Bank of Israel change its benchmark rate?", "What is the Bank of Israel track mix rule?"],
+    "followUpsHe": ["באיזו תדירות בנק ישראל משנה את ריבית הייחוס שלו?", "מה כלל תמהיל המסלולים של בנק ישראל?"]
+  },
+  {
+    "term": "How often does the Bank of Israel change its benchmark rate?",
+    "definition": "The Bank of Israel convenes its Monetary Policy Committee approximately every six weeks — about 8 times per year. The decision is published publicly and takes effect immediately on the prime rate and all prime-linked mortgage tracks.",
+    "definitionHe": "בנק ישראל מכנס ועדה מוניטרית בערך כל שישה שבועות — כ-8 פעמים בשנה. ההחלטה מתפרסמת לציבור ומשפיעה מיידית על ריבית הפריים ועל כל מסלולי הפריים.",
+    "related_terms": ["How does the Bank of Israel prime rate work?", "Prime Interest Rate"],
+    "followUps": ["How does a rate change translate into my monthly payment?", "How does the prime-linked track payment change with rate decisions?"],
+    "followUpsHe": ["כיצד שינוי ריבית משפיע על התשלום החודשי שלי?", "כיצד משתנה תשלום מסלול הפריים עם החלטות הריבית?"]
+  },
+  {
+    "term": "How does a rate change translate into my monthly payment?",
+    "definition": "A rate change only affects prime-linked tracks. For every 0.1% change, the monthly payment on a ₪100,000 remaining balance changes by roughly ₪5–8 (depends on remaining term). Fixed tracks are unaffected. You can calculate the exact impact using a mortgage simulator.",
+    "definitionHe": "שינוי ריבית משפיע רק על מסלולי פריים. לכל שינוי של 0.1%, התשלום על 100,000 ₪ יתרת קרן משתנה בכ-5–8 ₪ (תלוי בתקופה שנותרה). מסלולים קבועים אינם מושפעים. ניתן לחשב את ההשפעה המדויקת בסימולטור המשכנתא.",
+    "related_terms": ["How does the Bank of Israel prime rate work?", "Prime Interest Rate"],
+    "followUps": ["How often does the Bank of Israel change its benchmark rate?", "What is the Bank of Israel track mix rule?"],
+    "followUpsHe": ["באיזו תדירות בנק ישראל משנה את ריבית הייחוס שלו?", "מה כלל תמהיל המסלולים של בנק ישראל?"]
+  },
+  {
+    "term": "What is the prime-linked track regulation regarding track mix?",
+    "definition": "Bank of Israel regulations cap the prime-linked track at one-third (33.3%) of the total mortgage. This limits variable-rate exposure. The remainder must be in fixed-rate or fixed-spread tracks, either CPI-linked or unlinked.",
+    "definitionHe": "תקנות בנק ישראל מגבילות את מסלול הפריים לעד שליש (33.3%) מסך המשכנתא. כך מוגבלת החשיפה לריבית משתנה. שאר ההלוואה חייב להיות במסלולים קבועים — צמוד מדד או לא-צמוד.",
+    "related_terms": ["How does the Bank of Israel prime rate work?", "What are the mortgage track types?"],
+    "followUps": ["What is the Bank of Israel track mix rule?", "Which track is best for a rising interest-rate environment?"],
+    "followUpsHe": ["מה כלל תמהיל המסלולים של בנק ישראל?", "איזה מסלול עדיף בסביבת ריבית עולה?"]
+  },
+  {
+    "term": "What is the maximum LTV for a first home in Israel?",
+    "definition": "Bank of Israel caps LTV at 75% for a primary residence — you need at least 25% down payment. For a move-up buyer replacing an existing home, the cap is 70%. For an investment property or second home the cap is 50%.",
+    "definitionHe": "בנק ישראל מגביל את ה-LTV ל-75% לדירת מגורים ראשונה — נדרש הון עצמי מינימלי של 25%. למשפרי דיור (המחליפים דירה) המגבלה היא 70%. לדירה להשקעה או דירה שנייה — 50% בלבד.",
+    "related_terms": ["What is LTV (Loan to Value)?", "Down Payment (Equity)"],
+    "followUps": ["How does a low appraisal affect the maximum loan I can get?", "How can I reduce my LTV ratio?"],
+    "followUpsHe": ["כיצד שמאות נמוכה משפיעה על ההלוואה המרבית שאוכל לקבל?", "כיצד אוכל להקטין את יחס ה-LTV שלי?"]
+  },
+  {
+    "term": "How does a low appraisal affect the maximum loan I can get?",
+    "definition": "The bank lends against the lower of the appraised value or the purchase price. If the appraisal is below the purchase price, the bank uses the appraisal to calculate the maximum loan — meaning you may need to contribute more equity to close the gap.",
+    "definitionHe": "הבנק מלווה כנגד הנמוך מבין שווי השמאות למחיר הרכישה. אם השמאות נמוכה ממחיר הרכישה, הבנק מחשב את ה-LTV לפי השמאות — ייתכן שתצטרך להכניס יותר הון עצמי כדי לסגור את הפער.",
+    "related_terms": ["What is LTV (Loan to Value)?", "Property Appraisal"],
+    "followUps": ["What is the maximum LTV for a first home in Israel?", "How can I reduce my LTV ratio?"],
+    "followUpsHe": ["מהו ה-LTV המרבי לדירה ראשונה בישראל?", "כיצד אוכל להקטין את יחס ה-LTV שלי?"]
+  },
+  {
+    "term": "How can I reduce my LTV ratio?",
+    "definition": "You can reduce your LTV by increasing the down payment (additional savings or a family gift), choosing a less expensive property, or making partial early repayments after the mortgage is granted. A lower LTV typically results in better interest rate terms from the bank.",
+    "definitionHe": "ניתן להקטין את ה-LTV על ידי הגדלת ההון העצמי (חיסכון נוסף, מתנה ממשפחה), בחירת נכס זול יותר, או פירעון חלקי מוקדם לאחר מתן המשכנתא. LTV נמוך יותר לרוב מביא לתנאי ריבית טובים יותר מהבנק.",
+    "related_terms": ["What is LTV (Loan to Value)?", "Down Payment (Equity)"],
+    "followUps": ["What is the maximum LTV for a first home in Israel?", "How does a low appraisal affect the maximum loan I can get?"],
+    "followUpsHe": ["מהו ה-LTV המרבי לדירה ראשונה בישראל?", "כיצד שמאות נמוכה משפיעה על ההלוואה המרבית שאוכל לקבל?"]
+  },
+  {
+    "term": "Can I lock in a fixed rate for only part of my loan?",
+    "definition": "Yes — this is exactly the principle of track mixing. You can take, for example, 50% at a fixed rate and 50% in a prime-linked track. This provides certainty on part of the loan while potentially benefiting from lower rates on the other part. Most Israeli mortgage advisors recommend a mixed approach.",
+    "definitionHe": "כן — זהו בדיוק עיקרון תמהיל המסלולים. ניתן לקחת, לדוגמה, 50% בריבית קבועה ו-50% בפריים. כך נהנים מוודאות בחלק אחד ומגמישות בחלק השני. רוב יועצי המשכנתאות בישראל ממליצים על תמהיל כזה.",
+    "related_terms": ["Fixed vs variable interest rate", "What are the mortgage track types?"],
+    "followUps": ["What is the Bank of Israel track mix rule?", "What happens to my fixed-rate track if I want to repay early?"],
+    "followUpsHe": ["מה כלל תמהיל המסלולים של בנק ישראל?", "מה קורה למסלול הקבוע שלי אם ארצה לפרוע מוקדם?"]
+  },
+  {
+    "term": "What happens to my fixed-rate track if I want to repay early?",
+    "definition": "Early repayment of a fixed-rate track may trigger an early repayment fee (omed). The fee equals the difference between the contract rate and the current market rate — if rates have fallen since you took the mortgage, the fee can be substantial. It is advisable to calculate the fee before deciding.",
+    "definitionHe": "פירעון מוקדם של מסלול קבוע עשוי לגרור עמלת פירעון מוקדם (עמד). העמלה מחושבת כהפרש בין הריבית החוזית לריבית השוק הנוכחית — אם הריבית ירדה מאז לקחת את המשכנתא, העמלה יכולה להיות משמעותית. מומלץ לחשב את עלות העמלה לפני קבלת ההחלטה.",
+    "related_terms": ["Fixed vs variable interest rate", "Fixed Interest Rate"],
+    "followUps": ["Can I lock in a fixed rate for only part of my loan?", "What is the difference between Shpitzer and Keren Shava repayment?"],
+    "followUpsHe": ["האם אפשר לנעול ריבית קבועה על חלק מההלוואה בלבד?", "מה ההבדל בין שיטת שפיצר לקרן שווה?"]
+  },
+  {
+    "term": "Which repayment method results in the lowest total interest paid?",
+    "definition": "Keren Shava (equal principal) results in lower total interest paid compared to Shpitzer (annuity), because the principal balance falls faster and interest is calculated on a smaller balance each month. However, Keren Shava has higher initial payments.",
+    "definitionHe": "קרן שווה מביאה לסך ריבית כוללת נמוכה יותר מאשר שפיצר, כי הקרן יורדת מהר יותר ולכן הריבית מחושבת על יתרה קטנה יותר בכל חודש. אמנם תשלומים ראשוניים בקרן שווה גבוהים יותר, אך לאורך זמן תשלמו פחות ריבית בסה\"כ.",
+    "related_terms": ["How is monthly payment calculated?", "What is amortization?"],
+    "followUps": ["What is the difference between Shpitzer and Keren Shava repayment?", "How does a shorter loan term affect the monthly payment?"],
+    "followUpsHe": ["מה ההבדל בין שיטת שפיצר לקרן שווה?", "כיצד משך הלוואה קצר יותר משפיע על התשלום החודשי?"]
+  },
+  {
+    "term": "How does the Shpitzer formula change for CPI-linked tracks?",
+    "definition": "In a CPI-linked track, the outstanding principal is adjusted monthly by the Consumer Price Index. Because the balance changes with inflation, the Shpitzer formula is recalculated each month on the updated balance — so the 'fixed' payment actually changes with inflation. During high-inflation periods, monthly payments can rise significantly.",
+    "definitionHe": "במסלול צמוד מדד, יתרת הקרן מתעדכנת מדי חודש לפי מדד המחירים לצרכן. מכיוון שהיתרה משתנה, נוסחת שפיצר מחושבת מחדש כל חודש על הקרן המעודכנת — כך שהתשלום 'הקבוע' בפועל משתנה עם האינפלציה. בתקופות אינפלציה גבוהה, התשלום יכול לעלות בצורה משמעותית.",
+    "related_terms": ["How is monthly payment calculated?", "What are the mortgage track types?"],
+    "followUps": ["How does the interest-to-principal split change over time?", "Which track is best for a rising interest-rate environment?"],
+    "followUpsHe": ["כיצד משתנה חלוקת הריבית-קרן לאורך זמן?", "איזה מסלול עדיף בסביבת ריבית עולה?"]
+  },
+  {
+    "term": "How does a shorter loan term affect the monthly payment?",
+    "definition": "A shorter loan term increases the monthly payment but significantly reduces total interest paid. For example, the same loan over 15 years instead of 25 years has higher monthly payments but saves tens of thousands of shekels in total interest over the life of the loan.",
+    "definitionHe": "משך הלוואה קצר יותר מגדיל את התשלום החודשי, אך מקטין משמעותית את סך הריבית הכוללת. לדוגמה, אותה הלוואה ל-15 שנה במקום 25 שנה תדרוש תשלומים חודשיים גבוהים יותר, אך תחסוך עשרות אלפי שקלים בריבית כוללת לאורך חיי ההלוואה.",
+    "related_terms": ["How is monthly payment calculated?", "What is amortization?"],
+    "followUps": ["How does a longer loan term affect total interest paid?", "Which repayment method results in the lowest total interest paid?"],
+    "followUpsHe": ["כיצד משך הלוואה ארוך יותר משפיע על סך הריבית ששולמה?", "איזו שיטת פירעון מביאה לסך ריבית הנמוך ביותר?"]
+  },
+  {
     "term": "כיצד משתנה חלוקת הריבית-קרן לאורך זמן?",
     "definition": "In the early years of amortization, most of each payment goes to interest and only a small portion reduces the principal. As the balance shrinks, interest decreases and a larger share of each payment goes to principal. By the end of the loan, nearly all of each payment is principal. This is the core mechanic of Shpitzer (annuity) repayment.",
     "definitionHe": "בשנים הראשונות של ההלוואה, רוב כל תשלום הולך לריבית ורק חלק קטן מקטין את הקרן. ככל שיתרת הקרן קטנה, הריבית פוחתת — ולכן חלק גדל מכל תשלום הולך לקרן. בסוף ההלוואה, כמעט כל התשלום הוא קרן. זהו המנגנון המרכזי של שיטת שפיצר.",
