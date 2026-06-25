@@ -39,13 +39,15 @@ async function _handleChip(query, sessionId, lang, res) {
     term: { $regex: new RegExp(`^${escaped}$`, 'i') },
   });
 
+  if (!term) return _handleFreeText(query, sessionId, lang, res);
+
   const reply = lang === 'he'
-    ? (term?.definitionHe || term?.definition || `אין לי ערך מילון עבור "${query}" עדיין — נסה לשאול אותי בצ'אט!`)
-    : (term?.definition ?? `I don't have a glossary entry for "${query}" yet — try asking me in the chat!`);
+    ? (term.definitionHe || term.definition || `אין לי ערך מילון עבור "${query}" עדיין — נסה לשאול אותי בצ'אט!`)
+    : (term.definition ?? `I don't have a glossary entry for "${query}" yet — try asking me in the chat!`);
 
   const followUps = lang === 'he'
-    ? (term?.followUpsHe?.length ? term.followUpsHe : term?.followUps ?? [])
-    : (term?.followUps ?? []);
+    ? (term.followUpsHe?.length ? term.followUpsHe : term.followUps ?? [])
+    : (term.followUps ?? []);
 
   _recordTurn(sessionId, query, reply);
   return res.json({ decision: 'EDUCATION', reply, followUps });

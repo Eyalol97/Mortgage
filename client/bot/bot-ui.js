@@ -33,7 +33,7 @@
   // ── follow-up button clicks (delegated — buttons are added dynamically) ─────
   followUpContainer.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
-    if (btn) handleQuery(btn.dataset.query, false);
+    if (btn) handleQuery(btn.dataset.query, true, btn.textContent.trim());
   });
 
   // ── free-text submit ────────────────────────────────────────────────────────
