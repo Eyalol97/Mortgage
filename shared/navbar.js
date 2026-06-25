@@ -151,11 +151,10 @@
       ? `<button class="navbar__logout-btn" id="logout-btn" aria-label="Log out">${logoutLabel}</button>`
       : '';
 
-    // Links come first in the DOM so that flex row-start matches reading direction:
-    // LTR → links sit at the LEFT; RTL (html[dir=rtl] reverses flex row) → links sit at the RIGHT.
     return `
       <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__inner">
+          <a class="navbar__brand" href="/">Guided Clarity</a>
           <div style="display:flex;align-items:center;gap:0.25rem;">
             <ul class="navbar__links">
               ${items.join('\n')}
@@ -163,7 +162,6 @@
             <button class="navbar__lang-btn" id="lang-toggle-btn" aria-label="Toggle language">${langLabel}</button>
             ${logoutBtn}
           </div>
-          <a class="navbar__brand" href="/">Guided Clarity</a>
         </div>
       </nav>
     `;
