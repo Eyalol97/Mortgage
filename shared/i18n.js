@@ -120,6 +120,8 @@
 
       // Simulator — mix management
       'sim.mix.delete':     'Remove this mix',
+      'sim.mix.deleteHint': 'Remove Mix',
+      'sim.mix.hint':       'Click to load a mix · ✕ to remove and try different settings',
       'sim.cmp.clickToView': 'Click to load this mix',
 
       // Simulator — errors
@@ -293,6 +295,8 @@
 
       // Simulator — mix management
       'sim.mix.delete':     'הסר מיקס זה',
+      'sim.mix.deleteHint': 'הסר מיקס',
+      'sim.mix.hint':       'לחץ לטעינת מיקס · ✕ להסרה ולניסיון הגדרות שונות',
       'sim.cmp.clickToView': 'לחץ לטעינת מיקס זה',
 
       // Simulator — errors

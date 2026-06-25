@@ -310,6 +310,19 @@
   // ── Mix management ─────────────────────────────────────────────────────────
 
   function deleteMix(index) {
+    const wrap = mixTabsContainer
+      ? mixTabsContainer.querySelectorAll('.mix-tab-wrap')[index]
+      : null;
+
+    if (wrap) {
+      wrap.classList.add('mix-tab-wrap--removing');
+      setTimeout(() => _applyMixDeletion(index), 200);
+    } else {
+      _applyMixDeletion(index);
+    }
+  }
+
+  function _applyMixDeletion(index) {
     const mixes = getMixes();
     mixes.splice(index, 1);
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(mixes));
@@ -337,6 +350,7 @@
     if (!mixTabsContainer) return;
     const mixes = getMixes();
     mixTabsContainer.innerHTML = '';
+
     mixes.forEach((mix, i) => {
       const wrap = document.createElement('div');
       wrap.className = 'mix-tab-wrap';
@@ -344,13 +358,14 @@
       const btn = document.createElement('button');
       btn.className   = 'mix-tab' + (i === activeMixIdx ? ' mix-tab--active' : '');
       btn.textContent = _t('sim.mixTab', 'Mix') + ' ' + (i + 1);
+      btn.setAttribute('aria-label', _t('sim.mixTab', 'Mix') + ' ' + (i + 1));
       btn.addEventListener('click', () => switchToMix(i));
 
       const del = document.createElement('button');
-      del.className   = 'mix-tab__delete';
-      del.textContent = '×';
-      del.title       = _t('sim.mix.delete', 'Remove this mix');
-      del.setAttribute('aria-label', _t('sim.mix.delete', 'Remove mix ' + (i + 1)));
+      del.className = 'mix-tab__delete';
+      del.innerHTML = '&#x2715;'; // ✕  heavy multiplication x — cleaner than ×
+      del.title     = _t('sim.mix.deleteHint', 'Remove Mix') + ' ' + (i + 1);
+      del.setAttribute('aria-label', _t('sim.mix.deleteHint', 'Remove Mix') + ' ' + (i + 1));
       del.addEventListener('click', e => { e.stopPropagation(); deleteMix(i); });
 
       wrap.appendChild(btn);
@@ -360,6 +375,16 @@
 
     const showCompBtn = document.getElementById('show-comparison-btn');
     if (showCompBtn) showCompBtn.hidden = mixes.length < 2;
+
+    const hintEl = document.getElementById('mix-hint');
+    if (hintEl) {
+      if (mixes.length > 0) {
+        hintEl.textContent = _t('sim.mix.hint', 'Click to load a mix · ✕ to remove and try different settings');
+        hintEl.hidden = false;
+      } else {
+        hintEl.hidden = true;
+      }
+    }
   }
 
   function switchToMix(index) {
@@ -506,13 +531,9 @@
       if (el) el.addEventListener('keydown', handleEnterAsTab);
     });
 
-    // Re-render dynamic content when language switches
     document.addEventListener('i18n:applied', () => {
-      if (lastResult) {
-        renderAmortization(lastResult, activeMixIdx);
-      }
+      if (lastResult) renderAmortization(lastResult, activeMixIdx);
       renderMixTabs();
-      // Re-render comparison table if currently visible
       if (comparisonSection && !comparisonSection.hidden) {
         const mixes = getMixes();
         if (mixes.length >= 2) {

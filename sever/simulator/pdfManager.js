@@ -11,20 +11,10 @@ const _currency = v => 'ILS ' + Math.round(v).toLocaleString('en-US');
 const _pct      = v => (Math.round(v * 10) / 10).toFixed(1) + '%';
 const _genDate  = () => new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 
-// ── Hebrew text helper ─────────────────────────────────────────────────────────
-// PDFKit renders text LTR. Reverse Hebrew strings so they read correctly RTL.
-// Also swap mirror-characters so they visually match their Hebrew context.
-function rtl(str) {
-  return [...String(str)].reverse().map(c =>
-    c === '(' ? ')' : c === ')' ? '(' :
-    c === '[' ? ']' : c === ']' ? '[' : c
-  ).join('');
-}
-
 // ── Static labels ──────────────────────────────────────────────────────────────
-// All Hebrew strings are pre-reversed for PDFKit's LTR rendering.
-// Dynamic segments (labels concatenated with numbers at runtime) are
-// kept in HE_RAW and reversed on the fly with rtl().
+// PDFKit 0.13+ includes the Unicode BiDi algorithm (via fontkit/bidi-js).
+// Pass Hebrew strings as-is — PDFKit reshapes and reorders glyphs automatically.
+// Do NOT pre-reverse: that causes double-reversal and garbled output.
 const EN = {
   bannerSubtitle:  'Mortgage Investment Route Comparison',
   sectionHeading:  'INVESTMENT ROUTE COMPARISON',
@@ -50,37 +40,35 @@ const EN = {
   disclaimer2:     'Consult a licensed mortgage advisor before making any decisions.',
 };
 
-// Standalone Hebrew labels (pre-reversed)
 const HE = {
-  bannerSubtitle:  rtl('השוואת מסלולי השקעה במשכנתא'),
-  sectionHeading:  rtl('השוואת מסלולי השקעה'),
-  sectionHeading1: rtl('ניתוח מסלול השקעה'),
-  routeCol:        rtl('מסלול'),
-  repaymentMethod: rtl('שיטת פירעון'),
-  interestMethod:  rtl('שיטת ריבית'),
-  annualRate:      rtl('ריבית שנתית'),
-  propertyPrice:   rtl('מחיר הנכס'),
-  equity:          rtl('הון עצמי'),
-  loanAmount:      rtl('סכום הלוואה'),
-  duration:        rtl('משך'),
-  monthlyPayment:  rtl('תשלום חודשי'),
-  totalInterest:   rtl('ריבית כוללת'),
-  totalPayment:    rtl('תשלום כולל'),
-  methodShpitzer:  rtl('שפיצר'),
-  methodKerenShava:rtl('קרן שווה'),
-  methodBullet:    rtl('בוליט'),
-  trackPrime:      rtl('פריים'),
-  trackFixed:      rtl('קבועה'),
-  trackCpi:        rtl('מדד'),
-  disclaimer1:     rtl('מסמך זה הינו הערכה בלבד ואינו מהווה הצעת הלוואה רשמית מבנק ישראל.'),
-  disclaimer2:     rtl('אנא התייעץ עם יועץ משכנתאות מורשה לפני קבלת כל החלטה.'),
+  bannerSubtitle:  'השוואת מסלולי השקעה במשכנתא',
+  sectionHeading:  'השוואת מסלולי השקעה',
+  sectionHeading1: 'ניתוח מסלול השקעה',
+  routeCol:        'מסלול',
+  repaymentMethod: 'שיטת פירעון',
+  interestMethod:  'שיטת ריבית',
+  annualRate:      'ריבית שנתית',
+  propertyPrice:   'מחיר הנכס',
+  equity:          'הון עצמי',
+  loanAmount:      'סכום הלוואה',
+  duration:        'משך',
+  monthlyPayment:  'תשלום חודשי',
+  totalInterest:   'ריבית כוללת',
+  totalPayment:    'תשלום כולל',
+  methodShpitzer:  'שפיצר',
+  methodKerenShava:'קרן שווה',
+  methodBullet:    'בוליט',
+  trackPrime:      'פריים',
+  trackFixed:      'קבועה',
+  trackCpi:        'מדד',
+  disclaimer1:     'מסמך זה הינו הערכה בלבד ואינו מהווה הצעת הלוואה רשמית מבנק ישראל.',
+  disclaimer2:     'אנא התייעץ עם יועץ משכנתאות מורשה לפני קבלת כל החלטה.',
 };
 
-// Raw Hebrew strings for dynamic concatenation — reversed at render time
 const HE_DYN = {
-  mix:      'מיקס ',     // "מיקס " + N → rtl("מיקס 2")
-  best:     ' מומלץ',    // appended to mix label
-  yrs:      " שנ'",      // N + " שנ'" → rtl("25 שנ'")
+  mix:      'מיקס ',
+  best:     ' מומלץ',
+  yrs:      " שנ'",
   bestNote: 'בעל הריבית הכוללת הנמוכה ביותר',
 };
 
@@ -204,10 +192,9 @@ function drawTable(doc, mixes, startY, L, isHe) {
     const isBest = mixes.length > 1 && i === bestIdx;
     fillRect(doc, x, y, mixW, HDR_H, isBest ? C.primaryDark : C.primaryMid);
 
-    // Build Hebrew column header correctly (construct raw, then reverse once)
     let colLabel;
     if (isHe) {
-      colLabel = rtl(HE_DYN.mix + (i + 1) + (isBest ? HE_DYN.best : ''));
+      colLabel = HE_DYN.mix + (i + 1) + (isBest ? HE_DYN.best : '');
     } else {
       colLabel = 'MIX ' + (i + 1) + (isBest ? '  [BEST]' : '');
     }
@@ -231,9 +218,8 @@ function drawTable(doc, mixes, startY, L, isHe) {
     return map[m.interestMethod] || m.interestMethod;
   };
 
-  // For Hebrew, duration value must also be reversed (Hebrew suffix + number)
   const getDuration = m => isHe
-    ? rtl(String(m.duration) + HE_DYN.yrs)
+    ? String(m.duration) + HE_DYN.yrs
     : m.duration + ' yrs';
 
   const ROWS = [
@@ -321,12 +307,8 @@ function drawBestNote(doc, mixes, y, isHe) {
 
   let note;
   if (isHe) {
-    // Build the full Hebrew sentence, reverse as one unit for PDFKit LTR rendering.
-    // Savings in LTR placed *before* the reversed Hebrew so it lands on the left
-    // of the right-aligned callout — natural for a Hebrew reader scanning right-to-left.
-    const hePart  = rtl(HE_DYN.mix + (bestIdx + 1) + ' — ' + HE_DYN.bestNote);
-    const savePart = saved > 0 ? 'saves ' + _currency(saved) + '  |  ' : '';
-    note = savePart + hePart;
+    note = HE_DYN.mix + (bestIdx + 1) + ' — ' + HE_DYN.bestNote;
+    if (saved > 0) note += ' | חסכון: ' + _currency(saved);
   } else {
     const savings = saved > 0 ? '  --  saves ' + _currency(saved) + ' vs. most expensive option' : '';
     note = 'MIX ' + (bestIdx + 1) + ' has the lowest total interest' + savings;
