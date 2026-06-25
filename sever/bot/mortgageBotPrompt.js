@@ -56,8 +56,12 @@ The user's question involves personal financial considerations. Follow these add
 // getPrompt({ advisory }) → string
 // Called by mortgageBotHandler.js before every LLM request.
 
-function getPrompt({ advisory = false } = {}) {
-  return advisory ? BASE_PROMPT + ADVISORY_ADDENDUM : BASE_PROMPT;
+function getPrompt({ advisory = false, lang = 'en' } = {}) {
+  let prompt = advisory ? BASE_PROMPT + ADVISORY_ADDENDUM : BASE_PROMPT;
+  if (lang === 'he') {
+    prompt += '\n\n## Language Override\nThe user interface is set to Hebrew. You MUST respond ONLY in Hebrew — this overrides the Language Rule above. Every word in your reply and follow-up questions must be in Hebrew.';
+  }
+  return prompt;
 }
 
 export default { getPrompt };
