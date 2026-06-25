@@ -1,8 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { GEMINI_API_KEY } from '../../../shared/env.js';
+import { GROQ_API_KEY } from '../../../shared/env.js';
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const VALID_CATEGORIES = new Set(['EDUCATION', 'ADVISORY', 'OUT_OF_DOMAIN', 'AMBIGUOUS']);
 
 const SYSTEM_PROMPT = `You classify user messages sent to a mortgage-education chatbot.
@@ -17,17 +15,24 @@ Respond only with JSON: {"category": "EDUCATION"|"ADVISORY"|"OUT_OF_DOMAIN"|"AMB
 
 async function classify(query) {
   try {
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-lite',
-      systemInstruction: SYSTEM_PROMPT,
-      generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 64 },
+    const res = await fetch(GROQ_URL, {
+      method:  'POST',
+      headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model:       'llama-3.1-8b-instant',
+        messages:    [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: query }],
+        temperature: 0,
+        max_tokens:  64,
+        response_format: { type: 'json_object' },
+      }),
     });
 
-    const result   = await model.generateContent(query);
-    const parsed   = JSON.parse(result.response.text());
-    const category = typeof parsed.category === 'string'
-      ? parsed.category.trim().toUpperCase()
-      : '';
+    if (!res.ok) return { category: 'AMBIGUOUS' };
+
+    const data    = await res.json();
+    const text    = data.choices?.[0]?.message?.content ?? '';
+    const parsed  = JSON.parse(text);
+    const category = typeof parsed.category === 'string' ? parsed.category.trim().toUpperCase() : '';
 
     return { category: VALID_CATEGORIES.has(category) ? category : 'AMBIGUOUS' };
   } catch {

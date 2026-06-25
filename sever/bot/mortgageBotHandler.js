@@ -1,9 +1,7 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import mortgageBotPrompt     from './mortgageBotPrompt.js';
-import regulationService     from '../../shared/regulationService.js';
-import { GEMINI_API_KEY, LLM_MODEL } from '../../shared/env.js';
+import mortgageBotPrompt from './mortgageBotPrompt.js';
+import { GROQ_API_KEY, LLM_MODEL } from '../../shared/env.js';
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const MAX_HISTORY_TOKENS = 6_000;
 const CHARS_PER_TOKEN    = 4;
@@ -33,51 +31,50 @@ function _errorReply(lang) {
 async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
   const systemPrompt = mortgageBotPrompt.getPrompt({ advisory, lang });
 
-  let prompt = systemPrompt;
-  prompt += '\n\nOUTPUT RULES (follow exactly):'
-          + '\n- Reply in 2-3 short sentences — be concise and direct.'
-          + '\n- Respond ONLY with a JSON object. No markdown, no code fences, no preamble.'
-          + '\n- Do NOT put literal newline characters inside the JSON string values.'
-          + '\n- Use \\n (two characters: backslash + n) if you need a line break inside the reply.'
-          + (lang === 'he'
-              ? '\n- You MUST write the "reply" value and ALL "followUps" items in Hebrew only. No English.'
-              : '')
-          + '\n- Exact shape: {"reply":"<concise answer>","followUps":["<q1>","<q2>","<q3>"]}';
+  const outputRules = 'OUTPUT RULES (follow exactly):'
+    + '\n- Reply in 2-3 short sentences — be concise and direct.'
+    + '\n- Respond ONLY with a JSON object. No markdown, no code fences, no preamble.'
+    + '\n- Do NOT put literal newline characters inside the JSON string values.'
+    + '\n- Use \\n (two characters: backslash + n) if you need a line break inside the reply.'
+    + (lang === 'he'
+        ? '\n- You MUST write the "reply" value and ALL "followUps" items in Hebrew only. No English.'
+        : '')
+    + '\n- Exact shape: {"reply":"<concise answer>","followUps":["<q1>","<q2>","<q3>"]}';
 
   const trimmed = _trimHistory(history);
-  if (trimmed.length > 0) {
-    prompt += '\n\nConversation so far:';
-    for (const msg of trimmed) {
-      prompt += `\n${msg.role === 'assistant' ? 'Assistant' : 'User'}: ${msg.content}`;
-    }
-  }
 
-  if (lang === 'he') {
-    prompt += `\n\n[הוראה קריטית: ענה אך ורק בעברית. כל מילה ב-"reply" וב-"followUps" חייבת להיות בעברית בלבד.]\nUser: ${query}\nAssistant:`;
-  } else {
-    prompt += `\n\nUser: ${query}\nAssistant:`;
-  }
+  const messages = [
+    { role: 'system', content: `${systemPrompt}\n\n${outputRules}` },
+    ...trimmed.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content })),
+    { role: 'user', content: lang === 'he'
+        ? `[הוראה קריטית: ענה אך ורק בעברית. כל מילה ב-"reply" וב-"followUps" חייבת להיות בעברית בלבד.]\n${query}`
+        : query },
+  ];
 
-  const model = genAI.getGenerativeModel({ model: LLM_MODEL });
-
-  let result;
+  let res;
   try {
-    result = await model.generateContent(prompt);
-  } catch (apiErr) {
-    console.error('[mortgageBotHandler] generateContent failed:', {
-      model: LLM_MODEL, status: apiErr.status, message: apiErr.message,
+    res = await fetch(GROQ_URL, {
+      method:  'POST',
+      headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: LLM_MODEL, messages, temperature: 0.7, max_tokens: 512 }),
     });
+  } catch (netErr) {
+    console.error('[mortgageBotHandler] fetch failed:', netErr.message);
+    return { reply: _errorReply(lang), followUps: [], error: true };
+  }
+
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    console.error('[mortgageBotHandler] Groq error:', res.status, errText.slice(0, 200));
     return { reply: _errorReply(lang), followUps: [], error: true };
   }
 
   let raw;
   try {
-    raw = result.response.text().trim();
-  } catch (textErr) {
-    const candidate = result.response.candidates?.[0];
-    console.error('[mortgageBotHandler] response.text() threw:', {
-      finishReason: candidate?.finishReason, message: textErr.message,
-    });
+    const data = await res.json();
+    raw = data.choices?.[0]?.message?.content?.trim() ?? '';
+  } catch (parseErr) {
+    console.error('[mortgageBotHandler] response parse failed:', parseErr.message);
     return { reply: _errorReply(lang), followUps: [], error: true };
   }
 
@@ -85,29 +82,16 @@ async function respond(query, history, { advisory = false, lang = 'en' } = {}) {
 }
 
 function _parseResponse(raw) {
-  // Attempt 1 — standard JSON.parse (works when model obeys the format)
   try {
     const p = JSON.parse(raw);
     if (typeof p.reply === 'string') {
-      return {
-        reply:     p.reply,
-        followUps: Array.isArray(p.followUps) ? p.followUps.slice(0, 3) : [],
-      };
+      return { reply: p.reply, followUps: Array.isArray(p.followUps) ? p.followUps.slice(0, 3) : [] };
     }
   } catch { /* fall through */ }
 
-  // Attempt 2 — regex extraction.
-  // Handles the common failure where the model puts literal newlines inside
-  // the JSON string value, making JSON.parse reject the whole response.
-  // [^"\\] matches any char except quote/backslash (including literal \n).
-  // \\. matches any JSON escape sequence (\n, \", \\, etc.).
   const replyMatch = raw.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
   if (replyMatch) {
-    const reply = replyMatch[1]
-      .replace(/\\n/g, '\n')
-      .replace(/\\"/g, '"')
-      .replace(/\\\\/g, '\\');
-
+    const reply = replyMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
     const followUps = [];
     const fupIdx = raw.indexOf('"followUps"');
     if (fupIdx !== -1) {
@@ -117,11 +101,9 @@ function _parseResponse(raw) {
         if (followUps.length >= 3) break;
       }
     }
-
     return { reply, followUps };
   }
 
-  // Attempt 3 — give up parsing, return raw text as-is
   return { reply: raw, followUps: [] };
 }
 

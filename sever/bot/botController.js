@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import intentClassifier   from './bot-guard/intentClassifier.js';
 import ruleFilter         from './bot-guard/ruleFilter.js';
 import mortgageBotHandler from './mortgageBotHandler.js';
@@ -6,7 +5,7 @@ import GlossaryTerm       from '../../shared/models/GlossaryTerm.js';
 import GuardrailLog       from '../../shared/models/GuardrailLog.js';
 import UsageCounter       from '../../shared/models/UsageCounter.js';
 import errorHandler       from '../../shared/errorHandler.js';
-import { GEMINI_API_KEY, LLM_MODEL } from '../../shared/env.js';
+import { GROQ_API_KEY, LLM_MODEL } from '../../shared/env.js';
 
 // In-memory session store — keyed by sessionId, wiped on /session/clear.
 // Never written to disk; clearing the Map is the only persistence boundary.
@@ -132,51 +131,35 @@ async function clearSession(req, res) {
   return res.status(204).end();
 }
 
-// ── diagnostic: lists available models + tests a simple generate call ─────────
+// ── diagnostic: tests Groq API key + model ────────────────────────────────────
 async function pingGemini(req, res) {
-  const keySnippet = GEMINI_API_KEY ? GEMINI_API_KEY.slice(0, 8) + '...' : 'NOT SET';
+  const keySnippet = GROQ_API_KEY ? GROQ_API_KEY.slice(0, 8) + '...' : 'NOT SET';
 
-  // Step 1 — call ListModels to find what this key can actually use
-  let geminiModels = [];
-  try {
-    const listRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}&pageSize=50`
-    );
-    const listData = await listRes.json();
-    geminiModels = (listData.models ?? [])
-      .filter(m => m.supportedGenerationMethods?.includes('generateContent'))
-      .map(m => m.name.replace('models/', ''));
-  } catch (listErr) {
-    geminiModels = [`[list error] ${listErr.message}`];
-  }
-
-  // Step 2 — two tests: (a) simple string, (b) matches the actual chat handler prompt
-  const genAI2 = new GoogleGenerativeAI(GEMINI_API_KEY);
-
-  async function tryModel(modelName, prompt) {
+  async function tryGroq(prompt) {
     try {
-      const m = genAI2.getGenerativeModel({ model: modelName });
-      const r = await m.generateContent(prompt);
-      return { success: true, response: r.response.text().slice(0, 120) };
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: LLM_MODEL,
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 64,
+        }),
+      });
+      const data = await r.json();
+      if (!r.ok) return { success: false, status: r.status, message: JSON.stringify(data).slice(0, 200) };
+      return { success: true, response: data.choices?.[0]?.message?.content?.slice(0, 120) };
     } catch (e) {
-      return { success: false, status: e.status, message: (e.message || '').slice(0, 120) };
+      return { success: false, message: e.message.slice(0, 120) };
     }
   }
 
-  const chatPrompt = 'You are a mortgage assistant. Respond ONLY with JSON: {"reply":"<answer>","followUps":[]}\n\nUser: What is LTV?\nAssistant:';
-
   const [simpleTest, chatTest] = await Promise.all([
-    tryModel(LLM_MODEL, 'Reply with the single word: OK'),
-    tryModel(LLM_MODEL, chatPrompt),
+    tryGroq('Reply with the single word: OK'),
+    tryGroq('You are a mortgage assistant. Respond ONLY with JSON: {"reply":"<answer>","followUps":[]}\n\nUser: What is LTV?\nAssistant:'),
   ]);
 
-  return res.json({
-    configuredModel: LLM_MODEL,
-    keyPrefix:       keySnippet,
-    simpleTest,
-    chatPromptTest:  chatTest,
-    availableModels: geminiModels,
-  });
+  return res.json({ configuredModel: LLM_MODEL, keyPrefix: keySnippet, simpleTest, chatPromptTest: chatTest });
 }
 
 export { chat, getChips, clearSession, pingGemini };
