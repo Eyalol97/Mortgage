@@ -62,9 +62,9 @@
       background: #f4f4f4;
       padding: 1.5rem;
       border-bottom: 1px solid #e0e0e0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       align-items: end;
-      margin-bottom: 0;
+      margin-bottom: 4rem; /* mb-16 — the large gap is intentional in Stitch design */
     }
 
     .sim-config__field { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -115,20 +115,29 @@
       background-color: #e0e0e0;
     }
 
+    /* Hint sits absolute below the input, so it doesn't inflate the field height
+       and doesn't break items-end alignment across the 3 config columns */
     .sim-config__hint {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
       font-size: 0.625rem;
       color: #6f6f6f;
       margin-top: 0.25rem;
       line-height: 1.4;
     }
 
+    /* Relative wrapper needed for the absolute-positioned hint */
+    .sim-config__input-wrap { position: relative; }
+
     /* ─── Subtitle instruction (between config and main grid) ─── */
     .sim-subtitle {
       font-size: 0.875rem;
-      color: #525252;
+      color: #6f6f6f;          /* text-secondary */
       line-height: 1.6;
-      margin: 1.5rem 0;
-      padding: 0 0.25rem;
+      margin: 0 0 2rem 0;     /* mb-8 = 2rem */
+      padding: 0 1.5rem;       /* px-6 = 1.5rem, matches Stitch indentation */
     }
 
     .sim-subtitle strong { color: #0f62fe; font-weight: 600; }
@@ -137,7 +146,8 @@
     .sim-main-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      margin-bottom: 0;
+      align-items: stretch;
+      margin-bottom: 2rem; /* mb-8 */
     }
 
     /* ─── Blue input panel: 4 financial inputs, 2×4 grid ─── */
@@ -210,6 +220,7 @@
       background: #d0e2ff;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      box-shadow: inset 4px 0 16px rgba(0, 0, 0, 0.06); /* shadow-inner */
     }
 
     .sim-result-cell {
@@ -247,7 +258,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding: 2rem 0;
+      margin-top: 0;      /* grid already has mb-8 */
+      padding-top: 2rem;  /* pt-8 */
       border-top: 1px solid #e0e0e0;
       flex-wrap: wrap;
       margin-bottom: 3rem;
@@ -505,11 +517,13 @@
 
       <div class="sim-config__field">
         <label class="sim-config__label" for="annualRate" data-i18n="sim.annualRate">Annual Interest Rate (%)</label>
-        <input type="number" id="annualRate" class="input-carbon"
-               min="0" step="0.01"
-               data-i18n-placeholder="sim.placeholder.annualRate"
-               placeholder="e.g. 4.5" />
-        <p class="sim-config__hint" data-i18n="sim.annualRateHint">— optional, leave empty for market default</p>
+        <div class="sim-config__input-wrap">
+          <input type="number" id="annualRate" class="input-carbon"
+                 min="0" step="0.01"
+                 data-i18n-placeholder="sim.placeholder.annualRate"
+                 placeholder="e.g. 4.5" />
+          <p class="sim-config__hint" data-i18n="sim.annualRateHint">— optional, leave empty for market default</p>
+        </div>
       </div>
 
     </section>
@@ -568,17 +582,20 @@
       <div class="sim-results">
 
         <div class="sim-result-cell">
-          <span class="sim-result-cell__label" data-i18n="sim.col.loanAmount">Loan Amount (₪)</span>
+          <!-- sim.fieldLabel.loanAmount = "Loan Amount" (no ₪ — keeps label on one line) -->
+          <span class="sim-result-cell__label" data-i18n="sim.fieldLabel.loanAmount">Loan Amount</span>
           <span class="sim-result-cell__value" id="res-loan">—</span>
         </div>
 
         <div class="sim-result-cell">
-          <span class="sim-result-cell__label" data-i18n="sim.col.totalInterest">Total Interest (₪)</span>
+          <!-- sim.totalInterest = "Total Interest" -->
+          <span class="sim-result-cell__label" data-i18n="sim.totalInterest">Total Interest</span>
           <span class="sim-result-cell__value" id="res-total-interest">—</span>
         </div>
 
         <div class="sim-result-cell">
-          <span class="sim-result-cell__label" data-i18n="sim.col.totalPayment">Total Payment (₪)</span>
+          <!-- sim.totalPayment = "Total Payment" -->
+          <span class="sim-result-cell__label" data-i18n="sim.totalPayment">Total Payment</span>
           <span class="sim-result-cell__value" id="res-total-payment">—</span>
         </div>
 
