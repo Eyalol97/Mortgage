@@ -430,12 +430,33 @@
       margin-bottom: 0;
     }
 
+    /* Outer bar: tabs left, PDF button right, border-bottom as the track */
+    .simulator-page .mix-manager__bar {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
     .simulator-page .mix-manager__tabs {
       display: flex;
       align-items: stretch;
       gap: 0;
       padding: 0;
-      border-bottom: 2px solid #e0e0e0;
+    }
+
+    /* PDF button sits inline with the tabs, right-aligned */
+    .simulator-page #pdf-btn {
+      height: 40px !important;
+      margin-bottom: -2px;          /* overlaps the bar border like tabs do */
+      border-bottom: 3px solid transparent !important;
+      padding: 0 0.875rem !important;
+      font-size: 0.8125rem !important;
+      align-self: stretch;
+    }
+
+    .simulator-page #pdf-btn:hover {
+      background: #f4f4f4 !important;
     }
 
     .simulator-page .mix-tab-wrap {
@@ -675,10 +696,6 @@
           <span class="material-symbols-outlined" aria-hidden="true">compare_arrows</span>
           <span data-i18n="sim.compareAll">Compare All Mixes</span>
         </button>
-        <button id="pdf-btn" class="btn" hidden>
-          <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
-          <span data-i18n="sim.downloadPdf">Download PDF Summary</span>
-        </button>
       </div>
 
     </div><!-- /.sim-action-bar -->
@@ -691,7 +708,14 @@
 
       <!-- Mix manager — appears first so "Save as Mix" action is immediately visible -->
       <section class="mix-manager" aria-label="Saved mixes">
-        <div id="mix-tabs" class="mix-manager__tabs"></div>
+        <!-- Flex bar: tabs on the left, PDF download on the right -->
+        <div class="mix-manager__bar">
+          <div id="mix-tabs" class="mix-manager__tabs"></div>
+          <button id="pdf-btn" class="btn" hidden>
+            <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
+            <span data-i18n="sim.downloadPdf">Download PDF Summary</span>
+          </button>
+        </div>
         <p id="mix-hint" class="mix-manager__hint" hidden></p>
       </section>
 
