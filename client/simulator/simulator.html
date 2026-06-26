@@ -689,6 +689,12 @@
     <!-- ── Dynamic sections: appear after a successful solve ─────────────────── -->
     <div class="sim-dynamic">
 
+      <!-- Mix manager — appears first so "Save as Mix" action is immediately visible -->
+      <section class="mix-manager" aria-label="Saved mixes">
+        <div id="mix-tabs" class="mix-manager__tabs"></div>
+        <p id="mix-hint" class="mix-manager__hint" hidden></p>
+      </section>
+
       <!-- Amortization: principal/interest breakdown bar + monthly table -->
       <section id="amortization-section" class="sim-amort" hidden aria-label="Amortization schedule">
 
@@ -749,12 +755,6 @@
           <button id="amort-show-all-btn" class="btn btn--secondary">Show all months</button>
         </div>
 
-      </section>
-
-      <!-- Mix manager -->
-      <section class="mix-manager" aria-label="Saved mixes">
-        <div id="mix-tabs" class="mix-manager__tabs"></div>
-        <p id="mix-hint" class="mix-manager__hint" hidden></p>
       </section>
 
       <!-- Comparison table -->
