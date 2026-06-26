@@ -5,201 +5,240 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mortgage Simulator | Guided Clarity</title>
   <link rel="stylesheet" href="/shared/style.css" />
+  <!-- Material Symbols for button icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <style>
-    /* Prevent any CSS display rule from overriding [hidden] */
+    /* ═══════════════════════════════════════════════════════════════════════════
+       SIMULATOR PAGE — Carbon Enterprise design (Stitch AI)
+       All element IDs and sim-table__input class usage are preserved.
+       ═══════════════════════════════════════════════════════════════════════════ */
+
+    /* Prevent .btn's display:inline-flex from overriding [hidden] */
     [hidden] { display: none !important; }
+
+    /* Material Symbols baseline rendering */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+      text-transform: none;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      letter-spacing: normal;
+    }
 
     /* ─── Page scaffold ─── */
     .simulator-page {
-      max-width: none;
-      padding: 0;
-      background: #f0f2f5;
-      min-height: 100vh;
-    }
-
-    /* ─── White page header ─── */
-    .sim-header {
       background: #ffffff;
-      border-bottom: 1px solid #e0e0e0;
-      padding: 2.5rem 2rem 2rem;
+      min-height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
     }
 
-    .sim-header__inner { max-width: 1400px; margin: 0 auto; }
-
-    .simulator-page__title {
-      font-size: 2rem;
-      font-weight: 300;
-      color: #161616;
-      margin-bottom: 0.5rem;
-      padding: 0;
-    }
-
-    .simulator-page__subtitle {
-      font-size: 0.9375rem;
-      color: #525252;
-      line-height: 1.6;
-      margin: 0;
-    }
+    /* ─── Hero ─── */
+    .sim-hero { margin-bottom: 3rem; }
 
     #disclaimer { margin-bottom: 1.25rem; }
 
-    /* ─── Body container — wider to accommodate the 10-col row ─── */
-    .sim-body {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem 2rem 4rem;
+    .simulator-page__title {
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: #161616;
+      margin: 0;
+      padding: 0;
+      line-height: 1.2;
     }
 
-    /* ─── Calculator card ─── */
-    .sim-card {
-      background: #ffffff;
-      border: 1px solid #d1d9e0;
-      overflow: hidden;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    }
-
-    /* ─── Horizontal row wrapper — scrolls on narrow viewports ─── */
-    .sim-row-wrapper {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+    /* ─── Config section: gray, 3-col, bottom border only (Carbon pattern) ─── */
+    .sim-config {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+      background: #f4f4f4;
+      padding: 1.5rem;
       border-bottom: 1px solid #e0e0e0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      align-items: end;
+      margin-bottom: 0;
     }
 
-    /* ─── The single row: 10 flex cells, all equal height via stretch ─── */
-    .sim-row {
-      display: flex;
-      align-items: stretch;
-      min-width: max-content; /* prevents cells shrinking below their min-width */
-    }
+    .sim-config__field { display: flex; flex-direction: column; gap: 0.5rem; }
 
-    /* ─── Individual cells ─── */
-    .sim-row__cell {
-      flex: 1 0 130px;
-      display: flex;
-      flex-direction: column;
-      padding: 1.125rem 1.25rem 1.125rem;
-      border-right: 1px solid #e0e0e0;
-      background: #ffffff;
-    }
-
-    .sim-row__cell:last-child { border-right: none; }
-
-    /* Wider cells for the method selects (longer option text) */
-    .sim-row__cell--wide { flex: 1.5 0 168px; }
-
-    /*
-     * Result cells: blue-tinted bg.
-     * The first result cell also gets a stronger left border to visually
-     * separate the input group from the computed output group.
-     */
-    .sim-row__cell--result { background: #edf4ff; }
-
-    .sim-row__cell--result-first {
-      border-left: 2px solid #a6c8ff;
-    }
-
-    /* ─── Column header labels ─── */
-    .sim-row__label {
+    .sim-config__label {
       font-size: 0.6875rem;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #525252;
       display: block;
-      margin-bottom: 0.625rem;
-      line-height: 1.4;
-      white-space: nowrap;
     }
 
-    /* Subtle secondary line under Annual Rate label */
-    .sim-row__label-hint {
-      display: block;
-      font-size: 0.5625rem;
-      font-weight: 400;
-      color: #94a3b8;
-      text-transform: none;
-      letter-spacing: 0;
-      margin-top: 0.1rem;
+    /* Wrapper gives the dropdown-arrow icon something to position against */
+    .sim-config__select-wrap { position: relative; }
+
+    .sim-config__select-icon {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #525252;
+      font-size: 20px;
     }
 
-    /*
-     * ─── Shared interactive element style ───────────────────────────────────
-     * margin-top: auto  ← key: pushes every element to the bottom of its cell
-     * Because all cells share the same height (flex align-items:stretch),
-     * this guarantees every input/select/value sits at the SAME vertical Y.
-     */
-    .sim-row__input {
-      margin-top: auto;
-      height: 44px;
+    /* Carbon-style input: flat grey bg, bottom border only */
+    .input-carbon {
+      background-color: #f4f4f4;
+      border: none;
+      border-bottom: 2px solid #8d8d8d;
+      height: 40px;
+      padding: 0 16px;
       width: 100%;
-      padding: 0 0.75rem;
-      font-family: var(--font-family);
-      font-size: 0.9375rem;
-      color: #1e293b;
-      background: #ffffff;
-      border: 1.5px solid #c8d1dc;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      font-family: 'IBM Plex Sans', var(--font-family), sans-serif;
+      font-size: 0.875rem;
+      color: #161616;
       -webkit-appearance: none;
       appearance: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      transition: background 0.15s, border-color 0.15s;
     }
 
-    .sim-row__input:hover  { border-color: #94a3b8; }
+    .input-carbon:hover { border-bottom-color: #525252; }
 
-    .sim-row__input:focus {
-      outline: none;
-      border-color: #0f62fe;
-      border-width: 2px;
-      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12);
+    .input-carbon:focus {
+      outline: 2px solid #0f62fe;
+      outline-offset: -2px;
+      background-color: #e0e0e0;
+    }
+
+    .sim-config__hint {
+      font-size: 0.625rem;
+      color: #6f6f6f;
+      margin-top: 0.25rem;
+      line-height: 1.4;
+    }
+
+    /* ─── Subtitle instruction (between config and main grid) ─── */
+    .sim-subtitle {
+      font-size: 0.875rem;
+      color: #525252;
+      line-height: 1.6;
+      margin: 1.5rem 0;
+      padding: 0 0.25rem;
+    }
+
+    .sim-subtitle strong { color: #0f62fe; font-weight: 600; }
+
+    /* ─── Main grid: blue input panel (2/3) + light results panel (1/3) ─── */
+    .sim-main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      margin-bottom: 0;
+    }
+
+    /* ─── Blue input panel: 4 financial inputs, 2×4 grid ─── */
+    .sim-inputs {
+      background: #0f62fe;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .sim-input-cell {
+      padding: 1.5rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+    }
+
+    .sim-input-cell:last-child { border-right: none; }
+
+    .sim-input-cell__label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 1rem;
     }
 
     /*
-     * Global .sim-table__input has its own background/border/padding.
-     * Override everything it brings so it inherits the row style instead.
+     * White inputs on the blue panel.
+     * The global .sim-table__input has its own bg/border/font — override all of it.
+     * JS adds/removes .sim-table__input--solved; keep the class on these 4 inputs.
      */
-    .sim-row .sim-table__input {
-      margin-top: auto !important;
-      height: 44px !important;
-      padding: 0 0.75rem !important;
-      border: 1.5px solid #c8d1dc !important;
-      border-radius: 4px !important;
+    .sim-inputs .sim-table__input {
       background: #ffffff !important;
-      color: #1e293b !important;
-      font-size: 0.9375rem !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+      border-radius: 0 !important;
+      color: #161616 !important;
+      height: 40px !important;
+      padding: 0 12px !important;
+      font-size: 0.875rem !important;
+      font-family: 'IBM Plex Sans', var(--font-family), sans-serif !important;
+      width: 100% !important;
       min-width: 0 !important;
+      box-shadow: none !important;
+      transition: outline 0.1s !important;
     }
 
-    .sim-row .sim-table__input:hover  { border-color: #94a3b8 !important; }
-
-    .sim-row .sim-table__input:focus {
-      border-color: #0f62fe !important;
-      border-width: 2px !important;
-      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12) !important;
+    .sim-inputs .sim-table__input:focus {
+      outline: 2px solid rgba(255, 255, 255, 0.9) !important;
+      outline-offset: -2px !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
     }
 
-    /* Solved field: JS adds this class to the field that was calculated */
-    .sim-row .sim-table__input--solved {
-      background: #edf4ff !important;
+    /* Solved field: computed value rendered with blue tint + italic */
+    .sim-inputs .sim-table__input--solved {
+      background: #d0e2ff !important;
       color: #0043ce !important;
-      border-color: #a6c8ff !important;
+      border-color: #78a9ff !important;
       font-weight: 700 !important;
       font-style: italic;
       cursor: default;
     }
 
-    /* ─── Read-only result values ─── */
-    .sim-row__value {
-      margin-top: auto; /* aligns with inputs */
-      height: 44px;
+    /* ─── Light results panel: 3 computed outputs ─── */
+    .sim-results {
+      background: #d0e2ff;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .sim-result-cell {
+      padding: 1.5rem;
+      border-right: 1px solid rgba(15, 98, 254, 0.15);
       display: flex;
-      align-items: center;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #0043ce;
-      white-space: nowrap;
+      flex-direction: column;
+      justify-content: center;
+      background: rgba(244, 244, 244, 0.35);
+    }
+
+    .sim-result-cell:last-child { border-right: none; }
+
+    .sim-result-cell__label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #525252;
+      display: block;
+      margin-bottom: 0.375rem;
+    }
+
+    .sim-result-cell__value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #0f62fe;
+      line-height: 1;
     }
 
     /* ─── Action bar ─── */
@@ -207,10 +246,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.125rem 1.75rem;
-      background: #ffffff;
-      gap: 0.75rem;
+      gap: 1rem;
+      padding: 2rem 0;
+      border-top: 1px solid #e0e0e0;
       flex-wrap: wrap;
+      margin-bottom: 3rem;
     }
 
     .sim-action-bar__secondary {
@@ -220,182 +260,205 @@
       align-items: center;
     }
 
+    /*
+     * Solve button — must be flat text only in HTML.
+     * JS does: solveBtn.textContent = 'Calculating…'  ← wipes ALL child nodes.
+     * The arrow_forward icon is added via CSS ::after so it survives the wipe.
+     */
     #solve-btn {
+      background: #0f62fe;
+      color: #ffffff;
+      border: none;
+      border-radius: 0;
       height: 48px;
-      padding: 0 1.5rem;
+      padding: 0 1rem;
+      min-width: 12rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-family: 'IBM Plex Sans', var(--font-family), sans-serif;
       font-size: 0.9375rem;
-      font-weight: 600;
-      min-width: 140px;
-      border-radius: 2px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 6px rgba(15, 98, 254, 0.28);
     }
 
-    /* ─── Message ─── */
-    #sim-message { margin: 0 0 0.75rem; }
+    #solve-btn:hover:not(:disabled) { background: #0043ce; }
+    #solve-btn:disabled { opacity: 0.65; cursor: not-allowed; box-shadow: none; }
 
-    /* ─── Dynamic sections wrapper ─── */
-    .sim-dynamic { display: flex; flex-direction: column; gap: 1.5rem; }
+    /* Arrow icon via CSS — immune to solveBtn.textContent wipe */
+    #solve-btn::after {
+      content: 'arrow_forward';
+      font-family: 'Material Symbols Outlined';
+      font-size: 20px;
+      font-weight: 400;
+      font-style: normal;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      display: inline-block;
+    }
 
-    /* ─── Amortization panel ─── */
+    /* Hide arrow during the calculating state (button is disabled) */
+    #solve-btn:disabled::after { display: none; }
+
+    /* Secondary buttons (save-mix, compare) — bordered */
+    .sim-action-bar .btn--secondary {
+      border: 1px solid #0f62fe !important;
+      color: #0f62fe !important;
+      background: transparent !important;
+      height: 48px !important;
+      padding: 0 1rem !important;
+      font-size: 0.875rem !important;
+      border-radius: 0 !important;
+      gap: 0.375rem !important;
+      transition: background 0.2s !important;
+      cursor: pointer;
+    }
+
+    .sim-action-bar .btn--secondary:hover { background: #edf4ff !important; }
+
+    /* PDF button — ghost style (no border, subtle hover) */
+    #pdf-btn {
+      border: none !important;
+      color: #0f62fe !important;
+      background: transparent !important;
+      height: 48px !important;
+      padding: 0 1rem !important;
+      font-size: 0.875rem !important;
+      border-radius: 0 !important;
+      gap: 0.375rem !important;
+      transition: background 0.2s !important;
+      cursor: pointer;
+    }
+
+    #pdf-btn:hover { background: #f4f4f4 !important; }
+
+    /* ─── Inline feedback message ─── */
+    #sim-message { margin-bottom: 1.5rem; }
+
+    /* ─── Dynamic sections (amortization, mix, comparison) ─── */
+    .sim-dynamic { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem; }
+
+    /* Amortization panel */
     .sim-amort {
       background: #ffffff;
-      border: 1px solid #d1d9e0;
+      border: 1px solid #e0e0e0;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     .sim-amort__header {
-      padding: 1.125rem 1.75rem;
-      background: #f8fafc;
+      padding: 1rem 1.5rem;
+      background: #f4f4f4;
       border-bottom: 1px solid #e0e0e0;
     }
 
-    .sim-amort__title {
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: #161616;
-      margin: 0;
-    }
+    .sim-amort__title { font-size: 0.9375rem; font-weight: 600; color: #161616; margin: 0; }
 
-    /* Principal vs interest breakdown */
-    .sim-amort-breakdown {
-      padding: 1.25rem 1.75rem 1.375rem;
-      border-bottom: 1px solid #e0e0e0;
-    }
+    .sim-amort-breakdown { padding: 1.25rem 1.5rem; border-bottom: 1px solid #e0e0e0; }
 
-    .sim-amort-breakdown__stats {
-      display: flex;
-      gap: 2.5rem;
-      margin-bottom: 0.875rem;
-      flex-wrap: wrap;
-    }
-
-    .sim-amort-breakdown__stat { display: flex; flex-direction: column; gap: 0.125rem; }
+    .sim-amort-breakdown__stats { display: flex; gap: 2.5rem; margin-bottom: 0.875rem; flex-wrap: wrap; }
+    .sim-amort-breakdown__stat  { display: flex; flex-direction: column; gap: 0.125rem; }
 
     .sim-amort-breakdown__stat-label {
       font-size: 0.6875rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.09em;
-      color: #94a3b8;
+      color: #8d8d8d;
     }
 
-    .sim-amort-breakdown__stat-value { font-size: 1.125rem; font-weight: 600; color: #1e293b; }
-    .sim-amort-breakdown__stat-sub   { font-size: 0.75rem; color: #94a3b8; margin-top: 0.125rem; }
+    .sim-amort-breakdown__stat-value { font-size: 1.125rem; font-weight: 600; color: #161616; }
+    .sim-amort-breakdown__stat-sub   { font-size: 0.75rem; color: #8d8d8d; margin-top: 0.125rem; }
 
     .sim-amort-breakdown__bar {
       height: 8px;
-      border-radius: 4px;
       background: #e0e0e0;
       overflow: hidden;
       display: flex;
     }
 
-    .sim-amort-breakdown__bar-principal {
-      height: 100%;
-      background: #0f62fe;
-      transition: width 0.4s ease;
-    }
+    .sim-amort-breakdown__bar-principal { height: 100%; background: #0f62fe; transition: width 0.4s ease; }
+    .sim-amort-breakdown__bar-interest  { height: 100%; background: #ff832b; flex: 1; }
 
-    .sim-amort-breakdown__bar-interest {
-      height: 100%;
-      background: #ff832b;
-      flex: 1;
-    }
-
-    .sim-amort-breakdown__legend {
-      display: flex;
-      gap: 1.5rem;
-      margin-top: 0.625rem;
-      flex-wrap: wrap;
-    }
+    .sim-amort-breakdown__legend { display: flex; gap: 1.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
 
     .sim-amort-breakdown__legend-item {
       display: flex;
       align-items: center;
       gap: 0.375rem;
       font-size: 0.8125rem;
-      color: #475569;
+      color: #525252;
     }
 
-    .sim-amort-breakdown__swatch {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
+    .sim-amort-breakdown__swatch { width: 10px; height: 10px; flex-shrink: 0; }
     .sim-amort-breakdown__swatch--principal { background: #0f62fe; }
     .sim-amort-breakdown__swatch--interest  { background: #ff832b; }
 
-    .sim-amort__wrapper {
-      overflow-x: auto;
-      max-height: 320px;
-      overflow-y: auto;
-    }
+    .sim-amort__wrapper { overflow-x: auto; max-height: 320px; overflow-y: auto; }
 
     .sim-amort__toggle {
-      padding: 1rem 1.75rem;
+      padding: 1rem 1.5rem;
       border-top: 1px solid #e0e0e0;
-      background: #f8fafc;
+      background: #f4f4f4;
     }
 
-    /* ─── Mix manager ─── */
-    .mix-manager {
-      background: #ffffff;
-      border: 1px solid #d1d9e0;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
+    /* Mix manager */
+    .mix-manager { background: #ffffff; border: 1px solid #e0e0e0; }
 
-    /* ─── Comparison ─── */
-    .simulator-comparison {
-      background: #ffffff;
-      border: 1px solid #d1d9e0;
-      padding: 1.5rem 1.75rem;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .simulator-comparison__title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #161616;
-      margin: 0 0 1.25rem;
-    }
+    /* Comparison */
+    .simulator-comparison { background: #ffffff; border: 1px solid #e0e0e0; padding: 1.5rem; }
+    .simulator-comparison__title { font-size: 1rem; font-weight: 600; color: #161616; margin: 0 0 1.25rem; }
 
     /* ─── Info cards ─── */
     .sim-info-cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      margin-top: 1.5rem;
-      border: 1px solid #d1d9e0;
+      border: 1px solid #e0e0e0;
       background: #ffffff;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     }
 
     .sim-info-card {
       padding: 1.75rem;
       border-right: 1px solid #e0e0e0;
-      border-top: 3px solid #0f62fe;
+      border-top: 2px solid #0f62fe;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
     }
 
     .sim-info-card:last-child { border-right: none; }
-    .sim-info-card__icon { font-size: 1.375rem; display: block; }
+    .sim-info-card__icon { font-size: 1.375rem; }
     .sim-info-card h3 { font-size: 0.9375rem; font-weight: 600; color: #161616; margin: 0; }
     .sim-info-card p  { font-size: 0.8125rem; color: #6f6f6f; line-height: 1.65; margin: 0; }
 
     /* ─── Responsive ─── */
-    @media (max-width: 900px) {
-      .sim-header { padding: 2rem 1.5rem 1.5rem; }
-      .sim-body   { padding: 1.5rem 1.5rem 3rem; }
+    @media (max-width: 1024px) {
+      .sim-main-grid { grid-template-columns: 1fr; }
+      .sim-results { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .simulator-page { padding: 2rem 1.25rem 4rem; }
+      .simulator-page__title { font-size: 1.875rem; }
+      .sim-config { grid-template-columns: 1fr; gap: 1.25rem; }
+      .sim-inputs { grid-template-columns: repeat(2, 1fr); }
       .sim-info-cards { grid-template-columns: 1fr; }
-      .sim-info-card  { border-right: none; border-bottom: 1px solid #e0e0e0; border-top: none; border-left: 3px solid #0f62fe; }
+      .sim-info-card { border-right: none; border-bottom: 1px solid #e0e0e0; border-top: none; border-left: 2px solid #0f62fe; }
       .sim-info-card:last-child { border-bottom: none; }
       .sim-action-bar { flex-direction: column; align-items: flex-start; }
-      #solve-btn { width: 100%; justify-content: center; }
-      .sim-amort-breakdown__stats { gap: 1.25rem; }
+      #solve-btn { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .sim-inputs { grid-template-columns: 1fr; }
+      .sim-results { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -405,242 +468,252 @@
 
   <main class="simulator-page">
 
-    <!-- ── Page header ─────────────────────────────────────────────────────────── -->
-    <div class="sim-header">
-      <div class="sim-header__inner">
-        <div id="disclaimer"></div>
-        <h1 class="simulator-page__title" data-i18n="sim.title">Mortgage Simulator</h1>
-        <p class="simulator-page__subtitle" data-i18n-html="sim.subtitle">
-          Fill in any 3 of the 4 financial fields and press <strong>Solve</strong> to calculate the missing value.
-        </p>
+    <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+    <section class="sim-hero">
+      <div id="disclaimer"></div>
+      <h1 class="simulator-page__title" data-i18n="sim.title">Mortgage Simulator</h1>
+    </section>
+
+    <!-- ── Config section: Repayment · Interest · Annual Rate ────────────────── -->
+    <section class="sim-config" aria-label="Loan settings">
+
+      <div class="sim-config__field">
+        <label class="sim-config__label" for="repaymentMethod" data-i18n="sim.repaymentMethod">Repayment Method</label>
+        <div class="sim-config__select-wrap">
+          <select id="repaymentMethod" class="input-carbon">
+            <option value=""            data-i18n="sim.selectDefault">— Select —</option>
+            <option value="shpitzer"    data-i18n="sim.shpitzer">Shpitzer (Fixed Payment)</option>
+            <option value="keren-shava" data-i18n="sim.kerenShava">Equal Principal (Keren Shava)</option>
+            <option value="bullet"      data-i18n="sim.bullet">Bullet (Interest Only)</option>
+          </select>
+          <span class="material-symbols-outlined sim-config__select-icon" aria-hidden="true">expand_more</span>
+        </div>
+      </div>
+
+      <div class="sim-config__field">
+        <label class="sim-config__label" for="interestMethod" data-i18n="sim.interestMethod">Interest Method</label>
+        <div class="sim-config__select-wrap">
+          <select id="interestMethod" class="input-carbon">
+            <option value=""             data-i18n="sim.selectDefault">— Select —</option>
+            <option value="prime-linked" data-i18n="sim.primeLinked">Prime-Linked</option>
+            <option value="fixed"        data-i18n="sim.fixed">Fixed</option>
+            <option value="cpi-linked"   data-i18n="sim.cpiLinked">CPI-Linked</option>
+          </select>
+          <span class="material-symbols-outlined sim-config__select-icon" aria-hidden="true">expand_more</span>
+        </div>
+      </div>
+
+      <div class="sim-config__field">
+        <label class="sim-config__label" for="annualRate" data-i18n="sim.annualRate">Annual Interest Rate (%)</label>
+        <input type="number" id="annualRate" class="input-carbon"
+               min="0" step="0.01"
+               data-i18n-placeholder="sim.placeholder.annualRate"
+               placeholder="e.g. 4.5" />
+        <p class="sim-config__hint" data-i18n="sim.annualRateHint">— optional, leave empty for market default</p>
+      </div>
+
+    </section>
+
+    <!-- ── Subtitle instruction ───────────────────────────────────────────────── -->
+    <p class="sim-subtitle" data-i18n-html="sim.subtitle">
+      Fill in any 3 of the 4 financial fields and press <strong>Solve</strong> to calculate the missing value.
+    </p>
+
+    <!-- ── Main grid: blue input panel (2/3 width) + results panel (1/3 width) ─ -->
+    <div class="sim-main-grid" aria-label="Mortgage calculator">
+
+      <!--
+        Blue panel — the 4 financial inputs.
+        IMPORTANT: sim-table__input class must stay on all 4 inputs.
+        JS uses it to find fields, apply sim-table__input--solved, and clear formatting.
+      -->
+      <div class="sim-inputs">
+
+        <div class="sim-input-cell">
+          <label class="sim-input-cell__label" for="propertyPrice" data-i18n="sim.col.propertyPrice">Property Price (₪)</label>
+          <input type="text" inputmode="numeric" id="propertyPrice"
+                 class="sim-table__input"
+                 data-i18n-placeholder="sim.placeholder.propertyPrice"
+                 placeholder="e.g. 2,000,000" />
+        </div>
+
+        <div class="sim-input-cell">
+          <label class="sim-input-cell__label" for="equity" data-i18n="sim.col.equity">Equity (₪)</label>
+          <input type="text" inputmode="numeric" id="equity"
+                 class="sim-table__input"
+                 data-i18n-placeholder="sim.placeholder.equity"
+                 placeholder="e.g. 500,000" />
+        </div>
+
+        <div class="sim-input-cell">
+          <label class="sim-input-cell__label" for="duration" data-i18n="sim.col.duration">Duration (yrs)</label>
+          <input type="number" id="duration"
+                 class="sim-table__input"
+                 min="1" max="30" step="1"
+                 data-i18n-placeholder="sim.placeholder.duration"
+                 placeholder="e.g. 25" />
+        </div>
+
+        <div class="sim-input-cell">
+          <label class="sim-input-cell__label" for="monthlyPayment" data-i18n="sim.col.monthlyPayment">Monthly Payment (₪)</label>
+          <input type="text" inputmode="numeric" id="monthlyPayment"
+                 class="sim-table__input"
+                 data-i18n-placeholder="sim.placeholder.monthlyPayment"
+                 placeholder="e.g. 5,500" />
+        </div>
+
+      </div><!-- /.sim-inputs -->
+
+      <!-- Light blue panel — 3 computed results (read-only) -->
+      <div class="sim-results">
+
+        <div class="sim-result-cell">
+          <span class="sim-result-cell__label" data-i18n="sim.col.loanAmount">Loan Amount (₪)</span>
+          <span class="sim-result-cell__value" id="res-loan">—</span>
+        </div>
+
+        <div class="sim-result-cell">
+          <span class="sim-result-cell__label" data-i18n="sim.col.totalInterest">Total Interest (₪)</span>
+          <span class="sim-result-cell__value" id="res-total-interest">—</span>
+        </div>
+
+        <div class="sim-result-cell">
+          <span class="sim-result-cell__label" data-i18n="sim.col.totalPayment">Total Payment (₪)</span>
+          <span class="sim-result-cell__value" id="res-total-payment">—</span>
+        </div>
+
+      </div><!-- /.sim-results -->
+
+    </div><!-- /.sim-main-grid -->
+
+    <!-- ── Action bar ─────────────────────────────────────────────────────────── -->
+    <div class="sim-action-bar">
+
+      <!--
+        Solve button: MUST be plain text only — no child elements.
+        JS does solveBtn.textContent = 'Calculating…' (wipes all children).
+        The arrow_forward icon is rendered via CSS ::after, which survives the wipe.
+      -->
+      <button id="solve-btn" data-i18n="sim.solve">Solve</button>
+
+      <div class="sim-action-bar__secondary">
+        <!-- Icon spans are safe here — JS only toggles [hidden], never touches content -->
+        <button id="save-mix-btn" class="btn btn--secondary" hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">save</span>
+          <span data-i18n="sim.saveAsMix">Save as Mix</span>
+        </button>
+        <button id="show-comparison-btn" class="btn btn--secondary" hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">compare_arrows</span>
+          <span data-i18n="sim.compareAll">Compare All Mixes</span>
+        </button>
+        <button id="pdf-btn" class="btn" hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
+          <span data-i18n="sim.downloadPdf">Download PDF Summary</span>
+        </button>
+      </div>
+
+    </div><!-- /.sim-action-bar -->
+
+    <!-- ── Inline feedback message ───────────────────────────────────────────── -->
+    <div id="sim-message" class="sim-message" hidden></div>
+
+    <!-- ── Dynamic sections: appear after a successful solve ─────────────────── -->
+    <div class="sim-dynamic">
+
+      <!-- Amortization: principal/interest breakdown bar + monthly table -->
+      <section id="amortization-section" class="sim-amort" hidden aria-label="Amortization schedule">
+
+        <div class="sim-amort__header">
+          <h2 id="amortization-title" class="sim-amort__title" data-i18n="sim.amortSchedule">Amortization Schedule</h2>
+        </div>
+
+        <!-- Visual breakdown — JS populates the stat values and bar width -->
+        <div class="sim-amort-breakdown">
+          <div class="sim-amort-breakdown__stats">
+            <div class="sim-amort-breakdown__stat">
+              <span class="sim-amort-breakdown__stat-label" data-i18n="sim.fieldLabel.loanAmount">Loan Amount</span>
+              <span class="sim-amort-breakdown__stat-value" id="amort-stat-principal">—</span>
+              <span class="sim-amort-breakdown__stat-sub"   id="amort-principal-pct">—</span>
+            </div>
+            <div class="sim-amort-breakdown__stat">
+              <span class="sim-amort-breakdown__stat-label" data-i18n="sim.totalInterest">Total Interest</span>
+              <span class="sim-amort-breakdown__stat-value" id="amort-stat-interest">—</span>
+              <span class="sim-amort-breakdown__stat-sub"   id="amort-interest-pct">—</span>
+            </div>
+            <div class="sim-amort-breakdown__stat">
+              <span class="sim-amort-breakdown__stat-label" data-i18n="sim.results">Total</span>
+              <span class="sim-amort-breakdown__stat-value" id="amort-stat-total">—</span>
+            </div>
+          </div>
+          <div class="sim-amort-breakdown__bar">
+            <div class="sim-amort-breakdown__bar-principal" id="amort-bar-principal" style="width:60%"></div>
+            <div class="sim-amort-breakdown__bar-interest"  id="amort-bar-interest"></div>
+          </div>
+          <div class="sim-amort-breakdown__legend">
+            <span class="sim-amort-breakdown__legend-item">
+              <span class="sim-amort-breakdown__swatch sim-amort-breakdown__swatch--principal"></span>
+              <span data-i18n="sim.fieldLabel.loanAmount">Loan Amount</span>
+            </span>
+            <span class="sim-amort-breakdown__legend-item">
+              <span class="sim-amort-breakdown__swatch sim-amort-breakdown__swatch--interest"></span>
+              <span data-i18n="sim.totalInterest">Total Interest</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="sim-amort__wrapper">
+          <table class="sim-amort__table">
+            <thead>
+              <tr>
+                <th data-i18n="sim.amortHeader.month">Month</th>
+                <th data-i18n="sim.amortHeader.payment">Payment (₪)</th>
+                <th data-i18n="sim.amortHeader.principal">Principal (₪)</th>
+                <th data-i18n="sim.amortHeader.interest">Interest (₪)</th>
+                <th data-i18n="sim.amortHeader.remainingBalance">Remaining Balance (₪)</th>
+              </tr>
+            </thead>
+            <tbody id="amort-tbody"></tbody>
+          </table>
+        </div>
+
+        <div id="amort-toggle-wrap" class="sim-amort__toggle" hidden>
+          <button id="amort-show-all-btn" class="btn btn--secondary">Show all months</button>
+        </div>
+
+      </section>
+
+      <!-- Mix manager -->
+      <section class="mix-manager" aria-label="Saved mixes">
+        <div id="mix-tabs" class="mix-manager__tabs"></div>
+        <p id="mix-hint" class="mix-manager__hint" hidden></p>
+      </section>
+
+      <!-- Comparison table -->
+      <section id="comparison-section" class="simulator-comparison" hidden aria-label="Mix comparison">
+        <h2 class="simulator-comparison__title" data-i18n="sim.mixComparison">Mix Comparison</h2>
+        <div id="comparison-table-container"></div>
+      </section>
+
+    </div><!-- /.sim-dynamic -->
+
+    <!-- ── Info cards ─────────────────────────────────────────────────────────── -->
+    <div class="sim-info-cards" aria-label="How it works">
+      <div class="sim-info-card">
+        <span class="sim-info-card__icon">📊</span>
+        <h3 data-i18n="sim.info.card1.title">3 of 4 Solver</h3>
+        <p data-i18n="sim.info.card1.desc">Fill any three of the four financial fields. The simulator derives the missing value — monthly payment, duration, equity, or price.</p>
+      </div>
+      <div class="sim-info-card">
+        <span class="sim-info-card__icon">🏦</span>
+        <h3 data-i18n="sim.info.card2.title">Bank of Israel Aligned</h3>
+        <p data-i18n="sim.info.card2.desc">All calculations follow Bank of Israel regulations, including LTV limits, track mix rules, and standard amortization conventions.</p>
+      </div>
+      <div class="sim-info-card">
+        <span class="sim-info-card__icon">📄</span>
+        <h3 data-i18n="sim.info.card3.title">PDF Export</h3>
+        <p data-i18n="sim.info.card3.desc">Save multiple mortgage scenarios as mixes and download a side-by-side PDF summary to share with your mortgage advisor.</p>
       </div>
     </div>
-
-    <!-- ── Body ────────────────────────────────────────────────────────────────── -->
-    <div class="sim-body">
-
-      <!-- Calculator card -->
-      <div class="sim-card">
-
-        <!--
-          Single horizontal row — all 10 columns in source order:
-          1 Property Price · 2 Equity · 3 Duration · 4 Repayment Method
-          5 Interest Method · 6 Annual Rate · 7 Monthly Payment
-          8 Loan Amount (result) · 9 Total Interest (result) · 10 Total Payment (result)
-
-          margin-top:auto on every .sim-row__input / .sim-row__value guarantees
-          all interactive elements share the same baseline regardless of label height.
-        -->
-        <div class="sim-row-wrapper" aria-label="Mortgage calculator">
-          <div class="sim-row">
-
-            <!-- 1 · Property Price -->
-            <div class="sim-row__cell">
-              <label class="sim-row__label" for="propertyPrice" data-i18n="sim.col.propertyPrice">Property Price (₪)</label>
-              <input type="text" inputmode="numeric" id="propertyPrice"
-                     class="sim-table__input sim-row__input"
-                     data-i18n-placeholder="sim.placeholder.propertyPrice"
-                     placeholder="e.g. 2,000,000" />
-            </div>
-
-            <!-- 2 · Equity -->
-            <div class="sim-row__cell">
-              <label class="sim-row__label" for="equity" data-i18n="sim.col.equity">Equity (₪)</label>
-              <input type="text" inputmode="numeric" id="equity"
-                     class="sim-table__input sim-row__input"
-                     data-i18n-placeholder="sim.placeholder.equity"
-                     placeholder="e.g. 500,000" />
-            </div>
-
-            <!-- 3 · Duration -->
-            <div class="sim-row__cell">
-              <label class="sim-row__label" for="duration" data-i18n="sim.col.duration">Duration (yrs)</label>
-              <input type="number" id="duration"
-                     class="sim-table__input sim-row__input"
-                     min="1" max="30" step="1"
-                     data-i18n-placeholder="sim.placeholder.duration"
-                     placeholder="e.g. 25" />
-            </div>
-
-            <!-- 4 · Repayment Method -->
-            <div class="sim-row__cell sim-row__cell--wide">
-              <label class="sim-row__label" for="repaymentMethod" data-i18n="sim.repaymentMethod">Repayment Method</label>
-              <select id="repaymentMethod" class="sim-row__input">
-                <option value=""            data-i18n="sim.selectDefault">— Select —</option>
-                <option value="shpitzer"    data-i18n="sim.shpitzer">Shpitzer (Fixed Payment)</option>
-                <option value="keren-shava" data-i18n="sim.kerenShava">Equal Principal (Keren Shava)</option>
-                <option value="bullet"      data-i18n="sim.bullet">Bullet (Interest Only)</option>
-              </select>
-            </div>
-
-            <!-- 5 · Interest Method -->
-            <div class="sim-row__cell sim-row__cell--wide">
-              <label class="sim-row__label" for="interestMethod" data-i18n="sim.interestMethod">Interest Method</label>
-              <select id="interestMethod" class="sim-row__input">
-                <option value=""             data-i18n="sim.selectDefault">— Select —</option>
-                <option value="prime-linked" data-i18n="sim.primeLinked">Prime-Linked</option>
-                <option value="fixed"        data-i18n="sim.fixed">Fixed</option>
-                <option value="cpi-linked"   data-i18n="sim.cpiLinked">CPI-Linked</option>
-              </select>
-            </div>
-
-            <!-- 6 · Annual Rate -->
-            <div class="sim-row__cell">
-              <label class="sim-row__label" for="annualRate">
-                <span data-i18n="sim.annualRate">Annual Rate (%)</span>
-                <span class="sim-row__label-hint" data-i18n="sim.annualRateHint">optional</span>
-              </label>
-              <input type="number" id="annualRate" class="sim-row__input"
-                     min="0" step="0.01"
-                     data-i18n-placeholder="sim.placeholder.annualRate"
-                     placeholder="e.g. 4.5" />
-            </div>
-
-            <!-- 7 · Monthly Payment -->
-            <div class="sim-row__cell">
-              <label class="sim-row__label" for="monthlyPayment" data-i18n="sim.col.monthlyPayment">Monthly Payment (₪)</label>
-              <input type="text" inputmode="numeric" id="monthlyPayment"
-                     class="sim-table__input sim-row__input"
-                     data-i18n-placeholder="sim.placeholder.monthlyPayment"
-                     placeholder="e.g. 5,500" />
-            </div>
-
-            <!-- 8 · Loan Amount (computed result) -->
-            <div class="sim-row__cell sim-row__cell--result sim-row__cell--result-first">
-              <span class="sim-row__label" data-i18n="sim.col.loanAmount">Loan Amount (₪)</span>
-              <span class="sim-row__value" id="res-loan">—</span>
-            </div>
-
-            <!-- 9 · Total Interest (computed result) -->
-            <div class="sim-row__cell sim-row__cell--result">
-              <span class="sim-row__label" data-i18n="sim.col.totalInterest">Total Interest (₪)</span>
-              <span class="sim-row__value" id="res-total-interest">—</span>
-            </div>
-
-            <!-- 10 · Total Payment (computed result) -->
-            <div class="sim-row__cell sim-row__cell--result">
-              <span class="sim-row__label" data-i18n="sim.col.totalPayment">Total Payment (₪)</span>
-              <span class="sim-row__value" id="res-total-payment">—</span>
-            </div>
-
-          </div>
-        </div><!-- /.sim-row-wrapper -->
-
-        <!-- Action bar -->
-        <div class="sim-action-bar">
-          <button id="solve-btn" class="btn btn--primary" data-i18n="sim.solve">Solve</button>
-          <div class="sim-action-bar__secondary">
-            <button id="save-mix-btn"        class="btn btn--secondary" hidden data-i18n="sim.saveAsMix">Save as Mix</button>
-            <button id="show-comparison-btn" class="btn btn--secondary" hidden data-i18n="sim.compareAll">Compare All Mixes</button>
-            <button id="pdf-btn"             class="btn btn--secondary" hidden data-i18n="sim.downloadPdf">Download PDF</button>
-          </div>
-        </div>
-
-      </div><!-- /.sim-card -->
-
-      <!-- Message -->
-      <div id="sim-message" class="sim-message" hidden></div>
-
-      <!-- Dynamic sections -->
-      <div class="sim-dynamic">
-
-        <!-- Amortization: breakdown bar + table -->
-        <section id="amortization-section" class="sim-amort" hidden aria-label="Amortization schedule">
-
-          <div class="sim-amort__header">
-            <h2 id="amortization-title" class="sim-amort__title" data-i18n="sim.amortSchedule">Amortization Schedule</h2>
-          </div>
-
-          <!-- Visual principal vs interest breakdown (JS populates the values) -->
-          <div class="sim-amort-breakdown">
-            <div class="sim-amort-breakdown__stats">
-              <div class="sim-amort-breakdown__stat">
-                <span class="sim-amort-breakdown__stat-label" data-i18n="sim.fieldLabel.loanAmount">Loan Amount</span>
-                <span class="sim-amort-breakdown__stat-value" id="amort-stat-principal">—</span>
-                <span class="sim-amort-breakdown__stat-sub"   id="amort-principal-pct">—</span>
-              </div>
-              <div class="sim-amort-breakdown__stat">
-                <span class="sim-amort-breakdown__stat-label" data-i18n="sim.totalInterest">Total Interest</span>
-                <span class="sim-amort-breakdown__stat-value" id="amort-stat-interest">—</span>
-                <span class="sim-amort-breakdown__stat-sub"   id="amort-interest-pct">—</span>
-              </div>
-              <div class="sim-amort-breakdown__stat">
-                <span class="sim-amort-breakdown__stat-label" data-i18n="sim.results">Total</span>
-                <span class="sim-amort-breakdown__stat-value" id="amort-stat-total">—</span>
-              </div>
-            </div>
-            <div class="sim-amort-breakdown__bar">
-              <div class="sim-amort-breakdown__bar-principal" id="amort-bar-principal" style="width:60%"></div>
-              <div class="sim-amort-breakdown__bar-interest"  id="amort-bar-interest"></div>
-            </div>
-            <div class="sim-amort-breakdown__legend">
-              <span class="sim-amort-breakdown__legend-item">
-                <span class="sim-amort-breakdown__swatch sim-amort-breakdown__swatch--principal"></span>
-                <span data-i18n="sim.fieldLabel.loanAmount">Loan Amount</span>
-              </span>
-              <span class="sim-amort-breakdown__legend-item">
-                <span class="sim-amort-breakdown__swatch sim-amort-breakdown__swatch--interest"></span>
-                <span data-i18n="sim.totalInterest">Total Interest</span>
-              </span>
-            </div>
-          </div>
-
-          <!-- Monthly schedule table -->
-          <div class="sim-amort__wrapper">
-            <table class="sim-amort__table">
-              <thead>
-                <tr>
-                  <th data-i18n="sim.amortHeader.month">Month</th>
-                  <th data-i18n="sim.amortHeader.payment">Payment (₪)</th>
-                  <th data-i18n="sim.amortHeader.principal">Principal (₪)</th>
-                  <th data-i18n="sim.amortHeader.interest">Interest (₪)</th>
-                  <th data-i18n="sim.amortHeader.remainingBalance">Remaining Balance (₪)</th>
-                </tr>
-              </thead>
-              <tbody id="amort-tbody"></tbody>
-            </table>
-          </div>
-
-          <div id="amort-toggle-wrap" class="sim-amort__toggle" hidden>
-            <button id="amort-show-all-btn" class="btn btn--secondary">Show all months</button>
-          </div>
-
-        </section>
-
-        <!-- Mix manager -->
-        <section class="mix-manager" aria-label="Saved mixes">
-          <div id="mix-tabs" class="mix-manager__tabs"></div>
-          <p id="mix-hint" class="mix-manager__hint" hidden></p>
-        </section>
-
-        <!-- Comparison table -->
-        <section id="comparison-section" class="simulator-comparison" hidden aria-label="Mix comparison">
-          <h2 class="simulator-comparison__title" data-i18n="sim.mixComparison">Mix Comparison</h2>
-          <div id="comparison-table-container"></div>
-        </section>
-
-      </div><!-- /.sim-dynamic -->
-
-      <!-- Info cards -->
-      <div class="sim-info-cards" aria-label="How it works">
-        <div class="sim-info-card">
-          <span class="sim-info-card__icon">📊</span>
-          <h3 data-i18n="sim.info.card1.title">3 of 4 Solver</h3>
-          <p data-i18n="sim.info.card1.desc">Fill any three of the four financial fields. The simulator derives the missing value — monthly payment, duration, equity, or price.</p>
-        </div>
-        <div class="sim-info-card">
-          <span class="sim-info-card__icon">🏦</span>
-          <h3 data-i18n="sim.info.card2.title">Bank of Israel Aligned</h3>
-          <p data-i18n="sim.info.card2.desc">All calculations follow Bank of Israel regulations, including LTV limits, track mix rules, and standard amortization conventions.</p>
-        </div>
-        <div class="sim-info-card">
-          <span class="sim-info-card__icon">📄</span>
-          <h3 data-i18n="sim.info.card3.title">PDF Export</h3>
-          <p data-i18n="sim.info.card3.desc">Save multiple mortgage scenarios as mixes and download a side-by-side PDF summary to share with your mortgage advisor.</p>
-        </div>
-      </div>
-
-    </div><!-- /.sim-body -->
 
   </main>
 
