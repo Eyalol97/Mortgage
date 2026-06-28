@@ -51,17 +51,15 @@
       gap: 0.5rem;
     }
     .navbar__brand-icon {
-      width: 28px;
-      height: 28px;
-      background: #0f62fe;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
-      font-size: 16px;
       flex-shrink: 0;
     }
-    .navbar__brand-light { font-weight: 300; }
+    .navbar__brand-blue { color: #0f62fe; font-weight: 600; }
+    .navbar__brand-step { color: #161616; font-weight: 800; }
     .navbar__links {
       display: flex;
       align-items: center;
@@ -180,8 +178,18 @@
       <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__inner">
           <a class="navbar__brand" href="/">
-            <div class="navbar__brand-icon">⊞</div>
-            Guided <span class="navbar__brand-light">Clarity</span>
+            <div class="navbar__brand-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 17 L16 5 L30 17" stroke="#0f62fe" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M6 17 L6 27 L26 27 L26 17" stroke="#0f62fe" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+                <rect x="9" y="20" width="3.5" height="7" fill="#0f62fe"/>
+                <rect x="14" y="17" width="3.5" height="10" fill="#0353e9"/>
+                <rect x="19" y="14" width="3.5" height="13" fill="#0043ce"/>
+                <path d="M8 25 C12 20 17 14 24 10" stroke="#93c6ff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <path d="M24 10 L21 11.5 M24 10 L24 13.5" stroke="#93c6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="navbar__brand-blue">Door</span><span class="navbar__brand-step">Step</span>
           </a>
           <div style="display:flex;align-items:center;">
             <ul class="navbar__links">

@@ -11,7 +11,7 @@
 
       // Home — hero
       'home.eyebrow':   'Israeli Mortgage Assistant',
-      'home.title':     'Guided Clarity',
+      'home.title':     'DoorStep',
       'home.subtitle':  'Ask mortgage questions in plain Hebrew or English — get clear, regulation-aware answers instantly. Ready to run the numbers?',
       'home.cta':       'Open Simulator →',
 
@@ -205,17 +205,17 @@
       'lp.bot.bullet2':    'Regulation-Aware Answers',
       'lp.bot.bullet3':    'Personalised to Your Profile',
       'lp.bot.link':       'Talk to Concierge →',
-      'lp.value.title':    'Guided Clarity.<br>Professional Results.',
+      'lp.value.title':    'DoorStep.<br>Professional Results.',
       'lp.value.desc':     'Everyone deserves the level of financial insight typically reserved for elite investors. Our platform democratises mortgage intelligence for every Israeli homebuyer.',
       'lp.value.cta':      'Create Free Account →',
       'lp.value.stat1num': 'Bank of Israel',
       'lp.value.stat1lbl': 'Regulation-aligned guidance',
       'lp.value.stat2num': 'HE + EN',
       'lp.value.stat2lbl': 'Full bilingual support',
-      'lp.footer':         '© 2025 Guided Clarity — Mortgage Intelligence Platform',
+      'lp.footer':         '© 2025 DoorStep — Mortgage Intelligence',
 
       // Auth
-      'auth.brand':           'Guided Clarity',
+      'auth.brand':           'DoorStep',
       'auth.signIn':          'Sign In',
       'auth.signUp':          'Sign Up',
       'auth.email':           'Email',
@@ -242,7 +242,7 @@
 
       // Home — hero
       'home.eyebrow':  'עוזר משכנתאות ישראלי',
-      'home.title':    'Guided Clarity',
+      'home.title':    'DoorStep',
       'home.subtitle': 'שאל שאלות משכנתא בעברית או באנגלית — קבל תשובות ברורות ומעודכנות לתקנות בנק ישראל. מוכן לחשב?',
       'home.cta':      '← פתח סימולטור',
 
@@ -414,7 +414,7 @@
       // Landing page
       'lp.eyebrow':        'עוזר משכנתאות ישראלי',
       'lp.title':          'הכוונת משכנתא,<br><strong>פשוטה</strong> לעתיד שלך.',
-      'lp.subtitle':       'נווטו בנוף המורכב של מימון הדיור הישראלי עם סימולציות חכמות והכוונת AI — מבוסס תקנות ונגיש מיד.',
+      'lp.subtitle':       'המדריך החכם למשכנתא: סימולטור מתקדם ובוט למידה אישי שיעשו לכם סדר במספרים.',
       'lp.cta.start':      'צאו לדרך',
       'lp.cta.explore':    'פתחו סימולטור',
       'lp.card.label':     'שאלו את הבוט',
@@ -436,17 +436,17 @@
       'lp.bot.bullet2':    'תשובות מבוססות תקנות',
       'lp.bot.bullet3':    'מותאם לפרופיל שלך',
       'lp.bot.link':       '← שוחח עם הבוט',
-      'lp.value.title':    'Guided Clarity.<br>תוצאות מקצועיות.',
+      'lp.value.title':    'DoorStep.<br>תוצאות מקצועיות.',
       'lp.value.desc':     'כולם ראויים לרמת התובנה הפיננסית השמורה בדרך כלל למשקיעים מובילים. הפלטפורמה שלנו מנגישה את בינת המשכנתאות לכל רוכש דירה ישראלי.',
       'lp.value.cta':      '← צרו חשבון חינמי',
       'lp.value.stat1num': 'בנק ישראל',
       'lp.value.stat1lbl': 'הכוונה מבוססת תקנות',
       'lp.value.stat2num': 'עברית + אנגלית',
       'lp.value.stat2lbl': 'תמיכה דו-לשונית מלאה',
-      'lp.footer':         '© 2025 Guided Clarity — פלטפורמת מידע משכנתאות',
+      'lp.footer':         '© 2025 DoorStep — Mortgage Intelligence',
 
       // Auth
-      'auth.brand':           'Guided Clarity',
+      'auth.brand':           'DoorStep',
       'auth.signIn':          'כניסה',
       'auth.signUp':          'הרשמה',
       'auth.email':           'אימייל',

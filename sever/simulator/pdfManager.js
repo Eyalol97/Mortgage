@@ -460,7 +460,7 @@ function drawFooter(doc, L, isHe) {
 
   doc.save().fillColor(C.textLight)
      .font('Helvetica').fontSize(6.5)
-     .text('Guided Clarity  |  mortgage-comparison.pdf', ML, footY + 30,
+     .text('DoorStep  |  mortgage-comparison.pdf', ML, footY + 30,
            { width: W - ML * 2, align: 'center', lineBreak: false })
      .restore();
 }
