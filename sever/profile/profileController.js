@@ -11,6 +11,9 @@ async function getProfile(req, res, next) {
     }
 
     return res.status(200).json({
+      name:          profile.name,
+      gender:        profile.gender,
+      age:           profile.age,
       income:        profile.net_income,
       equity:        profile.equity,
       savings:       profile.monthly_savings,
@@ -31,15 +34,18 @@ async function createProfile(req, res, next) {
       });
     }
 
-    const { income, equity, savings, householdSize } = req.body;
+    const { name, gender, age, income, equity, savings, householdSize } = req.body;
 
-    const validation = profileValidation.validate({ income, equity, savings, householdSize });
+    const validation = profileValidation.validate({ name, gender, age, income, equity, savings, householdSize });
     if (!validation.valid) {
       return res.status(400).json({ errors: validation.errors });
     }
 
     await UserProfile.create({
       user_id:         req.userId,
+      name:            name,
+      gender:          gender,
+      age:             age,
       net_income:      income,
       equity:          equity,
       monthly_savings: savings,
@@ -61,13 +67,16 @@ async function updateProfile(req, res, next) {
       return res.status(404).json({ error: 'No profile found to update.' });
     }
 
-    const { income, equity, savings, householdSize } = req.body;
+    const { name, gender, age, income, equity, savings, householdSize } = req.body;
 
-    const validation = profileValidation.validate({ income, equity, savings, householdSize });
+    const validation = profileValidation.validate({ name, gender, age, income, equity, savings, householdSize });
     if (!validation.valid) {
       return res.status(400).json({ errors: validation.errors });
     }
 
+    profile.name            = name;
+    profile.gender          = gender;
+    profile.age             = age;
     profile.net_income      = income;
     profile.equity          = equity;
     profile.monthly_savings = savings;

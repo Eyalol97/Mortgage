@@ -8,6 +8,19 @@ const userProfileSchema = new mongoose.Schema(
       unique:   true,
       ref:      'User',
     },
+    name: {
+      type: String,
+      trim: true,
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'non-binary', 'prefer-not-to-say', ''],
+    },
+    age: {
+      type: Number,
+      min:  18,
+      max:  120,
+    },
     net_income: {
       type: Number,
       min:  0,
