@@ -58,6 +58,7 @@
       justify-content: center;
       flex-shrink: 0;
     }
+    .navbar__brand-name { direction: ltr; }
     .navbar__brand-blue { color: #0f62fe; font-weight: 600; }
     .navbar__brand-step { color: #161616; font-weight: 800; }
     .navbar__links {
@@ -189,7 +190,7 @@
                 <path d="M24 10 L21 11.5 M24 10 L24 13.5" stroke="#93c6ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
-            <span class="navbar__brand-blue">Door</span><span class="navbar__brand-step">Step</span>
+            <span class="navbar__brand-name"><span class="navbar__brand-blue">Door</span><span class="navbar__brand-step">Step</span></span>
           </a>
           <div style="display:flex;align-items:center;">
             <ul class="navbar__links">
