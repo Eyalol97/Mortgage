@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Left roof slope -->
+  <polygon points="5,52 50,8 60,8 22,52" fill="#1565C0"/>
+  <!-- Right roof slope -->
+  <polygon points="40,8 95,52 78,52 50,8" fill="#1565C0"/>
+
+  <!-- Bars (left = short, middle = medium, right = tallest / breaks through roof) -->
+  <rect x="13" y="58" width="19" height="36" fill="#1976D2"/>
+  <rect x="40" y="44" width="19" height="50" fill="#1976D2"/>
+  <rect x="67" y="18" width="19" height="76" fill="#1565C0"/>
+
+  <!-- Trend arrow -->
+  <line x1="20" y1="84" x2="68" y2="36" stroke="#42A5F5" stroke-width="7" stroke-linecap="round"/>
+  <polygon points="75,28 57,36 67,52" fill="#42A5F5"/>
+</svg>
